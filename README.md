@@ -3,5 +3,7 @@
 ### Este repositorio contempla el front-end de la aplicación "Cáritas"
 
 ### Desarrolladores:
+
 Thiago Martinez
+
 Matias Diz Rendani
