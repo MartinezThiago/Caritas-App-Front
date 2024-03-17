@@ -391,6 +391,10 @@ template {
   @apply box-border;
 }
 
+header {
+  @apply m-0 p-0 w-full h-[4rem] px-4 flex items-center gap-4 border-b-2 border-rose-700;
+}
+
 h1,
 h2,
 h3,
@@ -403,10 +407,13 @@ li {
 }
 
 html {
-  @apply w-[100vw] h-[100vh] bg-zinc-900 text-zinc-100;
+  @apply w-[100vw] h-[100vh] bg-white text-blue-900;
 }
 
-body,
+body {
+  @apply size-full flex flex-col;
+}
+
 main {
-  @apply size-full;
+  @apply flex-grow
 }
