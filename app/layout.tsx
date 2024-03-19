@@ -37,10 +37,12 @@ export default function RootLayout({
           </> :
             user.role === 'nominal' ? <>
               <div className='flex-grow'></div>
+              <Link href='/cerrar-sesión'>{user.name}</Link>
               <Link href='/cerrar-sesión'>Cerrar Sesión</Link>
             </> : <>
               <Link href='/cerrar-sesión'>Estadísticas</Link>
               <div className='flex-grow'></div>
+              <Link href='/cerrar-sesión'>{user.name}</Link>
               <Link href='/cerrar-sesión'>Cerrar Sesión</Link>
             </>
         }

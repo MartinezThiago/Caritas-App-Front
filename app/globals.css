@@ -392,7 +392,7 @@ template {
 }
 
 header {
-  @apply m-0 p-0 w-full h-[4rem] px-4 flex items-center gap-4 border-b-2 border-rose-700;
+  @apply m-0 p-0 w-full h-[4rem] px-4 flex items-center gap-4 bg-blue-900 text-white;
 }
 
 h1,
