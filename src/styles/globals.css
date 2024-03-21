@@ -411,6 +411,10 @@ html {
 }
 
 body {
+  @apply size-full;
+}
+
+#__next {
   @apply size-full flex flex-col;
 }
 
