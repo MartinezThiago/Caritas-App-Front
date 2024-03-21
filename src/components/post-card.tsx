@@ -9,8 +9,8 @@ export default function CardProduct(props: CardProductProps) {
       <Image alt={`post-image-${props.id_post}`} src={postImagePreview} />
       <div className={'m-3.5'}>
         <p className={'text-2xl font-bold'}>{props.title}</p>
-        <h2 className='ms-2.5'>{props.description}</h2>
-        <div className={'flex justify-center items-center mt-8'}>
+        <h2>{props.description}</h2>
+        <div className={'flex justify-center items-center mt-[20%] '}>
           <p className={'font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto'}>{props.categorie}</p>
           <p className={'font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto'}>{props.state}</p>
         </div>

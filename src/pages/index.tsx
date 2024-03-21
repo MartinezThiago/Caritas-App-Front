@@ -68,25 +68,12 @@ export default function Home({ user }: { user: User }) {
   }
 
   return <RootLayout user={user}>
-    <main className=''>
-      {/*<div className='bg-white w-[30vw] border-r-4 border-r-blue-900'>
-        DIV SEARCHBAR
+    <main className='flex'>
+      <div className='bg-white w-[30vw] border-r-4 border-r-blue-900'>
       </div>
-      */}
       <div className='flex flex-wrap justify-center items-center mt-[1rem] w-[70vw]'>
         {CardsProducts()}
       </div>
-      <div className='flex'>
-        <TradeOfferProduct
-            key={1}
-            id_post={'1'}
-            img_src={''}
-            title={'Fibrones'}
-            description={'Estos son fibrones usados'}
-            categorie={'utiles'}
-            state={'usado'}
-          />
-        </div>
     </main>
   </RootLayout>
 }

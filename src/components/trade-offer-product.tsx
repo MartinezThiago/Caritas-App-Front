@@ -6,7 +6,7 @@ import Image from 'next/image'
 export default function TradeOfferProduct(props: CardProductProps) {
   return (
     <Link href={`posts/${props.id_post}`} className='flex w-[40rem] h-[13rem] me-[1rem] mb-[1rem] border-[3px] border-blue-900 rounded-md hover:scale-105 duration-300'>
-      <Image className='w-[190px] h-full' alt={`post-image-${props.id_post}`} src={postImagePreview} />
+      <Image className='w-[190px] m-2.5 h-[90%]' alt={`post-image-${props.id_post}`} src={postImagePreview} />
       <div className='flex w-full'>
         <div className={'m-3.5 w-6/12	'}>
           <p className={'text-2xl font-bold'}>{props.title}</p>
