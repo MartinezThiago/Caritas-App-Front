@@ -6,7 +6,7 @@ import type {
 import axios from 'axios'
 
 import { BACK_BASE_URL } from '@/constants'
-import { setToken } from '@/utils'
+
 
 /**
  * Async handler function that sends the signin form data to the external server.
@@ -19,9 +19,9 @@ export default async function handler(
   res: NextApiResponse,
 ): Promise<void> {
   await axios
-    .get(`${BACK_BASE_URL}getproducts`)
+    .get(`${BACK_BASE_URL}getproductos`)
     .then((result: any) => {
-      res.status(result.status).json({})
+      res.status(result.status).json(result.data)      
     },
     )
     .catch((result: any) => {

@@ -51,13 +51,18 @@ export interface GetSSPropsResult {
 
 /**
  * The product card data.
+ * @property {string} id_post - The product id.
+ * @property {string} img_src - The product image URL.
+ * @property {number} title - The product title.
+ * @property {number} description - The product description.
+ * @property {string} categorie - The product categorie.
+ * @property {string} state - The product state.
  */
 export interface CardProductProps {
-  id: string
-  image_source: string
+  id_post: string
+  img_src: string
   title: string
-  desc: string
+  description: string
   categorie: string
   state: string
-  style_class_card: string
 }

@@ -1,20 +1,20 @@
 import { CardProductProps } from '@/types'
-
+import postImagePreview from 'public/post-image-preview.jpg'
+import Link from 'next/link'
 import Image from 'next/image'
 
 export default function CardProduct(props: CardProductProps) {
   return (
-    // <div className={`product-card-container-${props.style_class_card}`}>
-    <div className='flex flex-col justify-center items-center w-[18rem] h-[20rem] me-[1rem] mb-[1rem] border-[3px] border-blue-900 rounded-sm'>
-      <Image alt={`post-image-${props.id}`} src={props.image_source} />
-      <div className={`product-info-text-container-${props.style_class_card}`}>
-        <p className={`product-title-${props.style_class_card}`}><b>{props.title}</b></p>
-        <h2>{props.desc}</h2>
-        <div className={`product-categories-container-${props.style_class_card}`}>
-          <p className={`product-categories-${props.style_class_card}`}>{props.categorie}</p>
-          <p className={`product-categories-${props.style_class_card}`}>{props.state}</p>
+    <Link href={`posts/${props.id_post}`} className='w-[16rem] h-[20rem] me-[1rem] mb-[1rem] border-[3px] border-blue-900 rounded-md hover:scale-105 duration-300'>
+      <Image alt={`post-image-${props.id_post}`} src={postImagePreview} />
+      <div className={'m-3.5'}>
+        <p className={'text-2xl font-bold'}>{props.title}</p>
+        <h2 className='ms-2.5'>{props.description}</h2>
+        <div className={'flex justify-center items-center mt-8'}>
+          <p className={'font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto'}>{props.categorie}</p>
+          <p className={'font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto'}>{props.state}</p>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
