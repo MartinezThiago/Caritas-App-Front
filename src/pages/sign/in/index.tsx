@@ -83,7 +83,6 @@ export default function Signin({ user }: { user: User }) {
       .post(`${FRONT_BASE_URL}sign/in`, formData)
       .then(() => redirect('/'))
       .catch((error: { response: { data: { message: string } } }) => {
-        console.log('ESTO LLEGA COMO ERROR\n\n\n', error, '\n\n\n')
         alert(error.response.data.message)
         setLoaging(false)
       })

@@ -66,7 +66,6 @@ export default function Signup({ user }: { user: User }) {
       .post(`${FRONT_BASE_URL}sign/up`, formData)
       .then(() => redirect('/'))
       .catch((error: any) => {
-        console.log('ESTO LLEGA COMO ERROR\n\n\n', error, '\n\n\n')
         try {
           alert(error.response.data.message)
         } catch (error) {

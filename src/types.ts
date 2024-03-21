@@ -48,3 +48,16 @@ export interface GetSSPropsResult {
   props: { user: User }
   redirect?: { destination: string }
 }
+
+/**
+ * The product card data.
+ */
+export interface CardProductProps {
+  id: string
+  image_source: string
+  title: string
+  desc: string
+  categorie: string
+  state: string
+  style_class_card: string
+}
