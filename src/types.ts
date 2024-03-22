@@ -30,7 +30,7 @@ export interface User {
  * @property {number} FechaNacimiento - The user's birthdate. Always in timestamp.
  * @property {string} Email - The user's email.
  * @property {number} [Centro] - The user's center. Only for volunteers.
- * @property {Role} Rik - The user's role.
+ * @property {Role} Rol - The user's role.
  */
 export interface UnadaptedUser {
   Nombre: string
@@ -66,3 +66,58 @@ export interface CardProductProps {
   categorie: string
   state: string
 }
+
+/**
+ * The user data from external server.
+ * @property {string} id_user - The user id.
+ * @property {string} name - The user name.
+ * @property {number} lastname - The user lastname.
+ * @property {number} dni - The user dni.
+ * @property {string} email - The user email.
+ * @property {Role} Rol - The user Rol.
+ * @property {number} FechaNacimiento - The user birthday.
+ */
+export interface UserData {
+  id_user: string
+  name: string
+  lastname: string
+  dni: string
+  email: string
+  Rol: Rol
+  FechaNacimiento: number
+}
+
+/**
+ * The Post data from external server (userdata+postdata).
+ * @property {number} id_post - The post id.
+ * @property {string} title - The post title.
+ * @property {string} description - The post description.
+ * @property {number} categorie - The product categorie.
+ * @property {number} state_product - The product state.
+ * @property {string} location_trade - The post location.
+ * @property {number} questions - The post questions.
+ * @property {number} multimedia - The post multimedia.
+ * @property {number} state_post - The post state.
+ * @property {number} date_post - The date of the post.
+ * @property {number} id_owner - The ID of the user who created the post.
+ * @property {string} owner_name - The name of the user who created the post.
+ * @property {string} owner_surname - The last name of the user who created the post.
+ * @property {number} centers - The post centers.
+ */
+export interface PostData {
+  id_post: number
+  title:string
+  description:string
+  categorie:number
+  state_product:number
+  location_trade:string
+  questions:number
+  multimedia:number
+  state_post:number
+  date_post:number
+  id_owner:number
+  owner_name:string
+  owner_surname:string
+  centers:number
+}
+

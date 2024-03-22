@@ -19,7 +19,7 @@ export default async function handler(
   res: NextApiResponse,
 ): Promise<void> {
   await axios
-    .get(`${BACK_BASE_URL}getproductos`)
+    .get(`${BACK_BASE_URL}CaritasBack/getproductos`)
     .then((result: any) => {
       res.status(result.status).json(result.data)      
     },

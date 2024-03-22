@@ -62,12 +62,12 @@ export const getUser = (
     center: -1,
     role: 'non-registered'
   }
-  const user = decode(token) as UnadaptedUser
+  const user = decode(token) as UnadaptedUser  
   return {
     name: user.Nombre,
     surname: user.Apellido,
     dni: user.DNI,
-    birthdate: user.FechaNacimiento,
+    birthdate: new Date(user.FechaNacimiento).getTime(),
     email: user.Email,
     center: user.Centro,
     role: user.Rol
