@@ -26,7 +26,7 @@ export default function ExtendedPostCard(props: PostData) {
           <p><span className='font-bold text-rose-700'>Centro nro°{props.centros_elegidos}:</span> 50 y 120 n°25</p>
           <p><span className='font-bold text-rose-700'>Centro nro°{props.centros_elegidos}:</span> 1 y 57 n°23</p>
         </div>
-        <p className='font-bold'>{props.usuario_owner} {props.usuario_owner}</p>
+        <p className='font-bold'>{props.nombre_usuario} {props.apellido_usuario}</p>
         <div className='mt-[40px] text-white flex justify-center '>
           <button
               key='Trade'

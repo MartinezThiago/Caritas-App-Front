@@ -14,7 +14,6 @@ import {
 } from '@/types'
 import { getUser } from '@/utils'
 import { Input } from '@/components'
-import { redirect } from 'next/navigation'
 import { requireNoPermission } from '@/utils'
 import { RootLayout } from '@/layouts'
 import { useForm } from 'react-hook-form'
