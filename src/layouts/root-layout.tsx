@@ -63,7 +63,7 @@ export default function RootLayout({
           </Link>
           <Link
             key='link-signout'
-            href='/signout'
+            href='/sign/out'
           >
             Cerrar Sesión
           </Link>
@@ -86,7 +86,7 @@ export default function RootLayout({
           </Link>
           <Link
             key='link-signout'
-            href='/signout'
+            href='/sign/out'
           >
             Cerrar Sesión
           </Link>
