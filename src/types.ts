@@ -51,20 +51,22 @@ export interface GetSSPropsResult {
 
 /**
  * The product card data.
- * @property {string} id_post - The product id.
- * @property {string} img_src - The product image URL.
- * @property {number} title - The product title.
- * @property {number} description - The product description.
- * @property {string} categorie - The product categorie.
- * @property {string} state - The product state.
+ * @property {string} id - The product id.
+ * @property {number} multimedia - The product multimedia.
+ * @property {string} titulo - The product title.
+ * @property {string} descripcion - The product description.
+ * @property {string} nombre_categoria_producto - The product categorie.
+ * @property {string} nombre_estado_producto - The product state.
+ * @property {string} ubicacion_trade - The ubication of the trade
  */
 export interface CardProductProps {
-  id_post: string
-  img_src: string
-  title: string
-  description: string
-  categorie: string
-  state: string
+  id:string
+  multimedia:number
+  titulo:string
+  descripcion:string
+  nombre_categoria_producto:string
+  nombre_estado_producto:string
+  ubicacion_trade:string
 }
 
 /**
@@ -89,35 +91,34 @@ export interface UserData {
 
 /**
  * The Post data from external server (userdata+postdata).
- * @property {number} id_post - The post id.
- * @property {string} title - The post title.
- * @property {string} description - The post description.
- * @property {number} categorie - The product categorie.
- * @property {number} state_product - The product state.
- * @property {string} location_trade - The post location.
- * @property {number} questions - The post questions.
+ * @property {number} id - The post id.
+ * @property {string} titutlo - The post title.
+ * @property {string} descripcion - The post description.
+ * @property {string} nombre_categoria_producto - The product categorie.
+ * @property {string} nombre_estado_producto - The product state.
+ * @property {string} ubicacion_trade - The post location.
+ * @property {number} preguntas - The post questions.
  * @property {number} multimedia - The post multimedia.
- * @property {number} state_post - The post state.
- * @property {number} date_post - The date of the post.
- * @property {number} id_owner - The ID of the user who created the post.
- * @property {string} owner_name - The name of the user who created the post.
- * @property {string} owner_surname - The last name of the user who created the post.
- * @property {number} centers - The post centers.
+ * @property {number} estado_publicacion - The post state.
+ * @property {number} fecha_publicacion - The date of the post.
+ * @property {number} usuario_owner - The ID of the user who created the post.
+ * @property {string} nombre_usuario - The name of the user who created the post.
+ * @property {string} apellido_usuario - The last name of the user who created the post.
+ * @property {number} centros_elegidos- The post centers.
  */
 export interface PostData {
-  id_post: number
-  title:string
-  description:string
-  categorie:number
-  state_product:number
-  location_trade:string
-  questions:number
+  id: number
+  titulo:string
+  descripcion:string
+  nombre_categoria_producto:string
+  nombre_estado_producto:string
+  ubicacion_trade:string
+  preguntas:number
   multimedia:number
-  state_post:number
-  date_post:number
-  id_owner:number
-  owner_name:string
-  owner_surname:string
-  centers:number
+  estado_publicacion:number
+  fecha_publicacion:number
+  usuario_owner:number
+  nombre_usuario:string
+  apellido_usuario:string
+  centros_elegidos:number
 }
-

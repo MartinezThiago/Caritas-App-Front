@@ -31,7 +31,7 @@ export default async function handler(
         res,
         // new Date(new Date().setSeconds(new Date().getSeconds() + 3))
       )
-      console.log(result.status);
+
       res.status(result.status).json({})
     },
     )

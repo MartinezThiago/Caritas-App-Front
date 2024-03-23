@@ -2,10 +2,8 @@ import type {
   NextApiRequest,
   NextApiResponse
 } from 'next'
-import { CardProductProps } from '@/types'
 import axios from 'axios'
 import RootLayout from '../layouts/root-layout'
-import TradeOfferProduct from '@/components/trade-offer-product'
 import { CardProduct } from '@/components'
 import { User } from '@/types'
 import { getUser } from '@/utils'
@@ -54,13 +52,14 @@ export default function Home({ user }: { user: User }) {
     const cards = cardsData!.map((e: any) => {
       return (
         <CardProduct
-          key={e.id_post}
-          id_post={e.id_post}
-          img_src={e.img_src}
-          title={e.title}
-          description={e.description}
-          categorie={e.categorie}
-          state={e.state}
+          key={e.id}
+          id={e.id}
+          multimedia={e.img_src}
+          titulo={e.titulo}
+          descripcion={e.descripcion}
+          nombre_categoria_producto={e.nombre_categoria_producto}
+          nombre_estado_producto={e.nombre_estado_producto}
+          ubicacion_trade={e.ubicacion_trade}
         />
       )
     })
