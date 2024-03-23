@@ -1,45 +1,25 @@
-export type Rol = 'SuperAdmin' | 'Voluntario' | 'Nominal'
+export type Rol = 'admin_centro' | 'voluntario' | 'usuario_basico'
 
 export type Role = Rol | 'non-registered'
 
 /**
  * The user data.
- * @property {string} name - The user's name.
- * @property {string} surname - The user's surname.
- * @property {number} dni - The user's DNI. (Argentinian ID)
- * @property {number} birthdate - The user's birthdate. Always in timestamp.
- * @property {string} email - The user's email.
- * @property {number} [center] - The user's center. Only for volunteers.
- * @property {Role} role - The user's role.
- */
-export interface User {
-  name: string
-  surname: string
-  dni: number
-  birthdate: number
-  email: string
-  center?: number
-  role: Role
-}
-
-/**
- * The user data from external server.
  * @property {string} Nombre - The user's name.
  * @property {string} Apellido - The user's surname.
- * @property {number} DNI - The user's DNI. (Argentinian ID)
- * @property {number} FechaNacimiento - The user's birthdate. Always in timestamp.
+ * @property {string} DNI - The user's DNI. (Argentinian ID)
+ * @property {string} Fecha_Nacimiento - The user's birthdate. Always in timestamp.
  * @property {string} Email - The user's email.
- * @property {number} [Centro] - The user's center. Only for volunteers.
  * @property {Role} Rol - The user's role.
+ * @property {number} Centro - The user' center.
  */
-export interface UnadaptedUser {
+export interface User {
   Nombre: string
   Apellido: string
-  Centro: number
-  FechaNacimiento: number
-  DNI: number
+  DNI: string
   Email: string
-  Rol: Rol
+  Fecha_Nacimiento: string
+  Rol: Role
+  Centro:number
 }
 
 export type TokenName = 'access' | 'refresh'
@@ -67,26 +47,6 @@ export interface CardProductProps {
   nombre_categoria_producto:string
   nombre_estado_producto:string
   ubicacion_trade:string
-}
-
-/**
- * The user data from external server.
- * @property {string} id_user - The user id.
- * @property {string} name - The user name.
- * @property {number} lastname - The user lastname.
- * @property {number} dni - The user dni.
- * @property {string} email - The user email.
- * @property {Role} Rol - The user Rol.
- * @property {number} FechaNacimiento - The user birthday.
- */
-export interface UserData {
-  id_user: string
-  name: string
-  lastname: string
-  dni: string
-  email: string
-  Rol: Rol
-  FechaNacimiento: number
 }
 
 /**

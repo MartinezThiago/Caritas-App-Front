@@ -32,7 +32,7 @@ export default function RootLayout({
       Nosotros
     </Link>
     {
-      user.role === 'non-registered' ? <>
+      user.Rol === 'non-registered' ? <>
         <div
           key='header-separator'
           className='flex-grow'
@@ -50,7 +50,7 @@ export default function RootLayout({
           Registrarse
         </Link>
       </> :
-        user.role === 'Nominal' ? <>
+        user.Rol === 'usuario_basico' ? <>
           <div
             key='header-separator'
             className='flex-grow'
@@ -59,7 +59,7 @@ export default function RootLayout({
             key='link-user'
             href='/user'
           >
-            {user.name}
+            {user.Nombre}
           </Link>
           <Link
             key='link-signout'
@@ -82,7 +82,7 @@ export default function RootLayout({
             key='link-user'
             href='/user'
           >
-            {user.name}
+            {user.Nombre}
           </Link>
           <Link
             key='link-signout'

@@ -84,7 +84,6 @@ export default function Signin({ user }: { user: User }) {
       .then(() => router.push('/'))
       .catch((error: { response: { data: { message: string } } }) => {
         console.log(error);
-        
         if(error){
           alert(error.response.data.message)
           setLoaging(false)
