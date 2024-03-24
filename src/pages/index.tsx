@@ -39,16 +39,16 @@ export default function Home({ user }: { user: User }) {
 
   useEffect(() => {
     const getProducts = async () => {
-      const {data:cardsData} = await axios.get<any[]>(`${FRONT_BASE_URL}posts/get`)
+      const { data: cardsData } = await axios.get<any[]>(`${FRONT_BASE_URL}posts/get`)
 
       setCardsData(cardsData)
     }
     getProducts()
   }, [])
-  if(!cardsData){
+  if (!cardsData) {
     return null
   }
-  const CardsProducts=()=>{
+  const CardsProducts = () => {
     const cards = cardsData!.map((e: any) => {
       return (
         <CardProduct
@@ -68,9 +68,15 @@ export default function Home({ user }: { user: User }) {
 
   return <RootLayout user={user}>
     <main className='flex'>
-      <div className='bg-white w-[30vw] border-r-4 border-r-blue-900'>
-      </div>
-      <div className='flex flex-wrap justify-center items-center mt-[1rem] w-[70vw]'>
+      <div className='w-[30vw] border-r-4 border-r-blue-900'>
+          <button
+            key='Post'
+            className='ms-[25%] mt-[15%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline bg-rose-700 font-bold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
+          >
+            Crear publicacion
+          </button>
+        </div>
+      <div className='flex flex-wrap justify-center items-center mt-[4.4%] w-[70vw]'>
         {CardsProducts()}
       </div>
     </main>

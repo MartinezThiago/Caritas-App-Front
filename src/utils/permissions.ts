@@ -1,10 +1,8 @@
 import {
   GetSSPropsResult,
-  TokenName,
   User
 } from '@/types'
-import { getCookies, setCookie, getCookie, hasCookie, deleteCookie } from 'cookies-next';
-import { NextApiRequest } from 'next/types';
+import { deleteCookie } from 'cookies-next';
 
 export const requirePermission = (user: User): GetSSPropsResult => {
   const props = { user };

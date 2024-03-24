@@ -20,7 +20,6 @@ import type {
   ): Promise<void> {
     const body = req.body
     await axios
-    //.get(`${BACK_BASE_URL}CaritasBack/getPublicacion?idPublicacion=${id}`)
       .get(`${BACK_BASE_URL}CaritasBack/getPublicacion?idPublicacion=${body.id}`)
       .then((result: any) => {        
         res.status(result.status).json(result.data)      
