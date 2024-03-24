@@ -1,7 +1,8 @@
 import { GetSSPropsResult } from "@/types"
 import { getUser } from "@/utils/cookies"
-import { requireNoPermission, requirePermission } from "@/utils/permissions"
-import { setCookie } from "cookies-next"
+import { clearCookies, requireNoPermission, requireNothing, requirePermission } from "@/utils/permissions"
+import {serialize} from 'cookie';
+import { getCookie, hasCookie } from "cookies-next";
 import { NextApiRequest, NextApiResponse } from "next"
 
 /**
@@ -9,20 +10,18 @@ import { NextApiRequest, NextApiResponse } from "next"
  * to the page component.
  */
 export async function getServerSideProps({
-    req,
-    res
-  }: Readonly<{
-    req: NextApiRequest
-    res: NextApiResponse
-  }>): Promise<GetSSPropsResult> {
-    setCookie('access','')
-    return requirePermission(getUser(req, res))
-  }
+  req,
+  res
+}: Readonly<{
+  req: NextApiRequest
+  res: NextApiResponse
+}>): Promise<any> {
+  return clearCookies(req, res)
+}
 
 export default function Signout() {
-
-
     return(
-        <h1>juju</h1>
+        <></>
     )
 }
+
