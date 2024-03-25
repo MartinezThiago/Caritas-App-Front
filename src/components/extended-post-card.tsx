@@ -2,11 +2,15 @@ import { PostData } from '@/types'
 import FullComment from './full-comment'
 import Input from './input'
 import {useForm} from 'react-hook-form'
+import ImageGallery from 'react-image-gallery'
+import "react-image-gallery/styles/css/image-gallery.css"
+import postImagePreview from 'public/post-image-preview.jpg'
 
 interface FormData{
   question: string
 }
-
+const src='public/post-image-preview.jpg'
+  
 export default function ExtendedPostCard(props: PostData) {  
   const {
     register,
@@ -14,16 +18,36 @@ export default function ExtendedPostCard(props: PostData) {
     formState: {errors}
   } =useForm<FormData>()
 
+  
+  const images = [
+    {
+      original: postImagePreview.src,
+      thumbnail: postImagePreview.src,
+    },
+    {
+      original: postImagePreview.src,
+      thumbnail: postImagePreview.src,
+    },
+    {
+      original: postImagePreview.src,
+      thumbnail: postImagePreview.src,
+    },
+  ];
+
+  console.log(postImagePreview.src);
+  
+
+
   return (
     <div>
       <div className='w-100vw h-50vh flex justify-center w-[100vw] mt-[40px] font-sans'>
-        <div className=''>
-          <div className='w-[400px] h-[400px] bg-gray-400 m-auto mb-[20px]'></div>
-            <div className='flex justify-between '>
-              <div className='w-[100px] h-[100px] bg-gray-400'></div>
-              <div className='w-[100px] h-[100px] bg-gray-400'></div>
-              <div className='w-[100px] h-[100px] bg-gray-400 '></div>
-          </div>
+        <div className='w-[700px]'>
+          <ImageGallery
+            items={images}
+            showPlayButton={false}
+            showFullscreenButton={false}
+            showIndex={true}
+          />
         </div>
         <div className='ms-[60px] text-black w-[29vw] flex flex-col justify-between'>
           <div className=''>

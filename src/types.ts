@@ -169,3 +169,25 @@ export interface PostData {
 //   centros_elegidos:number
 //   comentarios:[comment]
 // }
+
+
+
+export type img = {
+  url_image:string
+} 
+export interface PostDataGallery {
+  id: number
+  titulo:string
+  descripcion:string
+  nombre_categoria_producto:string
+  nombre_estado_producto:string
+  ubicacion_trade:string
+  preguntas:number
+  estado_publicacion:number
+  fecha_publicacion:number
+  usuario_owner:number
+  nombre_usuario:string
+  apellido_usuario:string
+  centros_elegidos:number
+  multimedia:[img]
+}
