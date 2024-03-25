@@ -32,7 +32,7 @@ export default function PostInfo({ user }: { user: User }){
     }, [])
     if(!postData){
         return null
-    }
+    }    
       
     return( 
         <RootLayout user={user}>
@@ -47,10 +47,12 @@ export default function PostInfo({ user }: { user: User }){
                   multimedia={0}
                   estado_publicacion={0}
                   fecha_publicacion={postData.fecha_publicacion}
-                  usuario_owner={postData.usuario_owner}
+                  id_usuario={postData.id_usuario}
                   nombre_usuario={postData.nombre_usuario}
                   apellido_usuario={postData.apellido_usuario}
                   centros_elegidos={0}
+                  comentarios={postData.comentarios}
+                  user={user}
             />
         </RootLayout>
     )

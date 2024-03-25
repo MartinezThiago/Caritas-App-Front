@@ -29,6 +29,18 @@ export interface GetSSPropsResult {
   redirect?: { destination: string }
 }
 
+export type Comment = {
+  user_id_pregunta:string
+  id_pregunta:string
+  nombre_pregunta:string
+  apellido_pregunta:string
+  pregunta:string
+  fechaPregunta:string
+  respuesta?:string
+  fechaRespuesta?:string
+} 
+
+
 /**
  * The product card data.
  * @property {string} id - The product id.
@@ -51,7 +63,7 @@ export interface CardProductProps {
 
 /**
  * The Post data from external server (userdata+postdata).
- * @property {number} id - The post id.
+ * @property {string} id - The post id.
  * @property {string} titutlo - The post title.
  * @property {string} descripcion - The post description.
  * @property {string} nombre_categoria_producto - The product categorie.
@@ -61,13 +73,14 @@ export interface CardProductProps {
  * @property {number} multimedia - The post multimedia.
  * @property {number} estado_publicacion - The post state.
  * @property {number} fecha_publicacion - The date of the post.
- * @property {number} usuario_owner - The ID of the user who created the post.
+ * @property {string} usuario_owner - The ID of the user who created the post.
  * @property {string} nombre_usuario - The name of the user who created the post.
  * @property {string} apellido_usuario - The last name of the user who created the post.
  * @property {number} centros_elegidos- The post centers.
+ * @property {[Comment]} comentarios - The post asks/questions 
  */
 export interface PostData {
-  id: number
+  id: string
   titulo:string
   descripcion:string
   nombre_categoria_producto:string
@@ -77,10 +90,12 @@ export interface PostData {
   multimedia:number
   estado_publicacion:number
   fecha_publicacion:number
-  usuario_owner:number
+  id_usuario:string
   nombre_usuario:string
   apellido_usuario:string
   centros_elegidos:number
+  comentarios:[Comment]
+  user:User
 }
 
 /*--------------------------------------------------------------------------------------------*/
@@ -122,55 +137,6 @@ export interface PostData {
 //   Rol: Role
 //   Centro: number
 // }
-
-// export type comment = {
-//   user_id_pregunta:string
-//   id_pregunta:string
-//   nombre_pregunta:string
-//   apellido_pregunta:string
-//   pregunta:string
-//   fechaPregunta:string
-//   respuesta:string
-//   fechaRespuesta:string
-// } 
-
-/**
- * The Post data from external server (userdata+postdata).
- * @property {number} id - The post id.
- * @property {string} titutlo - The post title.
- * @property {string} descripcion - The post description.
- * @property {string} nombre_categoria_producto - The product categorie.
- * @property {string} nombre_estado_producto - The product state.
- * @property {string} ubicacion_trade - The post location.
- * @property {number} preguntas - The post questions.
- * @property {number} multimedia - The post multimedia.
- * @property {number} estado_publicacion - The post state.
- * @property {number} fecha_publicacion - The date of the post.
- * @property {number} usuario_owner - The ID of the user who created the post.
- * @property {string} nombre_usuario - The name of the user who created the post.
- * @property {string} apellido_usuario - The last name of the user who created the post.
- * @property {number} centros_elegidos - The post centers.
- * @property {[comment]} comentarios - The post asks/questions 
- */
-// export interface PostDataExtended {
-//   id: number
-//   titulo:string
-//   descripcion:string
-//   nombre_categoria_producto:string
-//   nombre_estado_producto:string
-//   ubicacion_trade:string
-//   preguntas:number
-//   multimedia:number
-//   estado_publicacion:number
-//   fecha_publicacion:number
-//   usuario_owner:number
-//   nombre_usuario:string
-//   apellido_usuario:string
-//   centros_elegidos:number
-//   comentarios:[comment]
-// }
-
-
 
 export type img = {
   url_image:string

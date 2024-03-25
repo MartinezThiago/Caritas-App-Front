@@ -1,4 +1,4 @@
-import { PostData } from '@/types'
+import { PostData, Comment } from '@/types'
 import FullComment from './full-comment'
 import Input from './input'
 import {useForm} from 'react-hook-form'
@@ -9,7 +9,6 @@ import postImagePreview from 'public/post-image-preview.jpg'
 interface FormData{
   question: string
 }
-const src='public/post-image-preview.jpg'
   
 export default function ExtendedPostCard(props: PostData) {  
   const {
@@ -18,6 +17,43 @@ export default function ExtendedPostCard(props: PostData) {
     formState: {errors}
   } =useForm<FormData>()
 
+  // /**
+  //  * Calls the endpoint by sending it the form data
+  //  * @arg {FormData} formData
+  //  */
+  // const _handleSubmit = async (formData: FormData) => {
+    
+  //   await axios
+  //     .post(`${FRONT_BASE_URL}sign/in`, formData)
+  //     .then(() => console.log('juju'))
+  //     .catch((error: { response: { data: { message: string } } }) => {
+  //       console.log(error);
+  //       if(error){
+  //         alert(error.response.data.message)
+          
+  //     }
+  //     })
+  // }
+
+      const _handleSubmit = (formData:FormData)=>{
+        console.log(formData);
+      }
+
+  const Comments = () => {
+    const comment = props.comentarios!.map((e: Comment) => {
+      return (
+        <FullComment
+          key={e.id_pregunta}
+          question={e.pregunta}
+          questionDate={e.fechaPregunta}
+          questionUserInfo={`${e.nombre_pregunta} ${e.apellido_pregunta}`}
+          answer={e.respuesta}
+          answerDate={e.fechaRespuesta}
+        />
+      )
+    })
+    return comment;
+  }
   
   const images = [
     {
@@ -33,11 +69,8 @@ export default function ExtendedPostCard(props: PostData) {
       thumbnail: postImagePreview.src,
     },
   ];
-
-  console.log(postImagePreview.src);
+  console.log(props.user);
   
-
-
   return (
     <div>
       <div className='w-100vw h-50vh flex justify-center w-[100vw] mt-[40px] font-sans'>
@@ -49,33 +82,43 @@ export default function ExtendedPostCard(props: PostData) {
             showIndex={true}
           />
         </div>
-        <div className='ms-[60px] text-black w-[29vw] flex flex-col justify-between'>
+        <div className='ms-[60px] text-black w-[29vw] flex flex-col justify-between h-[405px]'>
           <div className=''>
-            <h1 className='font-bold'>{props.titulo}</h1>
+            <div className='flex justify-between w-[80%]'>
+              <h1 className='font-bold'>{props.titulo}</h1>
+              <span className='font-bold text-sm text-gray-600'>{props.fecha_publicacion}</span>
+            </div>
             <div className='ms-[20px] mt-[4px]'>
-              <p className='font-bold'>Descripcion</p>
-              <p className='ms-[15px] mt-[5px]'>{props.descripcion}</p>
-              <div className='flex justify-between w-[60%]'>
-                <div className='font-bold mt-[15px]'>
-                  <p className='my-[13px]'>Estado: </p>
-                  <p className='my-[13px]'>Categoría: </p>
-                  <p className='my-[13px]'>Ubicacion: </p>
+              <div className='h-[80px]'>
+                <p className='font-bold'>Descripcion</p>
+                <p className='ms-[15px] mt-[5px]'>{props.descripcion}</p>
+              </div>
+              <div className='w-[60%]'>
+                <div className='flex justify-between '>
+                  <div className='font-bold '>
+                    <p className=''>Estado: </p>
+                    <p className='my-[20px]'>Categoría: </p>
+                    <p className='my-[20px]'>Ubicacion: </p>
+                  </div>
+                  <div className=''>
+                    <p className=''>{props.nombre_estado_producto}</p>
+                    <p className='my-[20px]'>{props.nombre_categoria_producto}</p>
+                    <p className='my-[20px]'>{props.ubicacion_trade}</p>
+                  </div>
                 </div>
-                <div className='mt-[15px]'>
-                  <p className='my-[13px]'>{props.nombre_estado_producto}</p>
-                  <p className='my-[13px]'>{props.nombre_categoria_producto}</p>
-                  <p className='my-[13px]'>{props.ubicacion_trade}</p>
+                <p className='font-bold'>Centros elegidos para el intercambio:</p>
+                <div className='ms-[15px] mt-[5px]'>
+                  <p className='my-[5px] text-sm'><span className='font-bold text-rose-700 text-base'>Centro nro°{`${props.centros_elegidos}:`}</span> 50 y 120 n°25</p>
+                  <p className='my-[5px] text-sm'><span className='font-bold text-rose-700 text-base'>Centro nro°{`${props.centros_elegidos}:`}</span> 1 y 57 n°23</p>
+                </div>
+                <div className='flex justify-between w-[86%] mt-[20px]'>
+                  <p className='font-bold'>Creador: </p>
+                  <p className=''>{props.nombre_usuario} {props.apellido_usuario}</p>
                 </div>
               </div>
-              <p className='font-bold'>Centros elegidos para el intercambio:</p>
-              <div className='ms-[15px] mt-[5px]'>
-                <p className='my-[5px]'><span className='font-bold text-rose-700'>Centro nro°{props.centros_elegidos}:</span> 50 y 120 n°25</p>
-                <p className='my-[5px]'><span className='font-bold text-rose-700'>Centro nro°{props.centros_elegidos}:</span> 1 y 57 n°23</p>
-              </div>
-              <p className='font-bold mt-[13px]'>{props.nombre_usuario} {props.apellido_usuario} <span className='font-bold text-sm text-gray-600'>{props.fecha_publicacion}</span></p>
             </div>
           </div>
-          <div className='mt-[40px] mb-[40px] text-white flex justify-center'>
+          <div className='text-white ms-[20px]'>
             <button
                 key='Trade'
                 className='rounded-lg py-[10px] px-14 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
@@ -97,15 +140,7 @@ export default function ExtendedPostCard(props: PostData) {
         <article>
           <form 
             noValidate
-            onSubmit={handleSubmit(({question}:FormData)=>{
-              {
-                /*Post con axios para enviar la pregunta 
-                Sacar funcion aca y pasarla a una variable adentro del componente
-                */
-              }
-              console.log(question);
-              
-            })}  
+            onSubmit={handleSubmit(_handleSubmit)}  
           >
             <p className='font-bold text-sm'>Preguntale al vendedor</p>
             <div className='flex'>
@@ -119,7 +154,7 @@ export default function ExtendedPostCard(props: PostData) {
                 error={errors.question}
                 placeholder='Escriba aquí su pregunta'
                 className={{
-                  'input':'rounded-md'
+                  'input':'rounded-md border-blue-900 border-2'
                 }}
               />
               <button
@@ -132,21 +167,8 @@ export default function ExtendedPostCard(props: PostData) {
           </form>
           
         </article>
-        <p className='font-bold text-2xl '>Ultimas preguntas:</p>
-        <FullComment
-          question={'Hola nececito cubrir una pared interior de una pileta cubierta de 8 metros lineales .que me aconseja y q cuesta?'}
-          questionDate={'05/06/2023'}
-          questionUserInfo={'Thiago Martinez'}
-          answer={'Hola! Cómo estás? precisamos largo por ancho para cotizarte correctamente, ten en cuenta que no es apto para estar dentro del agua. Cualquier consulta que tengas avisanos. Saludos y gracias por contactarte! El equipo de Green Deco.'}
-          answerDate={'01/01/2024'}
-        />
-        <FullComment
-          question={'Se me va de presupuesto 50x50 en ese modelo, pero justamente con media sombra al que actualmente te consulté es el que tengo, podría servir ya que el pleno sol es por detrás. Es posible?'}
-          questionDate={'05/06/2023'}
-          questionUserInfo={'Thiago Martinez'}
-          //answer={'Hola! Cómo estás? comprendemos, no te recomendamos el modelo de 40x60cm ya que no cuenta con proteccion UV y se puede deteriorar rapidamente Cualquier consulta que tengas avísanos. Saludos y gracias por contactarte! El equipo de Green Deco'}
-          answerDate={'01/01/2024'}
-        />
+        <p className='font-bold text-xl '>Ultimas preguntas:</p>
+        {Comments()}
       </div>
     </div>
   )
