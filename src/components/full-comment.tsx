@@ -1,18 +1,30 @@
 import AnswerPost from "./answer-post";
 import QuestionPost from "./question-post";
 
-export default function FullComment(props: any) {
+export default function FullComment({
+    answer,
+    answerDate,
+    question,
+    questionDate,
+    questionUserInfo
+}: {
+    answer?: string,
+    answerDate?: string
+    question: string
+    questionDate: string
+    questionUserInfo: string
+}) {
     return (
         <div className="ms-7 mb-5 ">
             <QuestionPost
-                question={props.question}
-                question_date={props.question_date}
-                question_user_info={props.question_user_info}
+                question={question}
+                questionDate={questionDate}
+                questionUserInfo={questionUserInfo}
             />
-            <AnswerPost
-                answer={props.answer}
-                answer_date={props.answer_date}
-            />
+            {(answer && answerDate) &&  <AnswerPost
+                answer={answer}
+                answerDate={answerDate}
+            />}
         </div>
     )
 }

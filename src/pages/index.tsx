@@ -4,7 +4,7 @@ import type {
 } from 'next'
 import axios from 'axios'
 import RootLayout from '../layouts/root-layout'
-import { CardProduct } from '@/components'
+import { CardProduct, Input } from '@/components'
 import { User } from '@/types'
 import { getUser } from '@/utils'
 import {
@@ -12,6 +12,7 @@ import {
   useState
 } from 'react'
 import { FRONT_BASE_URL } from '@/constants'
+import { useForm } from 'react-hook-form'
 
 export async function getServerSideProps({
   req,
@@ -34,8 +35,17 @@ export async function getServerSideProps({
   }
 }
 
+interface FormData{
+  question: string
+}
+
 export default function Home({ user }: { user: User }) {
   const [cardsData, setCardsData] = useState<any[]>()
+  const {
+    register,
+    handleSubmit,
+    formState: {errors}
+  } =useForm<FormData>()
 
   useEffect(() => {
     const getProducts = async () => {
@@ -71,10 +81,44 @@ export default function Home({ user }: { user: User }) {
       <div className='w-[30vw] border-r-4 border-r-blue-900'>
           <button
             key='Post'
-            className='ms-[25%] mt-[15%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline bg-rose-700 font-bold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
+            className='ms-[25%] mt-[15%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
           >
             Crear publicacion
           </button>
+          <form 
+            noValidate
+            onSubmit={handleSubmit(({question}:FormData)=>{
+              {
+                /*Post con axios para enviar la pregunta 
+                Sacar funcion aca y pasarla a una variable adentro del componente
+                */
+              }
+              console.log(question);
+              
+            })}  
+          >
+            <div className='flex'>
+              <Input 
+                id='question'
+                register={register}
+                type='text'
+                key='question'
+                //label='Preguntale al vendedor'
+                registerOptions={{required: 'Escriba una busqueda'}}
+                error={errors.question}
+                placeholder='Buscar...'
+                className={{
+                  'input':'rounded-md border-blue-900 border-2'
+                }}
+              />
+              <button
+                  key='Save'
+                  className='rounded-lg w-[40px] h-[40px] text-white ms-[50px] py-[10px] px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
+                >
+                  O
+              </button>
+            </div>
+          </form>
         </div>
       <div className='flex flex-wrap justify-center items-center mt-[4.4%] w-[70vw]'>
         {CardsProducts()}
