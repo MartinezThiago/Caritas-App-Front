@@ -218,7 +218,6 @@ export default function ExtendedPostCard(props: PostData) {
 
         </div>
       </div>
-      {/*ZONA DE PREGUNTAS*/}
       <div className='w-[62%] m-auto text-black mt-[30px]'>
         <article>
           {
@@ -234,7 +233,6 @@ export default function ExtendedPostCard(props: PostData) {
                     register={register}
                     type='text'
                     key='question'
-                    //label='Preguntale al vendedor'
                     registerOptions={{ required: 'Escriba una pregunta' }}
                     error={errors.question}
                     placeholder='Escriba aquí su pregunta'
