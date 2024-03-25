@@ -2,7 +2,7 @@ export default function QuestionPost({
     question,
     questionUserInfo,
     questionDate
-}:{
+}: {
     question: string
     questionUserInfo: string
     questionDate: string
