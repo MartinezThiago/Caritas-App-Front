@@ -21,7 +21,7 @@ export default function FullComment({
                 questionDate={questionDate}
                 questionUserInfo={questionUserInfo}
             />
-            {(answer && answerDate) &&  <AnswerPost
+            {(answer && answerDate) && <AnswerPost
                 answer={answer}
                 answerDate={answerDate}
             />}

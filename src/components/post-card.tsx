@@ -13,8 +13,8 @@ export default function CardProduct(props: CardProductProps) {
             <p className={'text-2xl font-bold'}>{props.titulo}</p>
             <p className='ms-2.5 mt-0.5'>{props.descripcion}</p>
           </div>
-            <p className='font-semibold mb-1.5'>{props.ubicacion_trade}</p> 
-          </div>
+          <p className='font-semibold mb-1.5'>{props.ubicacion_trade}</p>
+        </div>
         <div className={'flex justify-center items-center border-t-[1px] border-blue-900 h-10 '}>
           <p className={'font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto'}>{props.nombre_categoria_producto}</p>
           <p className={'font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto'}>{props.nombre_estado_producto}</p>
