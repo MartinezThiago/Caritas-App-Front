@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
   }
   
 export default function PostInfo({ user }: { user: User }){
+  
     const router=useRouter();
     const [postData, setPostData] = useState<PostData>()
 

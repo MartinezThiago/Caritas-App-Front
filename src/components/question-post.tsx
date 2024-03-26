@@ -8,7 +8,13 @@ export default function QuestionPost({
     questionDate: string
 }) {
     return (
-        <p><span className="font-bold text-2xl">+</span> {question} | <span className="text-sm">{questionUserInfo}</span> | <span className="text-xs font-medium text-gray-600">{questionDate}</span></p>
+        <>
+            <div className="flex justify-between mb-[-7px] font-medium  text-gray-600 border-b-[1px] border-gray-600">
+                <p className="text-sm">{questionUserInfo}</p>
+                <p><span className="text-xs ">{questionDate}</span></p>
+            </div>
+            <p><span className="font-semibold text-2xl">+</span> {question} {/*| <span className="text-sm">{questionUserInfo}</span> | <span className="text-xs font-medium text-gray-600">{questionDate}</span>*/}</p>
+        </>
     )
 }
 

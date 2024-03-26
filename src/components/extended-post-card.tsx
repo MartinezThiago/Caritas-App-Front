@@ -1,4 +1,4 @@
-import { PostData, Comment } from '@/types'
+import { PostData, Comment, questionBody } from '@/types'
 import FullComment from './full-comment'
 import Input from './input'
 import { useForm } from 'react-hook-form'
@@ -7,9 +7,22 @@ import "react-image-gallery/styles/css/image-gallery.css"
 import postImagePreview from 'public/post-image-preview.jpg'
 import { ButtonEnum } from './types'
 import { useRouter } from 'next/router'
+import axios from 'axios'
+import { FRONT_BASE_URL } from '@/constants'
 
 interface FormData {
   question: string
+}
+
+function getActualDate() {
+  const fechaActual = new Date();
+  // Obtener año, mes y día por separado
+  const year = fechaActual.getFullYear();
+  const month = String(fechaActual.getMonth() + 1).padStart(2, '0'); // Sumamos 1 porque los meses van de 0 a 11
+  const day = String(fechaActual.getDate()).padStart(2, '0');
+  // Formatear la fecha como "yyyy/MM/DD"
+  return `${year}-${month}-${day}`;
+
 }
 
 export default function ExtendedPostCard(props: PostData) {
@@ -18,31 +31,26 @@ export default function ExtendedPostCard(props: PostData) {
     handleSubmit,
     formState: { errors }
   } = useForm<FormData>()
-
   const router = useRouter();
+  const _handleSubmit = async (formData: FormData) => {
+    const pregunta: questionBody =
+    {
+      "usuario_owner_pregunta": parseInt(props.user.userId),
+      "contenido_pregunta": formData.question,
+      "fecha_publicacion_pregunta": getActualDate(),
+      "idPublicacion": `${router.query.id}`
+    }
+    await axios
+      .post(`${FRONT_BASE_URL}question/post`, pregunta)
+      .then(() => router.push(`/posts/${router.query.id}`))
+      .catch((error: { response: { data: { message: string } } }) => {
+        console.log(error);
+        if (error) {
+          alert(error.response.data.message)
 
-  // /**
-  //  * Calls the endpoint by sending it the form data
-  //  * @arg {FormData} formData
-  //  */
-  // const _handleSubmit = async (formData: FormData) => {
-
-  //   await axios
-  //     .post(`${FRONT_BASE_URL}sign/in`, formData)
-  //     .then(() => console.log('juju'))
-  //     .catch((error: { response: { data: { message: string } } }) => {
-  //       console.log(error);
-  //       if(error){
-  //         alert(error.response.data.message)
-
-  //     }
-  //     })
-  // }
-
-  const _handleSubmit = (formData: FormData) => {
-    console.log(formData);
+        }
+      })
   }
-
   const Comments = () => {
     const comment = props.comentarios!.map((e: Comment) => {
       return (
@@ -73,7 +81,6 @@ export default function ExtendedPostCard(props: PostData) {
       thumbnail: postImagePreview.src,
     },
   ];
-
   return (
     <div>
       <div className='w-100vw h-50vh flex justify-center w-[100vw] mt-[40px] font-sans'>
@@ -129,7 +136,7 @@ export default function ExtendedPostCard(props: PostData) {
                     props.user.Rol === 'usuario_basico' ?
                       <>
                         {
-                          (props.user.Nombre != props.nombre_usuario) ?
+                          (props.user.userId != props.id_usuario) ?
                             <>
                               <button
                                 key='Trade'
@@ -221,7 +228,7 @@ export default function ExtendedPostCard(props: PostData) {
       <div className='w-[62%] m-auto text-black mt-[30px]'>
         <article>
           {
-            (props.user.Rol === 'usuario_basico') && (props.user.Nombre != props.nombre_usuario) ? <form
+            (props.user.Rol === 'usuario_basico') && (props.user.userId != props.id_usuario) ? <form
               noValidate
               onSubmit={handleSubmit(_handleSubmit)}
             >

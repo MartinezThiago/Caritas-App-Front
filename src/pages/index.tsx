@@ -89,9 +89,6 @@ export default function Home({ user }: { user: User }) {
           noValidate
           onSubmit={handleSubmit(({ question }: FormData) => {
             {
-              /*Post con axios para enviar la pregunta 
-              Sacar funcion aca y pasarla a una variable adentro del componente
-              */
             }
             console.log(question);
 
@@ -102,9 +99,8 @@ export default function Home({ user }: { user: User }) {
               <Input
                 id='question'
                 register={register}
-                type='text'
+                type='search'
                 key='question'
-                //label='Preguntale al vendedor'
                 registerOptions={{ required: 'Escriba una busqueda' }}
                 error={errors.question}
                 placeholder='Buscar...'
@@ -115,7 +111,7 @@ export default function Home({ user }: { user: User }) {
             </div>
             <button
               key='Save'
-              className='rounded-full w-[40px] h-[40px] text-white ms-[10px] py-[10px] px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
+              className='rounded-full w-[40px] h-[40px] text-white ms-[10px] outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
             >
               B
             </button>
