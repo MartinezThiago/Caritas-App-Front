@@ -64,6 +64,7 @@ export default function ExtendedPostCard(props: PostData) {
           questionUserInfo={`${e.nombre_pregunta} ${e.apellido_pregunta}`}
           answer={e.respuesta}
           answerDate={e.fechaRespuesta}
+          idAnswer={e.idRespuesta}
           idOwnerPost={props.id_usuario}
           idCurrentUser={`${props.user.userId}`}
           idPost={props.id}

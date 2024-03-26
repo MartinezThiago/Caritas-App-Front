@@ -33,11 +33,12 @@ export default function FullComment({
     questionUserInfo,
     idOwnerPost,
     idCurrentUser,
-    idPost,
-    id_pregunta
+    id_pregunta,
+    idAnswer
 }: {
     answer?: string,
     answerDate?: string
+    idAnswer?:number
     question: string
     questionDate: string
     questionUserInfo: string
@@ -53,6 +54,9 @@ export default function FullComment({
     } = useForm<FormData>()
     const currentUser = parseInt(idCurrentUser)
     const router = useRouter();
+    console.log(idAnswer);
+    console.log(answerDate);
+    console.log(answer);
     
     const _handleSubmit = async (formData: FormData) => {
         console.log(formData);
@@ -85,6 +89,7 @@ export default function FullComment({
             {(answer && answerDate) ? <AnswerPost
                 answer={answer}
                 answerDate={answerDate}
+                idAnswer={idAnswer?idAnswer:-1}
             /> : (idOwnerPost === currentUser) ? <form
                 noValidate
                 onSubmit={handleSubmit(_handleSubmit)}

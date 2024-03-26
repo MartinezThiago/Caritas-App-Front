@@ -24,6 +24,10 @@ export interface User {
   Centro:number
 }
 
+export type img = {
+  url_image:string
+} 
+
 export type TokenName = 'access' | 'refresh'
 
 export interface GetSSPropsResult {
@@ -40,6 +44,7 @@ export type Comment = {
   fechaPregunta:string
   respuesta?:string
   fechaRespuesta?:string
+  idRespuesta?:number
   idOwnerPost:number
   idCurrentUser:number
   idPost:number
@@ -95,7 +100,9 @@ export interface CardProductProps {
  * @property {string} nombre_usuario - The name of the user who created the post.
  * @property {string} apellido_usuario - The last name of the user who created the post.
  * @property {number} centros_elegidos- The post centers.
- * @property {[Comment]} comentarios - The post asks/questions 
+ * @property {User} user - The current user. 
+ * @property {[Comment]} comentarios - The post asks/questions.
+ * @property {[img]} imagenes - The post asks/questions.
  */
 export interface PostData {
   id: number
@@ -155,23 +162,3 @@ export interface PostData {
 //   Rol: Role
 //   Centro: number
 // }
-
-export type img = {
-  url_image:string
-} 
-export interface PostDataGallery {
-  id: number
-  titulo:string
-  descripcion:string
-  nombre_categoria_producto:string
-  nombre_estado_producto:string
-  ubicacion_trade:string
-  preguntas:number
-  estado_publicacion:number
-  fecha_publicacion:number
-  usuario_owner:number
-  nombre_usuario:string
-  apellido_usuario:string
-  centros_elegidos:number
-  multimedia:[img]
-}

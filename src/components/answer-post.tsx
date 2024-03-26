@@ -1,9 +1,11 @@
 export default function AnswerPost({
     answer,
-    answerDate
+    answerDate,
+    idAnswer
 }: {
     answer: string,
-    answerDate: string
+    answerDate: string,
+    idAnswer:number
 }) {
     return (
         <p className="ms-[20px]">
