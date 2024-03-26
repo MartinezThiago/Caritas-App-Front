@@ -4,6 +4,7 @@ export type Role = Rol | 'non-registered'
 
 /**
  * The user data.
+ * @property {string} userId - The user's ID.
  * @property {string} Nombre - The user's name.
  * @property {string} Apellido - The user's surname.
  * @property {string} DNI - The user's DNI. (Argentinian ID)
@@ -13,6 +14,7 @@ export type Role = Rol | 'non-registered'
  * @property {number} Centro - The user' center.
  */
 export interface User {
+  userId:string
   Nombre: string
   Apellido: string
   DNI: string
@@ -40,6 +42,12 @@ export type Comment = {
   fechaRespuesta?:string
 } 
 
+export interface questionBody{
+  usuario_owner_pregunta:number
+  contenido_pregunta:string 
+  fecha_publicacion_pregunta:string 
+  idPublicacion:string
+}
 
 /**
  * The product card data.
