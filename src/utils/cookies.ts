@@ -53,18 +53,18 @@ export const getUser = (
 ): User => {
   const token = getCookie('access', { req, res })
   if (token === undefined) return {
-    userId:'-1',
+    userId: -1,
     Nombre: '',
     Apellido: '',
     DNI: '-1',
     Fecha_Nacimiento: new Date().getTime().toString(),
     Email: '',
     Rol: 'non-registered',
-    Centro:-1
+    Centro: -1
   }
-  const user = decode(token) as User  
+  const user = decode(token) as User
   return {
-    userId:user.userId,
+    userId: user.userId,
     Nombre: user.Nombre,
     Apellido: user.Apellido,
     DNI: user.DNI,
