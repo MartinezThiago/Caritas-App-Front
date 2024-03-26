@@ -21,7 +21,7 @@ export default async function handler(
   const formData = req.body
 
   await axios
-    .post(`${BACK_BASE_URL}sign/up/`, formData)
+    .post(`${BACK_BASE_URL}sign/in/`, formData)
     .then((result: any) => {
       setToken(
         'access',
