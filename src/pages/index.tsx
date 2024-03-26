@@ -4,6 +4,7 @@ import type {
 } from 'next'
 
 import RootLayout from '../layouts/root-layout'
+
 import { User } from '@/types'
 import { getUser } from '@/utils'
 
@@ -30,7 +31,7 @@ export async function getServerSideProps({
 
 export default function Home({ user }: { user: User }) {
   return <RootLayout user={user}>
-    <main>
+    <main className='text-center'>
       <h1>InterCáritas</h1>
     </main>
   </RootLayout>

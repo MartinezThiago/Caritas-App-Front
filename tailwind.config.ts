@@ -6,7 +6,6 @@ const config: Config = {
     './src/components/**/*.tsx',
     './src/app/**/*.tsx',
     './src/layouts/**/*.tsx',
-  ],
-  plugins: [],
+  ]
 };
 export default config;

@@ -51,6 +51,12 @@ export default function RootLayout({
         </Link>
       </> :
         user.role === 'Nominal' ? <>
+          <Link
+            key='link-create-post'
+            href='/post/create'
+          >
+            Crear Publicación
+          </Link>
           <div
             key='header-separator'
             className='flex-grow'

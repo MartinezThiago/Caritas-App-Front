@@ -15,7 +15,7 @@ import {
 import { getUser } from '@/utils'
 import { Input } from '@/components'
 import { redirect } from 'next/navigation'
-import { requireNoPermission } from '@/utils'
+import { requirePermission } from '@/utils'
 import { RootLayout } from '@/layouts'
 import { subYears } from 'date-fns'
 import { useForm } from 'react-hook-form'
@@ -33,7 +33,7 @@ export async function getServerSideProps({
   req: NextApiRequest
   res: NextApiResponse
 }>): Promise<GetSSPropsResult> {
-  return requireNoPermission(getUser(req, res))
+  return requirePermission(getUser(req, res))
 }
 
 /**
@@ -66,7 +66,6 @@ export default function Signup({ user }: { user: User }) {
       .post(`${FRONT_BASE_URL}sign/up`, formData)
       .then(() => redirect('/'))
       .catch((error: any) => {
-        console.log('ESTO LLEGA COMO ERROR\n\n\n', error, '\n\n\n')
         try {
           alert(error.response.data.message)
         } catch (error) {
