@@ -60,7 +60,7 @@ export const getUser = (
     birthdate: new Date().getTime(),
     email: '',
     center: -1,
-    role: 'non-registered'
+    role: 'Nominal'
   }
   const user = decode(token) as UnadaptedUser
   return {
