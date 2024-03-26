@@ -4,7 +4,7 @@ export type Role = Rol | 'non-registered'
 
 /**
  * The user data.
- * @property {string} userId - The user's ID.
+ * @property {number} userId - The user's ID.
  * @property {string} Nombre - The user's name.
  * @property {string} Apellido - The user's surname.
  * @property {string} DNI - The user's DNI. (Argentinian ID)
@@ -14,7 +14,7 @@ export type Role = Rol | 'non-registered'
  * @property {number} Centro - The user' center.
  */
 export interface User {
-  userId:string
+  userId:number
   Nombre: string
   Apellido: string
   DNI: string
@@ -33,25 +33,35 @@ export interface GetSSPropsResult {
 
 export type Comment = {
   user_id_pregunta:string
-  id_pregunta:string
+  id_pregunta:number
   nombre_pregunta:string
   apellido_pregunta:string
   pregunta:string
   fechaPregunta:string
   respuesta?:string
   fechaRespuesta?:string
+  idOwnerPost:number
+  idCurrentUser:number
+  idPost:number
 } 
 
 export interface questionBody{
   usuario_owner_pregunta:number
   contenido_pregunta:string 
   fecha_publicacion_pregunta:string 
-  idPublicacion:string
+  idPublicacion:number
+}
+
+export interface answerBody{
+  usuario_owner_respuesta:number
+  contenido_respuesta:string 
+  fecha_publicacion_respuesta:string 
+  id_pregunta:number
 }
 
 /**
  * The product card data.
- * @property {string} id - The product id.
+ * @property {number} id - The product id.
  * @property {number} multimedia - The product multimedia.
  * @property {string} titulo - The product title.
  * @property {string} descripcion - The product description.
@@ -60,7 +70,7 @@ export interface questionBody{
  * @property {string} ubicacion_trade - The ubication of the trade
  */
 export interface CardProductProps {
-  id:string
+  id:number
   multimedia:number
   titulo:string
   descripcion:string
@@ -71,7 +81,7 @@ export interface CardProductProps {
 
 /**
  * The Post data from external server (userdata+postdata).
- * @property {string} id - The post id.
+ * @property {number} id - The post id.
  * @property {string} titutlo - The post title.
  * @property {string} descripcion - The post description.
  * @property {string} nombre_categoria_producto - The product categorie.
@@ -81,14 +91,14 @@ export interface CardProductProps {
  * @property {number} multimedia - The post multimedia.
  * @property {number} estado_publicacion - The post state.
  * @property {number} fecha_publicacion - The date of the post.
- * @property {string} usuario_owner - The ID of the user who created the post.
+ * @property {number} usuario_owner - The ID of the user who created the post.
  * @property {string} nombre_usuario - The name of the user who created the post.
  * @property {string} apellido_usuario - The last name of the user who created the post.
  * @property {number} centros_elegidos- The post centers.
  * @property {[Comment]} comentarios - The post asks/questions 
  */
 export interface PostData {
-  id: string
+  id: number
   titulo:string
   descripcion:string
   nombre_categoria_producto:string
@@ -98,7 +108,7 @@ export interface PostData {
   multimedia:number
   estado_publicacion:number
   fecha_publicacion:number
-  id_usuario:string
+  id_usuario:number
   nombre_usuario:string
   apellido_usuario:string
   centros_elegidos:number

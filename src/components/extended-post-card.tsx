@@ -32,13 +32,15 @@ export default function ExtendedPostCard(props: PostData) {
     formState: { errors }
   } = useForm<FormData>()
   const router = useRouter();
+  
+  
   const _handleSubmit = async (formData: FormData) => {
     const pregunta: questionBody =
     {
-      "usuario_owner_pregunta": parseInt(props.user.userId),
+      "usuario_owner_pregunta": props.user.userId,
       "contenido_pregunta": formData.question,
       "fecha_publicacion_pregunta": getActualDate(),
-      "idPublicacion": `${router.query.id}`
+      "idPublicacion": props.id
     }
     await axios
       .post(`${FRONT_BASE_URL}question/post`, pregunta)
@@ -51,6 +53,7 @@ export default function ExtendedPostCard(props: PostData) {
         }
       })
   }
+
   const Comments = () => {
     const comment = props.comentarios!.map((e: Comment) => {
       return (
@@ -61,6 +64,10 @@ export default function ExtendedPostCard(props: PostData) {
           questionUserInfo={`${e.nombre_pregunta} ${e.apellido_pregunta}`}
           answer={e.respuesta}
           answerDate={e.fechaRespuesta}
+          idOwnerPost={props.id_usuario}
+          idCurrentUser={`${props.user.userId}`}
+          idPost={props.id}
+          id_pregunta={e.id_pregunta}
         />
       )
     })
@@ -228,34 +235,35 @@ export default function ExtendedPostCard(props: PostData) {
       <div className='w-[62%] m-auto text-black mt-[30px]'>
         <article>
           {
-            (props.user.Rol === 'usuario_basico') && (props.user.userId != props.id_usuario) ? <form
-              noValidate
-              onSubmit={handleSubmit(_handleSubmit)}
-            >
-              <p className='font-bold text-sm'>Preguntale al vendedor</p>
-              <div className='flex'>
-                <div className='w-[60%]'>
-                  <Input
-                    id='question'
-                    register={register}
-                    type='text'
-                    key='question'
-                    registerOptions={{ required: 'Escriba una pregunta' }}
-                    error={errors.question}
-                    placeholder='Escriba aquí su pregunta'
-                    className={{
-                      'input': 'rounded-md border-blue-900 border-2 w-[100%]'
-                    }}
-                  />
+            (props.user.Rol === 'usuario_basico') && (props.user.userId != props.id_usuario) ?
+              <form
+                noValidate
+                onSubmit={handleSubmit(_handleSubmit)}
+              >
+                <p className='font-bold text-sm'>Preguntale al vendedor</p>
+                <div className='flex'>
+                  <div className='w-[60%]'>
+                    <Input
+                      id='question'
+                      register={register}
+                      type='text'
+                      key='question'
+                      registerOptions={{ required: 'Escriba una pregunta' }}
+                      error={errors.question}
+                      placeholder='Escriba aquí su pregunta'
+                      className={{
+                        'input': 'rounded-md border-blue-900 border-2 w-[100%]'
+                      }}
+                    />
+                  </div>
+                  <button
+                    key='ask'
+                    className='rounded-lg w-[130px] h-[40px] text-white ms-[50px] py-[10px] px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
+                  >
+                    Preguntar
+                  </button>
                 </div>
-                <button
-                  key='ask'
-                  className='rounded-lg w-[130px] h-[40px] text-white ms-[50px] py-[10px] px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
-                >
-                  Preguntar
-                </button>
-              </div>
-            </form> : null
+              </form> : null
           }
 
         </article>
