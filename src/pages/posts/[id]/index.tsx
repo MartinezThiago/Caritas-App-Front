@@ -54,6 +54,7 @@ export default function PostInfo({ user }: { user: User }){
                   surnameUser={postData.apellido_usuario}
                   centersChoosed={0}
                   comments={postData.comentarios}
+                  images={postData.imagenes}
                   user={user}
             />
         </RootLayout>

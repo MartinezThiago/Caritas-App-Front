@@ -48,7 +48,8 @@ export interface UnadaptedUser {
 }
 
 export type img = {
-  url_image:string
+  url:string,
+  nombre_archivo:string
 } 
 
 export type TokenName = 'access' | 'refresh'
@@ -111,7 +112,7 @@ export interface CardProductProps {
  * @property {number} centersChoosed- The post centers.
  * @property {User} user - The current user. 
  * @property {[Comment]} [comments] - The post asks/questions.
- * @property {[img]} imagenes - The post asks/questions.
+ * @property {[img]} images - The post asks/questions.
  */
 export interface PostData {
   idPost: number
@@ -129,6 +130,7 @@ export interface PostData {
   centersChoosed:number
   user:User
   comments?:[Comment]
+  images:[img]
 }
 
 export interface PostDataAdapter {
@@ -139,15 +141,15 @@ export interface PostDataAdapter {
   nombre_estado_producto:string
   ubicacion_trade:string
   preguntas:number
-  multimedia:number
   estado_publicacion:number
   fecha_publicacion:number
   id_usuario:number
   nombre_usuario:string
   apellido_usuario:string
   centros_elegidos:number
-  comentarios?:[Comment]
   user:User
+  comentarios?:[Comment]
+  imagenes:[img]
 }
 
 
