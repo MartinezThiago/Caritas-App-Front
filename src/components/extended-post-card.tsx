@@ -138,10 +138,10 @@ export default function ExtendedPostCard(props: PostData) {
           </div>
           <div className='text-white ms-[20px]'>
             {
-              (props.user.Rol === 'usuario_basico' || (props.user.Rol === 'non-registered')) ?
+              (props.user.role === 'usuario_basico' || (props.user.role === 'non-registered')) ?
                 <>
                   {
-                    props.user.Rol === 'usuario_basico' ?
+                    props.user.role === 'usuario_basico' ?
                       <>
                         {
                           (props.user.userId != props.id_usuario) ?
@@ -236,7 +236,7 @@ export default function ExtendedPostCard(props: PostData) {
       <div className='w-[62%] m-auto text-black mt-[30px]'>
         <article>
           {
-            (props.user.Rol === 'usuario_basico') && (props.user.userId != props.id_usuario) ?
+            (props.user.role === 'usuario_basico') && (props.user.userId != props.id_usuario) ?
               <form
                 noValidate
                 onSubmit={handleSubmit(_handleSubmit)}
