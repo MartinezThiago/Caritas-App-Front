@@ -9,11 +9,11 @@ export default function TradeOfferProduct(props: CardProductProps) {
       <Image className='w-[190px] m-2.5 h-[90%]' alt={`post-image-${props.id}`} src={postImagePreview} />
       <div className='flex w-full'>
         <div className={'m-3.5 w-6/12	'}>
-          <p className={'text-2xl font-bold'}>{props.titulo}</p>
-          <h2>{props.descripcion}</h2>
+          <p className={'text-2xl font-bold'}>{props.title}</p>
+          <h2>{props.desciption}</h2>
           <div className={'flex justify-center items-center mt-12'}>
-            <p className={'font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto'}>{props.nombre_categoria_producto}</p>
-            <p className={'font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto'}>{props.nombre_estado_producto}</p>
+            <p className={'font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto'}>{props.nameProductCategorie}</p>
+            <p className={'font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto'}>{props.nameStateProduct}</p>
           </div>
           <p className='mt-4'><span className='font-bold text-blue-900'>Creador:</span><span className='text-black'> Thiago Martinez</span></p>
         </div>

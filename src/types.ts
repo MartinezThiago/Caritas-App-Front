@@ -91,20 +91,20 @@ export interface answerBody{
  * The product card data.
  * @property {number} id - The product id.
  * @property {number} multimedia - The product multimedia.
- * @property {string} titulo - The product title.
- * @property {string} descripcion - The product description.
- * @property {string} nombre_categoria_producto - The product categorie.
- * @property {string} nombre_estado_producto - The product state.
- * @property {string} ubicacion_trade - The ubication of the trade
+ * @property {string} title - The product title.
+ * @property {string} desciption - The product description.
+ * @property {string} nameProductCategorie - The product categorie.
+ * @property {string} nameStateProduct - The product state.
+ * @property {string} locationTrade - The ubication of the trade
  */
 export interface CardProductProps {
   id:number
   multimedia:number
-  titulo:string
-  descripcion:string
-  nombre_categoria_producto:string
-  nombre_estado_producto:string
-  ubicacion_trade:string
+  title:string
+  desciption:string
+  nameProductCategorie:string
+  nameStateProduct:string
+  locationTrade:string
 }
 
 /**
