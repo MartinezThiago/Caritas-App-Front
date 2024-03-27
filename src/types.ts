@@ -48,8 +48,7 @@ export interface UnadaptedUser {
 }
 
 export type img = {
-  url:string,
-  nombre_archivo:string
+  base64_imagen:string
 } 
 
 export type TokenName = 'access' | 'refresh'

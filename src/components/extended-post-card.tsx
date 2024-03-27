@@ -1,4 +1,4 @@
-import { PostData, Comment, CommentUnadapted } from '@/types'
+import { PostData, Comment, CommentUnadapted, img } from '@/types'
 import FullComment from './full-comment'
 import Input from './input'
 import { useForm } from 'react-hook-form'
@@ -33,14 +33,12 @@ function getActualDate() {
 }
 
 export default function ExtendedPostCard(props: PostData) {
-
   const {
     register,
     handleSubmit,
     formState: { errors }
   } = useForm<FormData>()
   const router = useRouter();
-
 
   const _handleSubmit = async (formData: FormData) => {
     const pregunta: questionBody =
@@ -61,7 +59,6 @@ export default function ExtendedPostCard(props: PostData) {
         }
       })
   }
-
   const Comments = () => {
     const comment = props.comments!.map((e: CommentUnadapted) => {
       return (
@@ -88,26 +85,58 @@ export default function ExtendedPostCard(props: PostData) {
     return comment;
   }
 
-  const images = [
-    {
-      original: postImagePreview.src,
-      thumbnail: postImagePreview.src,
-    },
-    {
-      original: postImagePreview.src,
-      thumbnail: postImagePreview.src,
-    },
-    {
-      original: postImagePreview.src,
-      thumbnail: postImagePreview.src,
-    },
-  ];
+  if (props.images.length > 0) {
+    const images = props.images.map((e: any) => ({
+      original: e.base64_imagen,
+      thumbnail: e.base64_imagen,
+    }))
+  } else {
+    const images = [
+      {
+        original: postImagePreview.src,
+        thumbnail: postImagePreview.src,
+      },
+      {
+        original: postImagePreview.src,
+        thumbnail: postImagePreview.src,
+      },
+      {
+        original: postImagePreview.src,
+        thumbnail: postImagePreview.src,
+      },
+    ];
+  }
+  {/*CAMBIO MOMENTANEO HASTA PODER CARGAR PUBLICACIONES, CONTEMPLA QUE SI EL POST NO TIENE IMAGENES PONE UNAS POR DEFECTO*/ }
+  const Images = () => {
+    if (props.images.length > 0) {
+      return props.images.map((e: any) => ({
+        original: e.base64_imagen,
+        thumbnail: e.base64_imagen,
+      }))
+    } else {
+      return [
+        {
+          original: postImagePreview.src,
+          thumbnail: postImagePreview.src,
+        },
+        {
+          original: postImagePreview.src,
+          thumbnail: postImagePreview.src,
+        },
+        {
+          original: postImagePreview.src,
+          thumbnail: postImagePreview.src,
+        },
+      ];
+    }
+  }
+
   return (
     <div>
       <div className='w-100vw h-50vh flex justify-center w-[100vw] mt-[40px] font-sans'>
-        <div className='w-[700px]'>
+        <div className='w-[500px]'>
           <ImageGallery
-            items={images}
+            items={Images()}
             showPlayButton={false}
             showFullscreenButton={false}
             showIndex={true}
