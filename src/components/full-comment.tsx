@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import AnswerPost from "./answer-post";
 import QuestionPost from "./question-post";
 import Input from "./input";
-import { answerBody } from "@/types";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { FRONT_BASE_URL } from "@/constants";
@@ -17,14 +16,15 @@ function getActualDate() {
     return `${year}-${month}-${day}`;
 
 }
-
-
-
+interface answerBody {
+    usuario_owner_respuesta: number
+    contenido_respuesta: string
+    fecha_publicacion_respuesta: string
+    id_pregunta: number
+}
 interface FormData {
     answer: string
 }
-
-
 export default function FullComment({
     answer,
     answerDate,
@@ -38,7 +38,7 @@ export default function FullComment({
 }: {
     answer?: string,
     answerDate?: string
-    idAnswer?:number
+    idAnswer?: number
     question: string
     questionDate: string
     questionUserInfo: string
@@ -57,7 +57,7 @@ export default function FullComment({
     console.log(idAnswer);
     console.log(answerDate);
     console.log(answer);
-    
+
     const _handleSubmit = async (formData: FormData) => {
         console.log(formData);
         const respuesta: answerBody = {
@@ -66,7 +66,7 @@ export default function FullComment({
             "fecha_publicacion_respuesta": getActualDate(),
             "id_pregunta": id_pregunta
         }
-        
+
         console.log(respuesta);
         await axios
             .post(`${FRONT_BASE_URL}answer/post`, respuesta)
@@ -89,7 +89,7 @@ export default function FullComment({
             {(answer && answerDate) ? <AnswerPost
                 answer={answer}
                 answerDate={answerDate}
-                idAnswer={idAnswer?idAnswer:-1}
+                idAnswer={idAnswer ? idAnswer : -1}
             /> : (idOwnerPost === currentUser) ? <form
                 noValidate
                 onSubmit={handleSubmit(_handleSubmit)}

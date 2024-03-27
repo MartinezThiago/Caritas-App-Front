@@ -73,20 +73,6 @@ export type Comment = {
   idPost:number
 } 
 
-export interface questionBody{
-  usuario_owner_pregunta:number
-  contenido_pregunta:string 
-  fecha_publicacion_pregunta:string 
-  idPublicacion:number
-}
-
-export interface answerBody{
-  usuario_owner_respuesta:number
-  contenido_respuesta:string 
-  fecha_publicacion_respuesta:string 
-  id_pregunta:number
-}
-
 /**
  * The product card data.
  * @property {number} id - The product id.

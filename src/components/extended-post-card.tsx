@@ -1,4 +1,4 @@
-import { PostData, Comment, questionBody } from '@/types'
+import { PostData, Comment } from '@/types'
 import FullComment from './full-comment'
 import Input from './input'
 import { useForm } from 'react-hook-form'
@@ -12,6 +12,13 @@ import { FRONT_BASE_URL } from '@/constants'
 
 interface FormData {
   question: string
+}
+
+interface questionBody{
+  usuario_owner_pregunta:number
+  contenido_pregunta:string 
+  fecha_publicacion_pregunta:string 
+  idPublicacion:number
 }
 
 function getActualDate() {
