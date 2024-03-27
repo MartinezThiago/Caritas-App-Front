@@ -93,10 +93,13 @@ export default function FullComment({
                 idCurrentUser={idCurrentUser}
                 roleCurrentUser={roleCurrentUser}
             />
-            {(answer && answerDate) ? <AnswerPost
+            {(answer && answerDate && idAnswer && idOwnerAnswer) ? <AnswerPost
                 answer={answer}
                 answerDate={answerDate}
-                idAnswer={idAnswer ? idAnswer : -1}
+                idAnswer={idAnswer}
+                idOwnerAnswer={idOwnerAnswer}
+                idCurrentUser={idCurrentUser}
+                roleCurrentUser={roleCurrentUser}
             /> : (idOwnerPost === currentUser) ? <form
                 noValidate
                 onSubmit={handleSubmit(_handleSubmit)}
