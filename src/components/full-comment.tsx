@@ -54,20 +54,13 @@ export default function FullComment({
     } = useForm<FormData>()
     const currentUser = parseInt(idCurrentUser)
     const router = useRouter();
-    console.log(idAnswer);
-    console.log(answerDate);
-    console.log(answer);
-
     const _handleSubmit = async (formData: FormData) => {
-        console.log(formData);
         const respuesta: answerBody = {
             "usuario_owner_respuesta": currentUser,
             "contenido_respuesta": formData.answer,
             "fecha_publicacion_respuesta": getActualDate(),
             "id_pregunta": id_pregunta
         }
-
-        console.log(respuesta);
         await axios
             .post(`${FRONT_BASE_URL}answer/post`, respuesta)
             .then(() => router.push(`/posts/${router.query.id}`))

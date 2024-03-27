@@ -14,7 +14,7 @@ interface FormData {
   question: string
 }
 
-interface questionBody{
+ interface questionBody{
   usuario_owner_pregunta:number
   contenido_pregunta:string 
   fecha_publicacion_pregunta:string 

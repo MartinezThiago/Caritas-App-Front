@@ -73,6 +73,7 @@ export type Comment = {
   idPost:number
 } 
 
+
 /**
  * The product card data.
  * @property {number} id - The product id.
