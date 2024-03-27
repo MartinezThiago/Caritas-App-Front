@@ -2,6 +2,51 @@ export type Rol = 'admin_centro' | 'voluntario' | 'usuario_basico'
 
 export type Role = Rol | 'non-registered'
 
+
+/**
+ * The user data.
+ * @property {number} userId - The user's ID.
+ * @property {string} name - The user's name.
+ * @property {string} surname - The user's surname.
+ * @property {string} dni - The user's DNI. (Argentinian ID)
+ * @property {string} birthdate - The user's birthdate. Always in timestamp.
+ * @property {string} email - The user's email.
+ * @property {number} [center] - The user's center. Only for volunteers.
+ * @property {Role} role - The user's role.
+ */
+export interface User {
+  userId:number
+  name: string
+  surname: string
+  dni: string
+  birthdate: string
+  email: string
+  center?: number
+  role: Role
+}
+
+/**
+ * The user data from external server.
+ * @property {number} userId - The user's ID.
+ * @property {string} Nombre - The user's name.
+ * @property {string} Apellido - The user's surname.
+ * @property {string} DNI - The user's DNI. (Argentinian ID)
+ * @property {string} FechaNacimiento - The user's birthdate. Always in timestamp.
+ * @property {string} Email - The user's email.
+ * @property {number} [Centro] - The user's center. Only for volunteers.
+ * @property {Role} Rol - The user's role.
+ */
+export interface UnadaptedUser {
+  userId:number
+  Nombre: string
+  Apellido: string
+  Centro: number
+  FechaNacimiento: string
+  DNI: string
+  Email: string
+  Rol: Rol
+}
+
 /**
  * The user data.
  * @property {number} userId - The user's ID.
@@ -13,16 +58,16 @@ export type Role = Rol | 'non-registered'
  * @property {Role} Rol - The user's role.
  * @property {number} Centro - The user' center.
  */
-export interface User {
-  userId:number
-  Nombre: string
-  Apellido: string
-  DNI: string
-  Email: string
-  Fecha_Nacimiento: string
-  Rol: Role
-  Centro:number
-}
+// export interface User {
+//   userId:number
+//   Nombre: string
+//   Apellido: string
+//   DNI: string
+//   Email: string
+//   Fecha_Nacimiento: string
+//   Rol: Role
+//   Centro:number
+// }
 
 export type img = {
   url_image:string
@@ -123,42 +168,3 @@ export interface PostData {
   user:User
 }
 
-/*--------------------------------------------------------------------------------------------*/
-/**
- * The user data.
- * @property {string} name - The user's name.
- * @property {string} surname - The user's surname.
- * @property {string} dni - The user's DNI. (Argentinian ID)
- * @property {string} birthdate - The user's birthdate. Always in timestamp.
- * @property {string} email - The user's email.
- * @property {Role} role - The user's role.
- * @property {number} center - The user' center.
- */
-// export interface User {
-//   name: string
-//   surname: string
-//   dni: string
-//   birthdate: string
-//   email: string
-//   role: Role
-//   center:number
-// }
-/**
- * The user data.
- * @property {string} Nombre - The user's name.
- * @property {string} Apellido - The user's surname.
- * @property {string} DNI - The user's DNI. (Argentinian ID)
- * @property {string} Fecha_Nacimiento - The user's birthdate. Always in timestamp.
- * @property {string} Email - The user's email.
- * @property {Role} Rol - The user's role.
- * @property {number} Centro - The user' center.
- */
-// export interface UnadaptedUser {
-//   Nombre: string
-//   Apellido: string
-//   DNI: string
-//   Email: string
-//   Fecha_Nacimiento: string
-//   Rol: Role
-//   Centro: number
-// }

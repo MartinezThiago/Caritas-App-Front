@@ -4,6 +4,7 @@ import type {
 } from 'next'
 import {
   TokenName,
+  UnadaptedUser,
   User
 } from '@/types'
 import {
@@ -54,24 +55,24 @@ export const getUser = (
   const token = getCookie('access', { req, res })
   if (token === undefined) return {
     userId: -1,
-    Nombre: '',
-    Apellido: '',
-    DNI: '-1',
-    Fecha_Nacimiento: new Date().getTime().toString(),
-    Email: '',
-    Rol: 'non-registered',
-    Centro: -1
+    name: '',
+    surname: '',
+    dni: '-1',
+    birthdate: new Date().getTime().toString(),
+    email: '',
+    role: 'non-registered',
+    center: -1
   }
-  const user = decode(token) as User
+  const user = decode(token) as UnadaptedUser
   return {
     userId: user.userId,
-    Nombre: user.Nombre,
-    Apellido: user.Apellido,
-    DNI: user.DNI,
-    Fecha_Nacimiento: new Date(user.Fecha_Nacimiento).getTime().toString(),
-    Email: user.Email,
-    Rol: user.Rol,
-    Centro: user.Centro
+    name: user.Nombre,
+    surname: user.Apellido,
+    dni: user.DNI,
+    birthdate: new Date(user.FechaNacimiento).getTime().toString(),
+    email: user.Email,
+    role: user.Rol,
+    center: user.Centro
   }
 }
 
