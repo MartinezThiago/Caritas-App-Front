@@ -13,7 +13,7 @@ export default function TradeOfferProduct(props: CardProductProps) {
           <h2>{props.desciption}</h2>
           <div className={'flex justify-center items-center mt-12'}>
             <p className={'font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto'}>{props.nameProductCategorie}</p>
-            <p className={'font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto'}>{props.nameStateProduct}</p>
+            <p className={'font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto'}>{props.nameProductState}</p>
           </div>
           <p className='mt-4'><span className='font-bold text-blue-900'>Creador:</span><span className='text-black'> Thiago Martinez</span></p>
         </div>

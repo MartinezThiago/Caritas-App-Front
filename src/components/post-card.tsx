@@ -17,7 +17,7 @@ export default function CardProduct(props: CardProductProps) {
         </div>
         <div className={'flex justify-center items-center border-t-[1px] border-blue-900 h-10 '}>
           <p className={'font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto'}>{props.nameProductCategorie}</p>
-          <p className={'font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto'}>{props.nameStateProduct}</p>
+          <p className={'font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto'}>{props.nameProductState}</p>
         </div>
       </div>
     </Link>

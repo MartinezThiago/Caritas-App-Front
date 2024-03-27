@@ -68,7 +68,7 @@ export default function Home({ user }: { user: User }) {
           title={e.titulo}
           desciption={e.descripcion}
           nameProductCategorie={e.nombre_categoria_producto}
-          nameStateProduct={e.nombre_estado_producto}
+          nameProductState={e.nombre_estado_producto}
           locationTrade={e.ubicacion_trade}
         />
       )

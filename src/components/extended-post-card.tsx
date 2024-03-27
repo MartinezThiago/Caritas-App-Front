@@ -33,6 +33,8 @@ function getActualDate() {
 }
 
 export default function ExtendedPostCard(props: PostData) {
+  console.log(props);
+  
   const {
     register,
     handleSubmit,
@@ -47,7 +49,7 @@ export default function ExtendedPostCard(props: PostData) {
       "usuario_owner_pregunta": props.user.userId,
       "contenido_pregunta": formData.question,
       "fecha_publicacion_pregunta": getActualDate(),
-      "idPublicacion": props.id
+      "idPublicacion": props.idPost
     }
     await axios
       .post(`${FRONT_BASE_URL}question/post`, pregunta)
@@ -62,7 +64,7 @@ export default function ExtendedPostCard(props: PostData) {
   }
 
   const Comments = () => {
-    const comment = props.comentarios!.map((e: Comment) => {
+    const comment = props.comments!.map((e: Comment) => {
       return (
         <FullComment
           key={e.id_pregunta}
@@ -72,9 +74,9 @@ export default function ExtendedPostCard(props: PostData) {
           answer={e.respuesta}
           answerDate={e.fechaRespuesta}
           idAnswer={e.idRespuesta}
-          idOwnerPost={props.id_usuario}
+          idOwnerPost={props.idOwnerUser}
           idCurrentUser={`${props.user.userId}`}
-          idPost={props.id}
+          idPost={props.idPost}
           id_pregunta={e.id_pregunta}
         />
       )
@@ -110,13 +112,13 @@ export default function ExtendedPostCard(props: PostData) {
         <div className='ms-[60px] text-black w-[29vw] flex flex-col justify-between h-[405px]'>
           <div className=''>
             <div className='flex justify-between w-[80%]'>
-              <h1 className='font-bold'>{props.titulo}</h1>
-              <span className='font-bold text-sm text-gray-600'>{props.fecha_publicacion}</span>
+              <h1 className='font-bold'>{props.title}</h1>
+              <span className='font-bold text-sm text-gray-600'>{props.postDate}</span>
             </div>
             <div className='ms-[20px] mt-[4px]'>
               <div className='h-[80px]'>
                 <p className='font-bold'>Descripcion</p>
-                <p className='ms-[15px] mt-[5px]'>{props.descripcion}</p>
+                <p className='ms-[15px] mt-[5px]'>{props.description}</p>
               </div>
               <div className='w-[60%]'>
                 <div className='flex justify-between '>
@@ -126,19 +128,19 @@ export default function ExtendedPostCard(props: PostData) {
                     <p className='my-[20px]'>Ubicacion: </p>
                   </div>
                   <div className=''>
-                    <p className=''>{props.nombre_estado_producto}</p>
-                    <p className='my-[20px]'>{props.nombre_categoria_producto}</p>
-                    <p className='my-[20px]'>{props.ubicacion_trade}</p>
+                    <p className=''>{props.nameStateProduct}</p>
+                    <p className='my-[20px]'>{props.nameProductCategorie}</p>
+                    <p className='my-[20px]'>{props.locationTrade}</p>
                   </div>
                 </div>
                 <p className='font-bold'>Centros elegidos para el intercambio:</p>
                 <div className='ms-[15px] mt-[5px]'>
-                  <p className='my-[5px] text-sm'><span className='font-bold text-rose-700 text-base'>Centro nro°{`${props.centros_elegidos}:`}</span> 50 y 120 n°25</p>
-                  <p className='my-[5px] text-sm'><span className='font-bold text-rose-700 text-base'>Centro nro°{`${props.centros_elegidos}:`}</span> 1 y 57 n°23</p>
+                  <p className='my-[5px] text-sm'><span className='font-bold text-rose-700 text-base'>Centro nro°{`${props.centersChoosed}:`}</span> 50 y 120 n°25</p>
+                  <p className='my-[5px] text-sm'><span className='font-bold text-rose-700 text-base'>Centro nro°{`${props.centersChoosed}:`}</span> 1 y 57 n°23</p>
                 </div>
                 <div className='flex justify-between w-[86%] mt-[20px]'>
                   <p className='font-bold'>Creador: </p>
-                  <p className=''>{props.nombre_usuario} {props.apellido_usuario}</p>
+                  <p className=''>{props.nameUser} {props.surnameUser}</p>
                 </div>
               </div>
             </div>
@@ -151,7 +153,7 @@ export default function ExtendedPostCard(props: PostData) {
                     props.user.role === 'usuario_basico' ?
                       <>
                         {
-                          (props.user.userId != props.id_usuario) ?
+                          (props.user.userId != props.idOwnerUser) ?
                             <>
                               <button
                                 key='Trade'
@@ -243,7 +245,7 @@ export default function ExtendedPostCard(props: PostData) {
       <div className='w-[62%] m-auto text-black mt-[30px]'>
         <article>
           {
-            (props.user.role === 'usuario_basico') && (props.user.userId != props.id_usuario) ?
+            (props.user.role === 'usuario_basico') && (props.user.userId != props.idOwnerUser) ?
               <form
                 noValidate
                 onSubmit={handleSubmit(_handleSubmit)}

@@ -1,7 +1,7 @@
 import ExtendedPostCard from "@/components/extended-post-card";
 import { FRONT_BASE_URL } from "@/constants";
 import RootLayout from "@/layouts/root-layout";
-import { GetSSPropsResult, PostData, User } from "@/types";
+import { GetSSPropsResult, PostData, PostDataAdapter, User } from "@/types";
 import { getUser } from "@/utils";
 import { requireNothing } from "@/utils/permissions";
 import axios from "axios";
@@ -22,11 +22,13 @@ import { useEffect, useState } from "react";
 export default function PostInfo({ user }: { user: User }){
   
     const router=useRouter();
-    const [postData, setPostData] = useState<PostData>()
+    const [postData, setPostData] = useState<PostDataAdapter>()
 
     useEffect(() => {
         const getProducts = async () => {
-        const {data:postData} = await axios.post<PostData>(`${FRONT_BASE_URL}post/get`, {id:router.query.id} )
+        const {data:postData} = await axios.post<PostDataAdapter>(`${FRONT_BASE_URL}post/get`, {id:router.query.id} )
+        console.log(postData);
+        
         setPostData(postData)       
         }
         getProducts()
@@ -38,21 +40,20 @@ export default function PostInfo({ user }: { user: User }){
     return( 
         <RootLayout user={user}>
             <ExtendedPostCard
-                  id={postData.id}
-                  titulo={postData.titulo}
-                  descripcion={postData.descripcion}
-                  nombre_categoria_producto={postData.nombre_categoria_producto}
-                  nombre_estado_producto={postData.nombre_estado_producto}
-                  ubicacion_trade={postData.ubicacion_trade}
-                  preguntas={0}
-                  multimedia={0}
-                  estado_publicacion={0}
-                  fecha_publicacion={postData.fecha_publicacion}
-                  id_usuario={postData.id_usuario}
-                  nombre_usuario={postData.nombre_usuario}
-                  apellido_usuario={postData.apellido_usuario}
-                  centros_elegidos={0}
-                  comentarios={postData.comentarios}
+                  idPost={postData.id}
+                  title={postData.titulo}
+                  description={postData.descripcion}
+                  nameProductCategorie={postData.nombre_categoria_producto}
+                  nameStateProduct={postData.nombre_estado_producto}
+                  locationTrade={postData.ubicacion_trade}
+                  question={0}
+                  postState={0}
+                  postDate={postData.fecha_publicacion}
+                  idOwnerUser={postData.id_usuario}
+                  nameUser={postData.nombre_usuario}
+                  surnameUser={postData.apellido_usuario}
+                  centersChoosed={0}
+                  comments={postData.comentarios}
                   user={user}
             />
         </RootLayout>

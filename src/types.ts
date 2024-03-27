@@ -81,7 +81,7 @@ export type Comment = {
  * @property {string} title - The product title.
  * @property {string} desciption - The product description.
  * @property {string} nameProductCategorie - The product categorie.
- * @property {string} nameStateProduct - The product state.
+ * @property {string} nameProductState - The product state.
  * @property {string} locationTrade - The ubication of the trade
  */
 export interface CardProductProps {
@@ -90,31 +90,48 @@ export interface CardProductProps {
   title:string
   desciption:string
   nameProductCategorie:string
-  nameStateProduct:string
+  nameProductState:string
   locationTrade:string
 }
 
 /**
  * The Post data from external server (userdata+postdata).
- * @property {number} id - The post id.
- * @property {string} titutlo - The post title.
- * @property {string} descripcion - The post description.
- * @property {string} nombre_categoria_producto - The product categorie.
- * @property {string} nombre_estado_producto - The product state.
- * @property {string} ubicacion_trade - The post location.
- * @property {number} preguntas - The post questions.
- * @property {number} multimedia - The post multimedia.
- * @property {number} estado_publicacion - The post state.
- * @property {number} fecha_publicacion - The date of the post.
- * @property {number} usuario_owner - The ID of the user who created the post.
- * @property {string} nombre_usuario - The name of the user who created the post.
- * @property {string} apellido_usuario - The last name of the user who created the post.
- * @property {number} centros_elegidos- The post centers.
+ * @property {number} idPost - The post id.
+ * @property {string} title - The post title.
+ * @property {string} description - The post description.
+ * @property {string} nameProductCategorie - The product categorie.
+ * @property {string} nameStateProduct - The product state.
+ * @property {string} locationTrade - The post location.
+ * @property {number} question - The post questions.
+ * @property {number} postState - The post state.
+ * @property {number} postDate - The date of the post.
+ * @property {number} idOwnerUser - The ID of the user who created the post.
+ * @property {string} nameUser - The name of the user who created the post.
+ * @property {string} surnameUser - The last name of the user who created the post.
+ * @property {number} centersChoosed- The post centers.
  * @property {User} user - The current user. 
- * @property {[Comment]} comentarios - The post asks/questions.
+ * @property {[Comment]} [comments] - The post asks/questions.
  * @property {[img]} imagenes - The post asks/questions.
  */
 export interface PostData {
+  idPost: number
+  title:string
+  description:string
+  nameProductCategorie:string
+  nameStateProduct:string
+  locationTrade:string
+  question:number
+  postState:number
+  postDate:number
+  idOwnerUser:number
+  nameUser:string
+  surnameUser:string
+  centersChoosed:number
+  user:User
+  comments?:[Comment]
+}
+
+export interface PostDataAdapter {
   id: number
   titulo:string
   descripcion:string
@@ -129,7 +146,8 @@ export interface PostData {
   nombre_usuario:string
   apellido_usuario:string
   centros_elegidos:number
-  comentarios:[Comment]
+  comentarios?:[Comment]
   user:User
 }
+
 
