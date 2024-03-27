@@ -47,28 +47,6 @@ export interface UnadaptedUser {
   Rol: Rol
 }
 
-/**
- * The user data.
- * @property {number} userId - The user's ID.
- * @property {string} Nombre - The user's name.
- * @property {string} Apellido - The user's surname.
- * @property {string} DNI - The user's DNI. (Argentinian ID)
- * @property {string} Fecha_Nacimiento - The user's birthdate. Always in timestamp.
- * @property {string} Email - The user's email.
- * @property {Role} Rol - The user's role.
- * @property {number} Centro - The user' center.
- */
-// export interface User {
-//   userId:number
-//   Nombre: string
-//   Apellido: string
-//   DNI: string
-//   Email: string
-//   Fecha_Nacimiento: string
-//   Rol: Role
-//   Centro:number
-// }
-
 export type img = {
   url_image:string
 } 
