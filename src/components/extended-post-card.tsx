@@ -1,4 +1,4 @@
-import { PostData, Comment } from '@/types'
+import { PostData, Comment, CommentUnadapted } from '@/types'
 import FullComment from './full-comment'
 import Input from './input'
 import { useForm } from 'react-hook-form'
@@ -14,11 +14,11 @@ interface FormData {
   question: string
 }
 
- interface questionBody{
-  usuario_owner_pregunta:number
-  contenido_pregunta:string 
-  fecha_publicacion_pregunta:string 
-  idPublicacion:number
+interface questionBody {
+  usuario_owner_pregunta: number
+  contenido_pregunta: string
+  fecha_publicacion_pregunta: string
+  idPublicacion: number
 }
 
 function getActualDate() {
@@ -33,16 +33,15 @@ function getActualDate() {
 }
 
 export default function ExtendedPostCard(props: PostData) {
-  console.log(props);
-  
+
   const {
     register,
     handleSubmit,
     formState: { errors }
   } = useForm<FormData>()
   const router = useRouter();
-  
-  
+
+
   const _handleSubmit = async (formData: FormData) => {
     const pregunta: questionBody =
     {
@@ -64,7 +63,7 @@ export default function ExtendedPostCard(props: PostData) {
   }
 
   const Comments = () => {
-    const comment = props.comments!.map((e: Comment) => {
+    const comment = props.comments!.map((e: CommentUnadapted) => {
       return (
         <FullComment
           key={e.id_pregunta}
@@ -73,12 +72,17 @@ export default function ExtendedPostCard(props: PostData) {
           questionUserInfo={`${e.nombre_pregunta} ${e.apellido_pregunta}`}
           answer={e.respuesta}
           answerDate={e.fechaRespuesta}
-          idAnswer={e.idRespuesta}
+          idAnswer={e.id_respuesta}
+          idOwnerQuestion={e.user_id_pregunta}
+          idOwnerAnswer={e.user_id_respuesta}
+          idQuestion={e.id_pregunta}
+
+          idPost={props.idPost}
           idOwnerPost={props.idOwnerUser}
           idCurrentUser={`${props.user.userId}`}
-          idPost={props.idPost}
-          id_pregunta={e.id_pregunta}
+          roleCurrentUser={`${props.user.role}`}
         />
+
       )
     })
     return comment;

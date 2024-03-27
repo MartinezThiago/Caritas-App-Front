@@ -74,6 +74,19 @@ export type Comment = {
   idPost:number
 } 
 
+export type CommentUnadapted = {
+  fechaPregunta:string
+  fechaRespuesta?:string
+  id_pregunta:number
+  id_respuesta:number
+  nombre_pregunta:string
+  apellido_pregunta:string
+  pregunta:string
+  respuesta?:string
+  user_id_pregunta:number
+  user_id_respuesta?:number
+} 
+
 
 /**
  * The product card data.
@@ -111,7 +124,7 @@ export interface CardProductProps {
  * @property {string} surnameUser - The last name of the user who created the post.
  * @property {number} centersChoosed- The post centers.
  * @property {User} user - The current user. 
- * @property {[Comment]} [comments] - The post asks/questions.
+ * @property {[CommentUnadapted]} [comments] - The post asks/questions.
  * @property {[img]} images - The post asks/questions.
  */
 export interface PostData {
@@ -129,7 +142,7 @@ export interface PostData {
   surnameUser:string
   centersChoosed:number
   user:User
-  comments?:[Comment]
+  comments?:[CommentUnadapted]
   images:[img]
 }
 
@@ -148,7 +161,7 @@ export interface PostDataAdapter {
   apellido_usuario:string
   centros_elegidos:number
   user:User
-  comentarios?:[Comment]
+  comentarios?:[CommentUnadapted]
   imagenes:[img]
 }
 

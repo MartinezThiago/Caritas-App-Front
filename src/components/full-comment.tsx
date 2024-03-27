@@ -26,27 +26,37 @@ interface FormData {
     answer: string
 }
 export default function FullComment({
-    answer,
-    answerDate,
     question,
     questionDate,
     questionUserInfo,
+    answer,
+    answerDate,
+    idAnswer,
+    idOwnerQuestion,
+    idOwnerAnswer,
+    idQuestion,
     idOwnerPost,
     idCurrentUser,
-    id_pregunta,
-    idAnswer
+    idPost,
+    roleCurrentUser
+
 }: {
-    answer?: string,
-    answerDate?: string
-    idAnswer?: number
     question: string
     questionDate: string
     questionUserInfo: string
+    answer?: string
+    answerDate?: string
+    idAnswer?: number
+    idOwnerQuestion: number
+    idOwnerAnswer?: number
+    idQuestion: number
     idOwnerPost: number
     idCurrentUser: string
     idPost: number
-    id_pregunta: number
+    roleCurrentUser: string
 }) {
+
+
     const {
         register,
         handleSubmit,
@@ -59,7 +69,7 @@ export default function FullComment({
             "usuario_owner_respuesta": currentUser,
             "contenido_respuesta": formData.answer,
             "fecha_publicacion_respuesta": getActualDate(),
-            "id_pregunta": id_pregunta
+            "id_pregunta": idQuestion
         }
         await axios
             .post(`${FRONT_BASE_URL}answer/post`, respuesta)
@@ -78,6 +88,10 @@ export default function FullComment({
                 question={question}
                 questionDate={questionDate}
                 questionUserInfo={questionUserInfo}
+                idOwnerQuestion={idOwnerQuestion}
+                idQuestion={idQuestion}
+                idCurrentUser={idCurrentUser}
+                roleCurrentUser={roleCurrentUser}
             />
             {(answer && answerDate) ? <AnswerPost
                 answer={answer}
@@ -104,7 +118,7 @@ export default function FullComment({
                         />
                     </div>
                     <button
-                        key={`ask${id_pregunta}`}
+                        key={`ask${idQuestion}`}
                         className='rounded-lg w-[100px] h-[30px] text-white ms-[10px]  outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
                     >
                         Responder
