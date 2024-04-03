@@ -133,7 +133,7 @@ export default function ExtendedPostCard(props: PostData) {
 
   return (
     <div>
-      <div className='w-100vw h-50vh flex justify-center w-[100vw] mt-[40px] font-sans'>
+      <div className='w-screen h-50vh flex justify-center mt-10 font-sans'>
         <div className='w-[500px]'>
           <ImageGallery
             items={Images()}
@@ -142,43 +142,43 @@ export default function ExtendedPostCard(props: PostData) {
             showIndex={true}
           />
         </div>
-        <div className='ms-[60px] text-black w-[29vw] flex flex-col justify-between h-[405px]'>
-          <div className=''>
+        <div className='ms-16 text-black w-[29vw] flex flex-col justify-between h-[405px]'>
+          <div>
             <div className='flex justify-between w-[80%]'>
               <h1 className='font-bold'>{props.title}</h1>
               <span className='font-bold text-sm text-gray-600'>{props.postDate}</span>
             </div>
-            <div className='ms-[20px] mt-[4px]'>
-              <div className='h-[80px]'>
+            <div className='ms-5 mt-1'>
+              <div className='h-20'>
                 <p className='font-bold'>Descripcion</p>
-                <p className='ms-[15px] mt-[5px]'>{props.description}</p>
+                <p className='ms-3.5 mt-1.5'>{props.description}</p>
               </div>
               <div className='w-[60%]'>
                 <div className='flex justify-between '>
                   <div className='font-bold '>
-                    <p className=''>Estado: </p>
-                    <p className='my-[20px]'>Categoría: </p>
-                    <p className='my-[20px]'>Ubicacion: </p>
+                    <p>Estado: </p>
+                    <p className='my-5'>Categoría: </p>
+                    <p className='my-5'>Ubicacion: </p>
                   </div>
-                  <div className=''>
-                    <p className=''>{props.nameStateProduct}</p>
-                    <p className='my-[20px]'>{props.nameProductCategorie}</p>
-                    <p className='my-[20px]'>{props.locationTrade}</p>
+                  <div>
+                    <p>{props.nameStateProduct}</p>
+                    <p className='my-5'>{props.nameProductCategorie}</p>
+                    <p className='my-5'>{props.locationTrade}</p>
                   </div>
                 </div>
                 <p className='font-bold'>Centros elegidos para el intercambio:</p>
-                <div className='ms-[15px] mt-[5px]'>
-                  <p className='my-[5px] text-sm'><span className='font-bold text-rose-700 text-base'>Centro nro°{`${props.centersChoosed}:`}</span> 50 y 120 n°25</p>
-                  <p className='my-[5px] text-sm'><span className='font-bold text-rose-700 text-base'>Centro nro°{`${props.centersChoosed}:`}</span> 1 y 57 n°23</p>
+                <div className='ms-3.5 mt-1.5'>
+                  <p className='my-1.5 text-sm'><span className='font-bold text-rose-700 text-base'>Centro nro°{`${props.centersChoosed}:`}</span> 50 y 120 n°25</p>
+                  <p className='my-1.5 text-sm'><span className='font-bold text-rose-700 text-base'>Centro nro°{`${props.centersChoosed}:`}</span> 1 y 57 n°23</p>
                 </div>
-                <div className='flex justify-between w-[86%] mt-[20px]'>
+                <div className='flex justify-between w-[86%] mt-5'>
                   <p className='font-bold'>Creador: </p>
                   <p className=''>{props.nameUser} {props.surnameUser}</p>
                 </div>
               </div>
             </div>
           </div>
-          <div className='text-white ms-[20px]'>
+          <div className='text-white ms-5'>
             {
               (props.user.role === 'usuario_basico' || (props.user.role === 'non-registered')) ?
                 <>
@@ -188,9 +188,10 @@ export default function ExtendedPostCard(props: PostData) {
                         {
                           (props.user.userId != props.idOwnerUser) ?
                             <>
+                            {/* ACTIVE SESSION SECTION */}
                               <button
                                 key='Trade'
-                                className='rounded-lg py-[10px] px-14 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
+                                className='rounded-lg py-2.5 px-14 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
                                 type={ButtonEnum.BUTTON}
                                 onClick={(() => {
                                   console.log('USUARIO BASICO: BOTON INTERCAMBIAR FUNCIONA')
@@ -200,7 +201,7 @@ export default function ExtendedPostCard(props: PostData) {
                               </button>
                               <button
                                 key='Save'
-                                className='rounded-lg ms-[50px] py-[10px] px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
+                                className='rounded-lg ms-12 py-2.5 px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
                                 type={ButtonEnum.BUTTON}
                                 onClick={(() => {
                                   console.log('USUARIO BASICO: BOTON GUARDAR FUNCIONA')
@@ -212,7 +213,7 @@ export default function ExtendedPostCard(props: PostData) {
                             <>
                               <button
                                 key='Trade'
-                                className='rounded-lg py-[10px] px-14 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
+                                className='rounded-lg py-2.5 px-14 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
                                 type={ButtonEnum.BUTTON}
                                 onClick={(() => {
                                   alert('No podes intercambiarte a ti mismo')
@@ -222,7 +223,7 @@ export default function ExtendedPostCard(props: PostData) {
                               </button>
                               <button
                                 key='Save'
-                                className='rounded-lg ms-[50px] py-[10px] px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
+                                className='rounded-lg ms-12 py-2.5 px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
                                 type={ButtonEnum.BUTTON}
                                 onClick={(() => {
                                   alert('No podes guardar tus propias publicaciones')
@@ -234,19 +235,21 @@ export default function ExtendedPostCard(props: PostData) {
                             </>
 
                         }
-                      </> : <><button
-                        key='Trade'
-                        className='rounded-lg py-[10px] px-14 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
-                        type={ButtonEnum.BUTTON}
-                        onClick={(() => {
-                          router.push('/sign/in')
-                        })}
-                      >
-                        Intercambiar
-                      </button>
+                      </> : <>
+                        {/* NO ACTIVE SESSION SECTION */}
+                        <button
+                          key='Trade'
+                          className='rounded-lg py-2.5 px-14 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
+                          type={ButtonEnum.BUTTON}
+                          onClick={(() => {
+                            router.push('/sign/in')
+                          })}
+                        >
+                          Intercambiar
+                        </button>
                         <button
                           key='Save'
-                          className='rounded-lg ms-[50px] py-[10px] px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
+                          className='rounded-lg ms-12 py-2.5 px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
                           type={ButtonEnum.BUTTON}
                           onClick={(() => {
                             router.push('/sign/in')
@@ -257,15 +260,16 @@ export default function ExtendedPostCard(props: PostData) {
                   }
                 </> :
                 <>
+                  {/* ADMIN SECTION */}
                   <button
                     key='Trade'
-                    className='rounded-lg py-[10px] px-14 font-semibold bg-gray-500 hover:bg-gray-600 hover:cursor-not-allowed'
+                    className='rounded-lg py-2.5 px-14 font-semibold bg-gray-500 hover:bg-gray-600 hover:cursor-not-allowed'
                   >
                     Intercambiar
                   </button>
                   <button
                     key='Save'
-                    className='rounded-lg ms-[50px] py-[10px] px-4 font-semibold bg-gray-500 hover:bg-gray-600 hover:cursor-not-allowed'
+                    className='rounded-lg ms-12 py-2.5 px-4 font-semibold bg-gray-500 hover:bg-gray-600 hover:cursor-not-allowed'
                   >
                     A
                   </button>
@@ -275,7 +279,7 @@ export default function ExtendedPostCard(props: PostData) {
 
         </div>
       </div>
-      <div className='w-[62%] m-auto text-black mt-[30px]'>
+      <div className='w-[60%] m-auto text-black mt-8'>
         <article>
           {
             (props.user.role === 'usuario_basico') && (props.user.userId != props.idOwnerUser) ?
@@ -295,13 +299,13 @@ export default function ExtendedPostCard(props: PostData) {
                       error={errors.question}
                       placeholder='Escriba aquí su pregunta'
                       className={{
-                        'input': 'rounded-md border-blue-900 border-2 w-[100%]'
+                        'input': 'rounded-md border-blue-900 border-2 w-full'
                       }}
                     />
                   </div>
                   <button
                     key='ask'
-                    className='rounded-lg w-[130px] h-[40px] text-white ms-[50px] py-[10px] px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
+                    className='rounded-lg w-32 h-10 text-white ms-12 py-2.5 px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
                   >
                     Preguntar
                   </button>
@@ -310,7 +314,7 @@ export default function ExtendedPostCard(props: PostData) {
           }
 
         </article>
-        <p className='font-bold text-xl mt-[15px] '>Ultimas preguntas:</p>
+        <p className='font-bold text-xl'>Ultimas preguntas:</p>
         {Comments()}
       </div>
     </div>

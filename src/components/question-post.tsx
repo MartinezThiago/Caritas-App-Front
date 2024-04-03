@@ -49,7 +49,7 @@ export default function QuestionPost({
 
     return (
         <>
-            <div className="flex justify-between mb-[-7px] font-medium  text-gray-600 border-b-[1px] border-gray-600">
+            <div className="flex justify-between font-medium  text-gray-600 border-b-[1px] border-gray-600">
                 <p className="text-sm">{questionUserInfo}</p>
                 <div className="flex items-center">
                     <p className="text-xs">{questionDate}</p>
@@ -58,7 +58,7 @@ export default function QuestionPost({
                             <>
                                 <button
                                     key='Delete'
-                                    className='rounded-lg ms-[20px] text-sm text-rose-700 font-semibold hover:font-bold duration-200'
+                                    className='rounded-lg ms-5 text-sm text-rose-700 font-semibold hover:font-bold duration-200'
                                     type={ButtonEnum.BUTTON}
                                     onClick={DeleteQuestion}
                                 >
