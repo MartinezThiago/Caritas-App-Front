@@ -43,7 +43,7 @@ export default function AnswerPost({
 
     return (
         <div className="flex justify-between items-center w-[100%]">
-            <p className="ms-[20px] "><span className="font-semibold text-2xl">-</span><span className="text-gray-600">{` ${answer}`}</span></p>
+            <p className="ms-5 "><span className="font-semibold text-2xl">-</span><span className="text-gray-600">{` ${answer}`}</span></p>
             <div>
                 <span className="text-xs font-medium text-gray-600">
                     {answerDate}
@@ -52,7 +52,7 @@ export default function AnswerPost({
                     ((idOwnerAnswer === parseInt(idCurrentUser)) || (roleCurrentUser === 'voluntario') || (roleCurrentUser === 'admin_centro')) ? <>
                         <button
                             key='Delete'
-                            className='rounded-lg ms-[20px] text-sm text-rose-700 font-semibold hover:font-bold duration-200'
+                            className='rounded-lg ms-5 text-sm text-rose-700 font-semibold hover:font-bold duration-200'
                             type={ButtonEnum.BUTTON}
                             onClick={DeleteAnswer}
                         >

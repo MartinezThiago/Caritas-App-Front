@@ -103,7 +103,7 @@ export default function FullComment({
             /> : (idOwnerPost === currentUser) ? <form
                 noValidate
                 onSubmit={handleSubmit(_handleSubmit)}
-                className="ms-[20px] h-[30px]"
+                className="ms-5 h-7"
             >
                 <div className='flex'>
                     <div className='w-[60%]'>
@@ -116,13 +116,13 @@ export default function FullComment({
                             registerOptions={{ required: 'Responder' }}
                             placeholder='Escriba aquí su respuesta'
                             className={{
-                                'input': 'rounded-md border-blue-900 border-2 w-[100%] h-[30px]'
+                                'input': 'rounded-md border-blue-900 border-2 w-full h-7'
                             }}
                         />
                     </div>
                     <button
                         key={`ask${idQuestion}`}
-                        className='rounded-lg w-[100px] h-[30px] text-white ms-[10px]  outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
+                        className='rounded-lg w-24 h-7 text-white ms-2.5 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
                     >
                         Responder
                     </button>
