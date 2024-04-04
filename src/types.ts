@@ -105,6 +105,7 @@ export interface CardProductProps {
   nameProductCategorie:string
   nameProductState:string
   locationTrade:string
+  image:string
 }
 
 /**
