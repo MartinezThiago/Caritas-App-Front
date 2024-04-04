@@ -9,6 +9,7 @@ import { ButtonEnum } from './types'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 import { FRONT_BASE_URL } from '@/constants'
+import TradeOfferFull from './trade-offer-full'
 
 interface FormData {
   question: string
@@ -188,7 +189,7 @@ export default function ExtendedPostCard(props: PostData) {
                         {
                           (props.user.userId != props.idOwnerUser) ?
                             <>
-                            {/* ACTIVE SESSION SECTION */}
+                              {/* ACTIVE SESSION SECTION */}
                               <button
                                 key='Trade'
                                 className='rounded-lg py-2.5 px-14 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
@@ -314,6 +315,7 @@ export default function ExtendedPostCard(props: PostData) {
           }
 
         </article>
+
         <p className='font-bold text-xl'>Ultimas preguntas:</p>
         {Comments()}
       </div>
