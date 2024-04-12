@@ -19,17 +19,19 @@ export default async function handler(
   res: NextApiResponse,
 ): Promise<void> {
   const formData = req.body
-
+  
   await axios
-    .post(`${BACK_BASE_URL}sign/in/`, formData)
+    .post(`${BACK_BASE_URL}Login/iniciarSesion`, formData)
     .then((result: any) => {
+      
       setToken(
         'access',
-        result.data.access,
+        result.data,
         req,
         res,
         // new Date(new Date().setSeconds(new Date().getSeconds() + 3))
       )
+
       res.status(result.status).json({})
     },
     )

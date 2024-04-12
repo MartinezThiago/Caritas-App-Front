@@ -54,23 +54,25 @@ export const getUser = (
 ): User => {
   const token = getCookie('access', { req, res })
   if (token === undefined) return {
+    userId: -1,
     name: '',
     surname: '',
-    dni: -1,
-    birthdate: new Date().getTime(),
+    dni: '-1',
+    birthdate: new Date().getTime().toString(),
     email: '',
-    center: -1,
-    role: 'Nominal'
+    role: 'non-registered',
+    center: -1
   }
   const user = decode(token) as UnadaptedUser
   return {
+    userId: user.userId,
     name: user.Nombre,
     surname: user.Apellido,
     dni: user.DNI,
-    birthdate: user.FechaNacimiento,
+    birthdate: new Date(user.FechaNacimiento).getTime().toString(),
     email: user.Email,
-    center: user.Centro,
-    role: user.Rol
+    role: user.Rol,
+    center: user.Centro
   }
 }
 

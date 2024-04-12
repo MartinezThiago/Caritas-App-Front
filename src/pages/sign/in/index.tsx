@@ -2,7 +2,7 @@ import type {
   NextApiRequest,
   NextApiResponse
 } from 'next'
-
+import { useRouter } from 'next/router'
 import axios from 'axios'
 import Link from 'next/link'
 
@@ -66,6 +66,7 @@ const links = {
  * The signin page.
  */
 export default function Signin({ user }: { user: User }) {
+  const router=useRouter()
   const [loading, setLoaging] = useState(false)
   const {
     register,
@@ -81,10 +82,13 @@ export default function Signin({ user }: { user: User }) {
     setLoaging(true)
     await axios
       .post(`${FRONT_BASE_URL}sign/in`, formData)
-      .then(() => redirect('/'))
+      .then(() => router.push('/'))
       .catch((error: { response: { data: { message: string } } }) => {
-        alert(error.response.data.message)
-        setLoaging(false)
+        console.log(error);
+        if(error){
+          alert(error.response.data.message)
+          setLoaging(false)
+      }
       })
   }
 

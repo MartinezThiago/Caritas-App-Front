@@ -50,13 +50,7 @@ export default function RootLayout({
           Registrarse
         </Link>
       </> :
-        user.role === 'Nominal' ? <>
-          <Link
-            key='link-create-post'
-            href='/post/create'
-          >
-            Crear Publicación
-          </Link>
+        user.role === 'usuario_basico' ? <>
           <div
             key='header-separator'
             className='flex-grow'
@@ -69,7 +63,7 @@ export default function RootLayout({
           </Link>
           <Link
             key='link-signout'
-            href='/signout'
+            href='/sign/out'
           >
             Cerrar Sesión
           </Link>
@@ -92,7 +86,7 @@ export default function RootLayout({
           </Link>
           <Link
             key='link-signout'
-            href='/signout'
+            href='/sign/out'
           >
             Cerrar Sesión
           </Link>
