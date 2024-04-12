@@ -19,8 +19,6 @@ export default async function handler(
     res: NextApiResponse,
 ): Promise<void> {
     const body = req.body
-    console.log(body);
-
     await axios
       .post(`${BACK_BASE_URL}CaritasBack/subirPregunta`,body)
       .then((result: any) => {        

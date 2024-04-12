@@ -65,11 +65,12 @@ export default function Home({ user }: { user: User }) {
           key={e.id}
           id={e.id}
           multimedia={e.img_src}
-          titulo={e.titulo}
-          descripcion={e.descripcion}
-          nombre_categoria_producto={e.nombre_categoria_producto}
-          nombre_estado_producto={e.nombre_estado_producto}
-          ubicacion_trade={e.ubicacion_trade}
+          title={e.titulo}
+          desciption={e.descripcion}
+          nameProductCategorie={e.nombre_categoria_producto}
+          nameProductState={e.nombre_estado_producto}
+          locationTrade={e.ubicacion_trade}
+          image=''
         />
       )
     })
