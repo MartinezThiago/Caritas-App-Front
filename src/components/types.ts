@@ -11,7 +11,7 @@ export enum InputEnum {
   SEARCH = 'search'
 }
 
-export type InputType = 'text' | 'password' | 'email' | 'number' | 'tel' | 'date' | 'checkbox' | 'radio' | 'file' | 'search'
+export type InputType = 'text' | 'password' | 'email' | 'number' | 'tel' | 'date' | 'file' | 'search'
 
 export enum ButtonEnum {
   SUBMIT = 'submit',

@@ -6,7 +6,7 @@ import type {
 import axios from 'axios'
 
 import { BACK_BASE_URL } from '@/constants'
-
+import { getCookie } from 'cookies-next'
 
 /**
  * Async handler function that sends the signin form data to the external server.
@@ -18,12 +18,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ): Promise<void> {
+  const formData = req.body
+  const token = getCookie('access', { req, res }) 
+
   await axios
-    .get(`${BACK_BASE_URL}CaritasBack/getPublicaciones`)
-    .then((result: any) => {
-      res.status(result.status).json(result.data)      
-    },
+    .post(
+      `${BACK_BASE_URL}post/`,
+      formData,
+      { headers: { Authorization: `Bearer ${token}` } }
     )
+    .then((result: any) => { res.status(result.status).json({}) })
     .catch((result: any) => {
       try {
         res.status(result.status).json({ message: result.data.message })

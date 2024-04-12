@@ -14,7 +14,8 @@ import {
 } from '@/types'
 import { getUser } from '@/utils'
 import { Input } from '@/components'
-import { requireNoPermission } from '@/utils'
+import { redirect } from 'next/navigation'
+import { requirePermission } from '@/utils'
 import { RootLayout } from '@/layouts'
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
@@ -30,7 +31,7 @@ export async function getServerSideProps({
   req: NextApiRequest
   res: NextApiResponse
 }>): Promise<GetSSPropsResult> {
-  return requireNoPermission(getUser(req, res))
+  return requirePermission(getUser(req, res))
 }
 
 /**
