@@ -42,7 +42,7 @@ export async function getServerSideProps({
 }>): Promise<GetSSPropsResult> {
   return requirePermission(
     getUser(req, res),
-    'Nominal',
+    'usuario_basico',
     '/'
   )
 }

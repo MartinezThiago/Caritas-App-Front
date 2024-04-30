@@ -1,6 +1,6 @@
 import { PostData, Comment, CommentUnadapted, img } from '@/types'
 import FullComment from './full-comment'
-import Input from './input'
+import Input from './inputs/input'
 import { useForm } from 'react-hook-form'
 import ImageGallery from 'react-image-gallery'
 import "react-image-gallery/styles/css/image-gallery.css"
@@ -288,7 +288,7 @@ export default function ExtendedPostCard(props: PostData) {
                 noValidate
                 onSubmit={handleSubmit(_handleSubmit)}
               >
-                <p className='font-bold text-sm'>Preguntale al vendedor</p>
+                {/* <p className='font-bold text-sm'>Preguntale al vendedor</p> */}
                 <div className='flex'>
                   <div className='w-[60%]'>
                     <Input
@@ -299,9 +299,10 @@ export default function ExtendedPostCard(props: PostData) {
                       registerOptions={{ required: 'Escriba una pregunta' }}
                       error={errors.question}
                       placeholder='Escriba aquí su pregunta'
-                      className={{
-                        'input': 'rounded-md border-blue-900 border-2 w-full'
-                      }}
+                      label={'Preguntale al vendedor'}
+                      // className={{
+                      //   'input': 'rounded-md border-blue-900 border-2 w-full'
+                      // }}
                     />
                   </div>
                   <button

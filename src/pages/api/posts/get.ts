@@ -18,12 +18,9 @@ import type {
     req: NextApiRequest,
     res: NextApiResponse,
   ): Promise<void> {
-    console.log('ENTRO AL GET');
-    
-    const body = req.body
     await axios
-      .get(`${BACK_BASE_URL}CaritasBack/getPublicacion?idPublicacion=${body.id}`)
-      .then((result: any) => {        
+      .get(`${BACK_BASE_URL}CaritasBack/getPublicaciones`)
+      .then((result: any) => {
         res.status(result.status).json(result.data)      
       },
       )
@@ -36,4 +33,3 @@ import type {
       },
       )
   }
-  

@@ -19,9 +19,18 @@ export default async function handler(
 ): Promise<void> {
   const formData = req.body
 
+  const adaptedFormData={
+    nombre:formData.name,
+    apellido:formData.surname,
+    dni:formData.dni,
+    email:formData.email,
+    password:formData.password,
+    fecha_nacimiento:formData.birthdate
+  }
+  
   await axios
-    .post(`${BACK_BASE_URL}sign/up/`, formData)
-    .then((result: any) => { res.status(result.status).json({}) })
+    .post(`${BACK_BASE_URL}CaritasBack/registrarUsuario`, adaptedFormData)
+    .then((result: any) => {res.status(result.status).json({})})
     .catch((result: any) => {
       try {
         res.status(result.status).json({ message: result.data.message })

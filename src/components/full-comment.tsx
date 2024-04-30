@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import AnswerPost from "./answer-post";
 import QuestionPost from "./question-post";
-import Input from "./input";
+import Input from "./inputs/input";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { FRONT_BASE_URL } from "@/constants";
@@ -115,9 +115,10 @@ export default function FullComment({
                             error={errors.answer}
                             registerOptions={{ required: 'Responder' }}
                             placeholder='Escriba aquí su respuesta'
-                            className={{
-                                'input': 'rounded-md border-blue-900 border-2 w-full h-7'
-                            }}
+                            label=""
+                            // className={{
+                            //     'input': 'rounded-md border-blue-900 border-2 w-full h-7'
+                            // }}
                         />
                     </div>
                     <button

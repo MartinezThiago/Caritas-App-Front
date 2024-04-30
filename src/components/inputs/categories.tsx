@@ -87,28 +87,28 @@ function Categories({
   >
     {checkbox(
       'category-cleaning',
-      'cleaning',
+      'limpieza',
       handleChange,
       'Limpieza',
       placeholders.includes('cleaning')
     )}
     {checkbox(
       'category-food',
-      'food',
+      'alimentos',
       handleChange,
       'Alimento',
       placeholders.includes('food')
     )}
     {checkbox(
       'category-clothes',
-      'clothes',
+      'ropa',
       handleChange,
       'Ropa',
       placeholders.includes('clothes')
     )}
     {checkbox(
       'category-school-equipment',
-      'school-equipment',
+      'utiles escolares',
       handleChange,
       'Útiles escolares',
       placeholders.includes('school-equipment')

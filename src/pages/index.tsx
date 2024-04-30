@@ -13,6 +13,7 @@ import {
 } from 'react'
 import { FRONT_BASE_URL } from '@/constants'
 import { useForm } from 'react-hook-form'
+import { useRouter } from 'next/router'
 
 export async function getServerSideProps({
   req,
@@ -40,6 +41,7 @@ interface FormData {
 }
 
 export default function Home({ user }: { user: User }) {
+  const router=useRouter()
   const [cardsData, setCardsData] = useState<any[]>()
   const {
     register,
@@ -49,6 +51,8 @@ export default function Home({ user }: { user: User }) {
 
   useEffect(() => {
     const getProducts = async () => {
+      console.log(`${FRONT_BASE_URL}posts/get`);
+      
       const { data: cardsData } = await axios.get<any[]>(`${FRONT_BASE_URL}posts/get`)
 
       setCardsData(cardsData)
@@ -83,6 +87,7 @@ export default function Home({ user }: { user: User }) {
         <button
           key='Post'
           className='ms-[25%] mt-[15%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
+          onClick={()=>router.push('/post/create')}
         >
           Crear publicacion
         </button>
@@ -105,9 +110,10 @@ export default function Home({ user }: { user: User }) {
                 registerOptions={{ required: 'Escriba una busqueda' }}
                 error={errors.question}
                 placeholder='Buscar...'
-                className={{
-                  'input': 'rounded-full border-blue-900 border-2'
-                }}
+                label=''
+                // className={{
+                //   'input': 'rounded-full border-blue-900 border-2'
+                // }}
               />
             </div>
             <button

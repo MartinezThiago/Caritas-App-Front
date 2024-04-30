@@ -20,7 +20,8 @@ export default async function handler(
 ): Promise<void> {
   const formData = req.body
   const token = getCookie('access', { req, res }) 
-
+  console.log(req.body);
+  
   await axios
     .post(
       `${BACK_BASE_URL}post/`,

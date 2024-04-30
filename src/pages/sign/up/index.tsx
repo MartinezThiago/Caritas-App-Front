@@ -20,6 +20,7 @@ import { RootLayout } from '@/layouts'
 import { subYears } from 'date-fns'
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
+import { useRouter } from 'next/router'
 
 
 /**
@@ -49,6 +50,7 @@ interface FormData extends Omit<User, 'role' | 'center'> {
  */
 export default function Signup({ user }: { user: User }) {
   const [loading, setLoaging] = useState(false)
+  const router=useRouter()
   const {
     register,
     handleSubmit,
@@ -64,12 +66,12 @@ export default function Signup({ user }: { user: User }) {
     setLoaging(true)
     await axios
       .post(`${FRONT_BASE_URL}sign/up`, formData)
-      .then(() => redirect('/'))
+      .then(() => router.push('/'))
       .catch((error: any) => {
         try {
           alert(error.response.data.message)
         } catch (error) {
-          alert('Ah ocurrido un error inesperado, intente nuevamente.')
+          alert('Ah ocurrido un error inesperado, asdasd nuevamente.')
         }
         setLoaging(false)
       })
