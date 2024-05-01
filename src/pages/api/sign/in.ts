@@ -39,7 +39,7 @@ export default async function handler(
       try {
         res.status(result.status).json({ message: result.data.message })
       } catch {
-        res.status(500).json({ message: 'Ah ocurrido un error inesperado.' })
+        res.status(500).json({ message: 'Credenciales incorrectas vuelve a intentarlo.' })
       }
     },
     )
