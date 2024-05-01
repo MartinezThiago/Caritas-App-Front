@@ -51,12 +51,12 @@ export async function getServerSideProps({
  * The form data for the post creation.
  */
 interface FormData {
-  name: string
+  name: string // titulo
   location: string
-  description: string
-  categories: string[]
-  photos: string
-  center: string
+  description: string // descripcion
+  categories: string[] // categorias
+  photos: string // imagenes
+  center: string // centros_elegidos
 }
 
 /**

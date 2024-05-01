@@ -6,6 +6,7 @@ import type {
 import axios from 'axios'
 
 import { BACK_BASE_URL } from '@/constants'
+import { getCookie } from 'cookies-next'
 
 
 /**
@@ -19,8 +20,14 @@ export default async function handler(
     res: NextApiResponse,
 ): Promise<void> {
     const body = req.body
+    const token = getCookie('access', { req, res })
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+    }
     await axios
-      .post(`${BACK_BASE_URL}CaritasBack/subirPregunta`,body)
+      .post(`${BACK_BASE_URL}CaritasBack/subirPregunta`,body, config)
       .then((result: any) => {        
         res.status(result.status).json(result.data)      
       },
@@ -29,7 +36,7 @@ export default async function handler(
         try {
           res.status(result.status).json({ message: result.data.message })
         } catch {
-          res.status(500).json({ message: 'Ah ocurrido un error inesperado.' })
+          res.status(500).json({ message: 'Ah ocurrido un error inesperado al momento de preguntar.' })
         }
       },
       )

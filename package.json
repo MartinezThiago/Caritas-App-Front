@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "net": "next dev -H 192.168.0.164 -p 3000",
+    "net1": "next dev -H 192.168.100.25 -p 3000",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

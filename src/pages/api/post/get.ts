@@ -18,7 +18,6 @@ import type {
     req: NextApiRequest,
     res: NextApiResponse,
   ): Promise<void> {
-    console.log('ENTRO AL GET');
     
     const body = req.body
     await axios
