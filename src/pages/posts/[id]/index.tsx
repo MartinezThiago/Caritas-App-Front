@@ -23,7 +23,8 @@ export default function PostInfo({ user }: { user: User }){
   
     const router=useRouter();
     const [postData, setPostData] = useState<PostDataAdapter>()
-
+    
+  
     useEffect(() => {
         const getProducts = async () => {
         const {data:postData} = await axios.post<PostDataAdapter>(`${FRONT_BASE_URL}post/get`, {id:router.query.id} )

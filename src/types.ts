@@ -96,6 +96,7 @@ export type CommentUnadapted = {
  * @property {string} nameProductCategorie - The product categorie.
  * @property {string} nameProductState - The product state.
  * @property {string} locationTrade - The ubication of the trade
+ *  @property {string} image - The first image of the post
  */
 export interface CardProductProps {
   id:number

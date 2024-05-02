@@ -4,9 +4,13 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 export default function CardProduct(props: CardProductProps) {
+  console.log(props.image);
+  const aux=props.image
   return (
     <Link href={`posts/${props.id}`} className='w-[16rem] h-[20rem] me-[1rem] mb-[1rem] border-[3px] border-blue-900 rounded-md hover:scale-105 duration-300'>
-      <Image alt={`post-image-${props.id}`} src={postImagePreview} />
+      <div className='h-[145px]'>
+        <Image alt={`post-image-${props.id}`} className={'m-auto'} src={props.image} width={140} height={0}/>
+      </div>
       <div className={'flex flex-col justify-between h-[54%] '}>
         <div className='mt-2.5 ms-2.5 h-full flex flex-col justify-between'>
           <div>
