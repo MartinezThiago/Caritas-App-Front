@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import caritasLogo from 'public/caritas-logo.svg'
-
+import profilePicDefault from 'public/profile-pic-default.jpg'
 import { User } from '@/types'
 
 export default function RootLayout({
@@ -59,7 +59,10 @@ export default function RootLayout({
             key='link-user'
             href='/user'
           >
-            {user.name}
+            <div className='flex items-center'>
+              <Image alt={`userProfilePic`} className={'me-[10px] w-[30px] rounded-full'} src={profilePicDefault} />
+              {user.name}
+            </div>
           </Link>
           <Link
             key='link-signout'
@@ -82,7 +85,10 @@ export default function RootLayout({
             key='link-user'
             href='/user'
           >
-            {user.name}
+            <div className='flex items-center'>
+              <Image alt={`userProfilePic`} className={'me-[10px] w-[30px] rounded-full'} src={profilePicDefault} />
+              {user.name}
+            </div>
           </Link>
           <Link
             key='link-signout'

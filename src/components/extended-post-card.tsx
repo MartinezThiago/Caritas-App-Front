@@ -4,12 +4,12 @@ import Input from './inputs/input'
 import { useForm } from 'react-hook-form'
 import ImageGallery from 'react-image-gallery'
 import "react-image-gallery/styles/css/image-gallery.css"
-import postImagePreview from 'public/post-image-preview.jpg'
 import { ButtonEnum } from './types'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 import { FRONT_BASE_URL } from '@/constants'
 import TradeOfferFull from './trade-offer-full'
+import Image from 'next/image'
 
 interface FormData {
   question: string
@@ -33,7 +33,7 @@ function getActualDate() {
 
 }
 
-export default function ExtendedPostCard(props: PostData) {
+export default function ExtendedPostCard(props: any) {
   const {
     register,
     handleSubmit,
@@ -74,7 +74,6 @@ export default function ExtendedPostCard(props: PostData) {
           idOwnerQuestion={e.user_id_pregunta}
           idOwnerAnswer={e.user_id_respuesta}
           idQuestion={e.id_pregunta}
-
           idPost={props.idPost}
           idOwnerPost={props.idOwnerUser}
           idCurrentUser={`${props.user.userId}`}
@@ -86,52 +85,13 @@ export default function ExtendedPostCard(props: PostData) {
     return comment;
   }
 
-  if (props.images.length > 0) {
-    const images = props.images.map((e: any) => ({
-      original: e.base64_imagen,
-      thumbnail: e.base64_imagen,
-    }))
-  } else {
-    const images = [
-      {
-        original: postImagePreview.src,
-        thumbnail: postImagePreview.src,
-      },
-      {
-        original: postImagePreview.src,
-        thumbnail: postImagePreview.src,
-      },
-      {
-        original: postImagePreview.src,
-        thumbnail: postImagePreview.src,
-      },
-    ];
-  }
-  {/*CAMBIO MOMENTANEO HASTA PODER CARGAR PUBLICACIONES, CONTEMPLA QUE SI EL POST NO TIENE IMAGENES PONE UNAS POR DEFECTO*/ }
   const Images = () => {
-    if (props.images.length > 0) {
       return props.images.map((e: any) => ({
         original: e.base64_imagen,
         thumbnail: e.base64_imagen,
       }))
-    } else {
-      return [
-        {
-          original: postImagePreview.src,
-          thumbnail: postImagePreview.src,
-        },
-        {
-          original: postImagePreview.src,
-          thumbnail: postImagePreview.src,
-        },
-        {
-          original: postImagePreview.src,
-          thumbnail: postImagePreview.src,
-        },
-      ];
-    }
   }
-
+  
   return (
     <div>
       <div className='w-screen h-50vh flex justify-center mt-10 font-sans'>
@@ -172,9 +132,12 @@ export default function ExtendedPostCard(props: PostData) {
                   <p className='my-1.5 text-sm'><span className='font-bold text-rose-700 text-base'>Centro nro°{`${props.centersChoosed}:`}</span> 50 y 120 n°25</p>
                   <p className='my-1.5 text-sm'><span className='font-bold text-rose-700 text-base'>Centro nro°{`${props.centersChoosed}:`}</span> 1 y 57 n°23</p>
                 </div>
-                <div className='flex justify-between w-[86%] mt-5'>
-                  <p className='font-bold'>Creador: </p>
-                  <p className=''>{props.nameUser} {props.surnameUser}</p>
+                <div className='flex justify-between w-[100%] mt-5'>
+                  <div className='flex items-center mb-[20px]'>
+                    <p className='font-bold'>Creador: </p>
+                    <Image alt={`ownerPostProfilePic`} className={'ms-[50px] w-[38px] rounded-full'} src={props.profilePic} />
+                    <p className='ms-[10px]'>{props.nameUser} {props.surnameUser}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -289,7 +252,7 @@ export default function ExtendedPostCard(props: PostData) {
                 onSubmit={handleSubmit(_handleSubmit)}
               >
                 {/* <p className='font-bold text-sm'>Preguntale al vendedor</p> */}
-                <div className='flex'>
+                <div className='flex items-center'>
                   <div className='w-[60%]'>
                     <Input
                       id='question'
@@ -300,9 +263,6 @@ export default function ExtendedPostCard(props: PostData) {
                       error={errors.question}
                       placeholder='Escriba aquí su pregunta'
                       label={'Preguntale al vendedor'}
-                      // className={{
-                      //   'input': 'rounded-md border-blue-900 border-2 w-full'
-                      // }}
                     />
                   </div>
                   <button

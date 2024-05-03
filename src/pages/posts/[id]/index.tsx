@@ -8,6 +8,7 @@ import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react";
+import profileDefaultPic from 'public/profile-pic-default.jpg'
 
   export async function getServerSideProps({
     req,
@@ -56,6 +57,7 @@ export default function PostInfo({ user }: { user: User }){
                   comments={postData.comentarios}
                   images={postData.imagenes}
                   user={user}
+                  profilePic={profileDefaultPic}
             />
         </RootLayout>
     )

@@ -105,8 +105,8 @@ export default function FullComment({
                 onSubmit={handleSubmit(_handleSubmit)}
                 className="ms-5 h-7"
             >
-                <div className='flex'>
-                    <div className='w-[60%]'>
+                <div className='flex '>
+                    <div className='w-[60%] '>
                         <Input
                             id={`answer`}
                             register={register}
@@ -123,7 +123,7 @@ export default function FullComment({
                     </div>
                     <button
                         key={`ask${idQuestion}`}
-                        className='rounded-lg w-24 h-7 text-white ms-2.5 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
+                        className='rounded-lg w-32 h-10 text-white ms-2.5 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
                     >
                         Responder
                     </button>

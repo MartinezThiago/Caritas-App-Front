@@ -75,7 +75,8 @@ export default function Home({ user }: { user: User }) {
           nameProductCategorie={e.nombre_categoria_producto}
           nameProductState={e.nombre_estado_producto}
           locationTrade={e.ubicacion_trade}
-          image={e.imagenes[0]?e.imagenes[0].base64_imagen:e.imagenes[0]}
+          // image={e.imagenes[0]?e.imagenes[0].base64_imagen:e.imagenes[0]}
+          image={e.imagenes[0].base64_imagen}
         />
         
       )
