@@ -125,6 +125,7 @@ export interface CardProductProps {
  * @property {string} surnameUser - The last name of the user who created the post.
  * @property {number} centersChoosed- The post centers.
  * @property {User} user - The current user. 
+ * @property {string} profilePicOwner - The profile pic of the owners post
  * @property {[CommentUnadapted]} [comments] - The post asks/questions.
  * @property {[img]} images - The post asks/questions.
  */
@@ -143,6 +144,7 @@ export interface PostData {
   surnameUser:string
   centersChoosed:number
   user:User
+  profilePicOwner:string
   comments?:[CommentUnadapted]
   images:[img]
 }
@@ -163,6 +165,7 @@ export interface PostDataAdapter {
   centros_elegidos:number
   user:User
   comentarios?:[CommentUnadapted]
+  base64_imagen:string
   imagenes:[img]
 }
 

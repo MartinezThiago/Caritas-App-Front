@@ -37,7 +37,7 @@ export default function PostInfo({ user }: { user: User }){
     if(!postData){
         return null
     }    
-      
+
     return( 
         <RootLayout user={user}>
             <ExtendedPostCard
@@ -57,7 +57,7 @@ export default function PostInfo({ user }: { user: User }){
                   comments={postData.comentarios}
                   images={postData.imagenes}
                   user={user}
-                  profilePic={profileDefaultPic}
+                  profilePicOwner={postData.base64_imagen}
             />
         </RootLayout>
     )

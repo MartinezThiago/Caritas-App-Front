@@ -33,7 +33,7 @@ function getActualDate() {
 
 }
 
-export default function ExtendedPostCard(props: any) {
+export default function ExtendedPostCard(props: PostData) {
   const {
     register,
     handleSubmit,
@@ -135,7 +135,7 @@ export default function ExtendedPostCard(props: any) {
                 <div className='flex justify-between w-[100%] mt-5'>
                   <div className='flex items-center mb-[20px]'>
                     <p className='font-bold'>Creador: </p>
-                    <Image alt={`ownerPostProfilePic`} className={'ms-[50px] w-[38px] rounded-full'} src={props.profilePic} />
+                    <Image alt={`ownerPostProfilePic`} className={'ms-[50px] w-[38px] rounded-full'} width={0} height={0} src={props.profilePicOwner} />
                     <p className='ms-[10px]'>{props.nameUser} {props.surnameUser}</p>
                   </div>
                 </div>
