@@ -60,7 +60,6 @@ function Categories({
   registerOptions,
   setValue,
   clearError,
-  placeholders = []
 }: Readonly<Props>) {
   const [categories, setCategories] = useState<string[]>([])
   register(id, registerOptions)
@@ -86,32 +85,32 @@ function Categories({
     className='w-full h-[2.5rem] mb-2 py-2 px-3 flex place-content-evenly text-sm font-bold shadow border focus:outline-none focus:shadow-outline'
   >
     {checkbox(
-      'category-cleaning',
+      'limpieza',
       'limpieza',
       handleChange,
       'Limpieza',
-      placeholders.includes('cleaning')
+      categories.includes('limpieza')
     )}
     {checkbox(
-      'category-food',
+      'alimentos',
       'alimentos',
       handleChange,
       'Alimento',
-      placeholders.includes('food')
+      categories.includes('alimentos')
     )}
     {checkbox(
-      'category-clothes',
+      'ropa',
       'ropa',
       handleChange,
       'Ropa',
-      placeholders.includes('clothes')
+      categories.includes('ropa')
     )}
     {checkbox(
-      'category-school-equipment',
+      'utiles escolares',
       'utiles escolares',
       handleChange,
       'Útiles escolares',
-      placeholders.includes('school-equipment')
+      categories.includes('utiles escolares')
     )}
   </fieldset >
 }
