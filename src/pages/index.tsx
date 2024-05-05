@@ -1,21 +1,15 @@
-import type {
-  NextApiRequest,
-  NextApiResponse
-} from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 import axios from 'axios'
 import RootLayout from '../layouts/root-layout'
 import { CardProduct, Input } from '@/components'
 import { User } from '@/types'
 import { getUser } from '@/utils'
-import {
-  useEffect,
-  useState
-} from 'react'
+import { useEffect, useState } from 'react'
 import { FRONT_BASE_URL } from '@/constants'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 
-export async function getServerSideProps({
+export async function getServerSideProps ({
   req,
   res
 }: Readonly<{
@@ -28,10 +22,7 @@ export async function getServerSideProps({
 }> {
   return {
     props: {
-      user: getUser(
-        req,
-        res
-      )
+      user: getUser(req, res)
     }
   }
 }
@@ -40,8 +31,8 @@ interface FormData {
   question: string
 }
 
-export default function Home({ user }: { user: User }) {
-  const router=useRouter()
+export default function Home ({ user }: { user: User }) {
+  const router = useRouter()
   const [cardsData, setCardsData] = useState<any[]>()
 
   const {
@@ -51,9 +42,16 @@ export default function Home({ user }: { user: User }) {
   } = useForm<FormData>()
     useEffect(() => {
     const getProducts = async () => {
-      console.log(`${FRONT_BASE_URL}posts/get`);
-      
-      const { data: cardsData } = await axios.get<any[]>(`${FRONT_BASE_URL}posts/get`)
+      console.log(`${FRONT_BASE_URL}posts/get`)
+
+      const { data: cardsData } = await axios
+        .get<any[]>(`${FRONT_BASE_URL}posts/get`)
+        .then((res: any) => {
+          return res.data
+        })
+        .catch((err: any) => {
+          return []
+        })
 
       setCardsData(cardsData)
     }
@@ -78,56 +76,57 @@ export default function Home({ user }: { user: User }) {
         />
       )
     })
-    return cards;
+    return cards
   }
 
-  return <RootLayout user={user}>
-    <main className='flex'>
-      <div className='w-[30vw] border-r-4 border-r-blue-900'>
-        <button
-          key='Post'
-          className='ms-[25%] mt-[15%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
-          onClick={()=>router.push('/post/create')}
-        >
-          Crear publicacion
-        </button>
-        <form
-          noValidate
-          onSubmit={handleSubmit(({ question }: FormData) => {
-            {
-            }
-            console.log(question);
-
-          })}
-        >
-          <div className='flex mt-[30px] justify-center w-[100%]'>
-            <div className='w-[50%]'>
-              <Input
-                id='question'
-                register={register}
-                type='search'
-                key='question'
-                registerOptions={{ required: 'Escriba una busqueda' }}
-                error={errors.question}
-                placeholder='Buscar...'
-                label=''
-                // className={{
-                //   'input': 'rounded-full border-blue-900 border-2'
-                // }}
-              />
+  return (
+    <RootLayout user={user}>
+      <main className='flex'>
+        <div className='w-[30vw] border-r-4 border-r-blue-900'>
+          <button
+            key='Post'
+            className='ms-[25%] mt-[15%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
+            onClick={() => router.push('/post/create')}
+          >
+            Crear publicacion
+          </button>
+          <form
+            noValidate
+            onSubmit={handleSubmit(({ question }: FormData) => {
+              {
+              }
+              console.log(question)
+            })}
+          >
+            <div className='flex mt-[30px] justify-center w-[100%]'>
+              <div className='w-[50%]'>
+                <Input
+                  id='question'
+                  register={register}
+                  type='search'
+                  key='question'
+                  registerOptions={{ required: 'Escriba una busqueda' }}
+                  error={errors.question}
+                  placeholder='Buscar...'
+                  label=''
+                  // className={{
+                  //   'input': 'rounded-full border-blue-900 border-2'
+                  // }}
+                />
+              </div>
+              <button
+                key='Save'
+                className='rounded-full w-[40px] h-[40px] text-white ms-[10px] outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
+              >
+                B
+              </button>
             </div>
-            <button
-              key='Save'
-              className='rounded-full w-[40px] h-[40px] text-white ms-[10px] outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
-            >
-              B
-            </button>
-          </div>
-        </form>
-      </div>
-      <div className='flex flex-wrap justify-center items-center mt-[4.4%] w-[70vw]'>
-        {CardsProducts()}
-      </div>
-    </main>
-  </RootLayout>
+          </form>
+        </div>
+        <div className='flex flex-wrap justify-center items-center mt-[4.4%] w-[70vw]'>
+          {CardsProducts()}
+        </div>
+      </main>
+    </RootLayout>
+  )
 }

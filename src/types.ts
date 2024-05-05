@@ -2,7 +2,6 @@ export type Rol = 'admin_centro' | 'voluntario' | 'usuario_basico'
 
 export type Role = Rol | 'non-registered'
 
-
 /**
  * The user data.
  * @property {number} userId - The user's ID.
@@ -15,7 +14,7 @@ export type Role = Rol | 'non-registered'
  * @property {Role} role - The user's role.
  */
 export interface User {
-  userId:number
+  userId: number
   name: string
   surname: string
   dni: string
@@ -37,7 +36,7 @@ export interface User {
  * @property {Role} Rol - The user's role.
  */
 export interface UnadaptedUser {
-  userId:number
+  userId: number
   Nombre: string
   Apellido: string
   Centro: number
@@ -48,8 +47,8 @@ export interface UnadaptedUser {
 }
 
 export type img = {
-  base64_imagen:string
-} 
+  base64_imagen: string
+}
 
 export type TokenName = 'access' | 'refresh'
 
@@ -59,33 +58,32 @@ export interface GetSSPropsResult {
 }
 
 export type Comment = {
-  user_id_pregunta:string
-  id_pregunta:number
-  nombre_pregunta:string
-  apellido_pregunta:string
-  pregunta:string
-  fechaPregunta:string
-  respuesta?:string
-  fechaRespuesta?:string
-  idRespuesta?:number
-  idOwnerPost:number
-  idCurrentUser:number
-  idPost:number
-} 
+  user_id_pregunta: string
+  id_pregunta: number
+  nombre_pregunta: string
+  apellido_pregunta: string
+  pregunta: string
+  fechaPregunta: string
+  respuesta?: string
+  fechaRespuesta?: string
+  idRespuesta?: number
+  idOwnerPost: number
+  idCurrentUser: number
+  idPost: number
+}
 
 export type CommentUnadapted = {
-  fechaPregunta:string
-  fechaRespuesta?:string
-  id_pregunta:number
-  id_respuesta:number
-  nombre_pregunta:string
-  apellido_pregunta:string
-  pregunta:string
-  respuesta?:string
-  user_id_pregunta:number
-  user_id_respuesta?:number
-} 
-
+  fechaPregunta: string
+  fechaRespuesta?: string
+  id_pregunta: number
+  id_respuesta: number
+  nombre_pregunta: string
+  apellido_pregunta: string
+  pregunta: string
+  respuesta?: string
+  user_id_pregunta: number
+  user_id_respuesta?: number
+}
 
 /**
  * The product card data.
@@ -99,14 +97,14 @@ export type CommentUnadapted = {
  *  @property {string} image - The first image of the post
  */
 export interface CardProductProps {
-  id:number
-  multimedia:number
-  title:string
-  desciption:string
-  nameProductCategorie:string
-  nameProductState:string
-  locationTrade:string
-  image:string
+  id: number
+  multimedia: number
+  title: string
+  desciption: string
+  nameProductCategorie: string
+  nameProductState: string
+  locationTrade: string
+  image: string
 }
 
 /**
@@ -169,4 +167,4 @@ export interface PostDataAdapter {
   imagenes:[img]
 }
 
-
+export const productStatus = ['Nuevo', 'Usado']
