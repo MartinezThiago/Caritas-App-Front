@@ -82,7 +82,10 @@ export default function Signin({ user }: { user: User }) {
     setLoaging(true)
     await axios
       .post(`${FRONT_BASE_URL}sign/in`, formData)
-      .then(() => router.push('/'))
+      .then(async () =>{
+        const { data: fotoPerfil } = await axios.get<any>(`${FRONT_BASE_URL}profilepic/get`)
+        localStorage.setItem('profilePic', fotoPerfil.fotoUser)        
+        router.push('/')})
       .catch((error: { response: { data: { message: string } } }) => {
         console.log(error);
         if(error){

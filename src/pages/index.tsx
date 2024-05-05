@@ -43,13 +43,13 @@ interface FormData {
 export default function Home({ user }: { user: User }) {
   const router=useRouter()
   const [cardsData, setCardsData] = useState<any[]>()
+
   const {
     register,
     handleSubmit,
     formState: { errors }
   } = useForm<FormData>()
-
-  useEffect(() => {
+    useEffect(() => {
     const getProducts = async () => {
       console.log(`${FRONT_BASE_URL}posts/get`);
       
@@ -62,7 +62,6 @@ export default function Home({ user }: { user: User }) {
   if (!cardsData) {
     return null
   }
-  
   const CardsProducts = () => {
     const cards = cardsData!.map((e: any) => {
       return (
@@ -75,10 +74,8 @@ export default function Home({ user }: { user: User }) {
           nameProductCategorie={e.nombre_categoria_producto}
           nameProductState={e.nombre_estado_producto}
           locationTrade={e.ubicacion_trade}
-          // image={e.imagenes[0]?e.imagenes[0].base64_imagen:e.imagenes[0]}
           image={e.imagenes[0].base64_imagen}
         />
-        
       )
     })
     return cards;

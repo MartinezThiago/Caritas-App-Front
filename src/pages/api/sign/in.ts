@@ -23,13 +23,11 @@ export default async function handler(
   await axios
     .post(`${BACK_BASE_URL}Login/iniciarSesion`, formData)
     .then((result: any) => {
-      
       setToken(
         'access',
         result.data,
         req,
         res,
-        // new Date(new Date().setSeconds(new Date().getSeconds() + 3))
       )
 
       res.status(result.status).json({})
