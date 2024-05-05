@@ -2,7 +2,6 @@ export type Rol = 'admin_centro' | 'voluntario' | 'usuario_basico'
 
 export type Role = Rol | 'non-registered'
 
-
 /**
  * The user data.
  * @property {number} userId - The user's ID.
@@ -15,7 +14,7 @@ export type Role = Rol | 'non-registered'
  * @property {Role} role - The user's role.
  */
 export interface User {
-  userId:number
+  userId: number
   name: string
   surname: string
   dni: string
@@ -37,7 +36,7 @@ export interface User {
  * @property {Role} Rol - The user's role.
  */
 export interface UnadaptedUser {
-  userId:number
+  userId: number
   Nombre: string
   Apellido: string
   Centro: number
@@ -48,8 +47,8 @@ export interface UnadaptedUser {
 }
 
 export type img = {
-  base64_imagen:string
-} 
+  base64_imagen: string
+}
 
 export type TokenName = 'access' | 'refresh'
 
@@ -59,33 +58,32 @@ export interface GetSSPropsResult {
 }
 
 export type Comment = {
-  user_id_pregunta:string
-  id_pregunta:number
-  nombre_pregunta:string
-  apellido_pregunta:string
-  pregunta:string
-  fechaPregunta:string
-  respuesta?:string
-  fechaRespuesta?:string
-  idRespuesta?:number
-  idOwnerPost:number
-  idCurrentUser:number
-  idPost:number
-} 
+  user_id_pregunta: string
+  id_pregunta: number
+  nombre_pregunta: string
+  apellido_pregunta: string
+  pregunta: string
+  fechaPregunta: string
+  respuesta?: string
+  fechaRespuesta?: string
+  idRespuesta?: number
+  idOwnerPost: number
+  idCurrentUser: number
+  idPost: number
+}
 
 export type CommentUnadapted = {
-  fechaPregunta:string
-  fechaRespuesta?:string
-  id_pregunta:number
-  id_respuesta:number
-  nombre_pregunta:string
-  apellido_pregunta:string
-  pregunta:string
-  respuesta?:string
-  user_id_pregunta:number
-  user_id_respuesta?:number
-} 
-
+  fechaPregunta: string
+  fechaRespuesta?: string
+  id_pregunta: number
+  id_respuesta: number
+  nombre_pregunta: string
+  apellido_pregunta: string
+  pregunta: string
+  respuesta?: string
+  user_id_pregunta: number
+  user_id_respuesta?: number
+}
 
 /**
  * The product card data.
@@ -98,14 +96,14 @@ export type CommentUnadapted = {
  * @property {string} locationTrade - The ubication of the trade
  */
 export interface CardProductProps {
-  id:number
-  multimedia:number
-  title:string
-  desciption:string
-  nameProductCategorie:string
-  nameProductState:string
-  locationTrade:string
-  image:string
+  id: number
+  multimedia: number
+  title: string
+  desciption: string
+  nameProductCategorie: string
+  nameProductState: string
+  locationTrade: string
+  image: string
 }
 
 /**
@@ -123,46 +121,46 @@ export interface CardProductProps {
  * @property {string} nameUser - The name of the user who created the post.
  * @property {string} surnameUser - The last name of the user who created the post.
  * @property {number} centersChoosed- The post centers.
- * @property {User} user - The current user. 
+ * @property {User} user - The current user.
  * @property {[CommentUnadapted]} [comments] - The post asks/questions.
  * @property {[img]} images - The post asks/questions.
  */
 export interface PostData {
   idPost: number
-  title:string
-  description:string
-  nameProductCategorie:string
-  nameStateProduct:string
-  locationTrade:string
-  question:number
-  postState:number
-  postDate:number
-  idOwnerUser:number
-  nameUser:string
-  surnameUser:string
-  centersChoosed:number
-  user:User
-  comments?:[CommentUnadapted]
-  images:[img]
+  title: string
+  description: string
+  nameProductCategorie: string
+  nameStateProduct: string
+  locationTrade: string
+  question: number
+  postState: number
+  postDate: number
+  idOwnerUser: number
+  nameUser: string
+  surnameUser: string
+  centersChoosed: number
+  user: User
+  comments?: [CommentUnadapted]
+  images: [img]
 }
 
 export interface PostDataAdapter {
   id: number
-  titulo:string
-  descripcion:string
-  nombre_categoria_producto:string
-  nombre_estado_producto:string
-  ubicacion_trade:string
-  preguntas:number
-  estado_publicacion:number
-  fecha_publicacion:number
-  id_usuario:number
-  nombre_usuario:string
-  apellido_usuario:string
-  centros_elegidos:number
-  user:User
-  comentarios?:[CommentUnadapted]
-  imagenes:[img]
+  titulo: string
+  descripcion: string
+  nombre_categoria_producto: string
+  nombre_estado_producto: string
+  ubicacion_trade: string
+  preguntas: number
+  estado_publicacion: number
+  fecha_publicacion: number
+  id_usuario: number
+  nombre_usuario: string
+  apellido_usuario: string
+  centros_elegidos: number
+  user: User
+  comentarios?: [CommentUnadapted]
+  imagenes: [img]
 }
 
-
+export const productStatus = ['Nuevo', 'Usado', 'Restaurado', 'Defectuoso']
