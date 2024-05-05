@@ -3,6 +3,7 @@ import Link from 'next/link'
 import caritasLogo from 'public/caritas-logo.svg'
 import profilePicDefault from 'public/profile-pic-default.jpg'
 import { User } from '@/types'
+import { useEffect, useState } from 'react'
 
 export default function RootLayout({
   user,
@@ -11,6 +12,16 @@ export default function RootLayout({
   user: User
   children: React.ReactNode
 }>) {
+  const [profilePic, setProfilePic] = useState('');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const pic = localStorage.getItem('profilePic');
+      if (pic) {
+        setProfilePic(pic);
+      }
+    }
+  }, []);
   return <><header
     className='font-bold'
   >
@@ -60,7 +71,7 @@ export default function RootLayout({
             href='/user'
           >
             <div className='flex items-center'>
-              <Image alt={`userProfilePic`} className={'me-[10px] w-[30px] rounded-full'} src={localStorage.getItem('profilePic')||profilePicDefault} width={0} height={0} />
+              <Image alt={`userProfilePic`} className={'me-[10px] w-[30px] rounded-full'} src={profilePic?profilePic:profilePicDefault} width={0} height={0} />
               {user.name}
             </div>
           </Link>
@@ -86,7 +97,7 @@ export default function RootLayout({
             href='/user'
           >
             <div className='flex items-center'>
-              <Image alt={`userProfilePic`} className={'me-[10px] w-[30px] rounded-full'} src={localStorage.getItem('profilePic')||profilePicDefault} width={0} height={0}/>
+              <Image alt={`userProfilePic`} className={'me-[10px] w-[30px] rounded-full'} src={profilePic?profilePic:profilePicDefault} width={0} height={0}/>
               {user.name}
             </div>
           </Link>

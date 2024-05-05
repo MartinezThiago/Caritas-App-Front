@@ -9,7 +9,7 @@ import { FRONT_BASE_URL } from '@/constants'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 
-export async function getServerSideProps ({
+export async function getServerSideProps({
   req,
   res
 }: Readonly<{
@@ -31,7 +31,7 @@ interface FormData {
   question: string
 }
 
-export default function Home ({ user }: { user: User }) {
+export default function Home({ user }: { user: User }) {
   const router = useRouter()
   const [cardsData, setCardsData] = useState<any[]>()
 
@@ -40,46 +40,64 @@ export default function Home ({ user }: { user: User }) {
     handleSubmit,
     formState: { errors }
   } = useForm<FormData>()
-    useEffect(() => {
-    const getProducts = async () => {      
+  useEffect(() => {
+    const getProducts = async () => {
       const { data: cardsData } = await axios.get<any[]>(`${FRONT_BASE_URL}posts/get`)
       setCardsData(cardsData)
     }
     getProducts()
   }, [])
-  
+
   const CardsProducts = () => {
-    if(cardsData){
-    const cards = cardsData!.map((e: any) => {
-      return (
-        <CardProduct
-          key={e.id}
-          id={e.id}
-          title={e.titulo}
-          desciption={e.descripcion}
-          nameProductCategorie={e.nombre_categoria_producto}
-          nameProductState={e.nombre_estado_producto}
-          locationTrade={e.ubicacion_trade}
-          image={e.imagenes[0].base64_imagen}
-        />
-      )
-    })
-    return cards
+    if (cardsData) {
+      const cards = cardsData!.map((e: any) => {
+        return (
+          <CardProduct
+            key={e.id}
+            id={e.id}
+            title={e.titulo}
+            desciption={e.descripcion}
+            nameProductCategorie={e.nombre_categoria_producto}
+            nameProductState={e.nombre_estado_producto}
+            locationTrade={e.ubicacion_trade}
+            image={e.imagenes[0].base64_imagen}
+          />
+        )
+      })
+      return cards
     }
   }
-  
+
 
   return (
     <RootLayout user={user}>
       <main className='flex'>
         <div className='w-[30vw] border-r-4 border-r-blue-900'>
-          <button
-            key='Post'
-            className='ms-[25%] mt-[15%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
-            onClick={() => router.push('/post/create')}
-          >
-            Crear publicacion
-          </button>
+          {(user.role == 'usuario_basico') ? <>
+            <button
+              key='Post'
+              className='ms-[25%] mt-[15%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
+              onClick={() => router.push('/post/create/')}
+            >
+              Crear publicacion
+            </button>
+          </> : (user.role == 'non-registered') ?
+            <>
+              <button
+                key='Post'
+                className='ms-[25%] mt-[15%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
+                onClick={() => router.push('/sign/in/')}
+              >
+                Crear publicacion
+              </button>
+            </> : <button
+              key='Post'
+              className='ms-[25%] mt-[15%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline font-semibold hover:outline-[3px] bg-gray-500 hover:bg-gray-600 hover:cursor-not-allowed '
+            >
+              Crear publicacion
+            </button>
+
+          }
           <form
             noValidate
             onSubmit={handleSubmit(({ question }: FormData) => {
@@ -99,9 +117,9 @@ export default function Home ({ user }: { user: User }) {
                   error={errors.question}
                   placeholder='Buscar...'
                   label=''
-                  // className={{
-                  //   'input': 'rounded-full border-blue-900 border-2'
-                  // }}
+                // className={{
+                //   'input': 'rounded-full border-blue-900 border-2'
+                // }}
                 />
               </div>
               <button
