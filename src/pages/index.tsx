@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { FRONT_BASE_URL } from '@/constants'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
+import auxPic from 'public/post-image-preview.jpg'
 
 export async function getServerSideProps({
   req,
@@ -60,7 +61,7 @@ export default function Home({ user }: { user: User }) {
             nameProductCategorie={e.nombre_categoria_producto}
             nameProductState={e.nombre_estado_producto}
             locationTrade={e.ubicacion_trade}
-            image={e.imagenes[0].base64_imagen}
+            image={e.imagenes[0].base64_imagen?e.imagenes[0].base64_imagen:auxPic}
           />
         )
       })
@@ -77,7 +78,7 @@ export default function Home({ user }: { user: User }) {
             <button
               key='Post'
               className='ms-[25%] mt-[15%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
-              onClick={() => router.push('/post/create/')}
+              onClick={() =>router.push('/post/create/')}
             >
               Crear publicacion
             </button>

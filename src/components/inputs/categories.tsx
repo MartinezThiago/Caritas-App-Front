@@ -85,32 +85,32 @@ function Categories({
     className='w-full h-[2.5rem] mb-2 py-2 px-3 flex place-content-evenly text-sm font-bold shadow border focus:outline-none focus:shadow-outline'
   >
     {checkbox(
-      'limpieza',
-      'limpieza',
+      '3',
+      '3',
       handleChange,
       'Limpieza',
-      categories.includes('limpieza')
+      categories.includes('3')
     )}
     {checkbox(
-      'alimentos',
-      'alimentos',
+      '2',
+      '2',
       handleChange,
       'Alimento',
-      categories.includes('alimentos')
+      categories.includes('2')
     )}
     {checkbox(
-      'ropa',
-      'ropa',
+      '4',
+      '4',
       handleChange,
       'Ropa',
-      categories.includes('ropa')
+      categories.includes('4')
     )}
     {checkbox(
-      'utiles escolares',
-      'utiles escolares',
+      '1',
+      '1',
       handleChange,
       'Útiles escolares',
-      categories.includes('utiles escolares')
+      categories.includes('1')
     )}
   </fieldset >
 }

@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { productStatus, type GetSSPropsResult, type User } from '@/types'
-
+import zlib from 'zlib';
 import axios from 'axios'
 import { centers as c, locations as l } from '@/utils/examples/locations'
 
@@ -25,7 +25,7 @@ export async function getServerSideProps ({
   req: NextApiRequest
   res: NextApiResponse
 }>): Promise<GetSSPropsResult> {
-  return requirePermission(getUser(req, res), 'non-registered', '/')
+  return requirePermission(getUser(req, res), 'usuario_basico', '/')
 }
 
 /**
@@ -86,9 +86,11 @@ export default function CreatePost ({ user }: { user: User }) {
     }
     for (let i = 0; i < files.length; i++) {
       makeB64(files[i])
-    }
+    } 
+  
     formData.photos = photos
-    console.log(formData)
+
+
     await axios
       .post(`${FRONT_BASE_URL}post/create`, formData)
       .then(() => router.push('/'))
