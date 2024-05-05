@@ -1,6 +1,6 @@
 import withLabelAndHelperText from './withLabelAndHelperText'
 
-import React from 'react'
+import React, { DetailedHTMLProps } from 'react'
 import type {
   RegisterOptions,
   UseFormRegister
@@ -22,6 +22,12 @@ interface Props {
   options?: any
   handleChange: (e: any) => void
   placeholder?: string
+  className?: {
+    select: string,
+    option: string
+  }
+  selectProps?: DetailedHTMLProps<React.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>
+  optionProps?: DetailedHTMLProps<React.OptionHTMLAttributes<HTMLOptionElement>, HTMLOptionElement>
 }
 
 function Select({
@@ -31,7 +37,10 @@ function Select({
   registerOptions = {},
   options,
   handleChange,
-  placeholder
+  placeholder,
+  className,
+  selectProps,
+  optionProps
 }: Props) {
   return <select
     key={id}
@@ -40,12 +49,15 @@ function Select({
     defaultValue={''}
     autoFocus={autoFocus}
     onChange={handleChange}
-    className={`w-full h-[2.5rem] mb-2 py-2 px-3 appearance-none border shadow text-zinc-700 focus:outline-none focus:shadow-outline`}
+    className={`w-full h-[2.5rem] mb-2 py-2 px-3 appearance-none border shadow text-zinc-700 focus:outline-none focus:shadow-outline ${className?.select}`}
+    {...selectProps}
   >
     <option
       key={`default-${id}-option`}
       value={placeholder ? placeholder : ''}
       hidden
+      className={className?.option}
+      {...optionProps}
     ></option>
     {options && options.map((option: any) => <option
       key={option.label}
