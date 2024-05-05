@@ -23,8 +23,8 @@ interface Props {
   handleChange: (e: any) => void
   placeholder?: string
   className?: {
-    select: string,
-    option: string
+    select?: string,
+    option?: string
   }
   selectProps?: DetailedHTMLProps<React.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>
   optionProps?: DetailedHTMLProps<React.OptionHTMLAttributes<HTMLOptionElement>, HTMLOptionElement>
