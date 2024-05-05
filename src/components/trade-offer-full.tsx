@@ -11,7 +11,6 @@ export default function TradeOfferFull(props: any) {
                 title={props.title}
                 desciption={props.desciption}
                 locationTrade={props.locationTrade}
-                multimedia={0}
                 image={props.image}
                 nameProductCategorie={props.nameProductCategorie}
                 nameProductState={props.nameProductState}
@@ -37,7 +36,6 @@ export default function TradeOfferFull(props: any) {
                 title={props.title}
                 desciption={props.desciption}
                 locationTrade={props.locationTrade}
-                multimedia={0}
                 image={props.image}
                 nameProductCategorie={props.nameProductCategorie}
                 nameProductState={props.nameProductState}

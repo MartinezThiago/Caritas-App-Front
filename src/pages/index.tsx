@@ -41,32 +41,20 @@ export default function Home ({ user }: { user: User }) {
     formState: { errors }
   } = useForm<FormData>()
     useEffect(() => {
-    const getProducts = async () => {
-      console.log(`${FRONT_BASE_URL}posts/get`)
-
-      const { data: cardsData } = await axios
-        .get<any[]>(`${FRONT_BASE_URL}posts/get`)
-        .then((res: any) => {
-          return res.data
-        })
-        .catch((err: any) => {
-          return []
-        })
-
+    const getProducts = async () => {      
+      const { data: cardsData } = await axios.get<any[]>(`${FRONT_BASE_URL}posts/get`)
       setCardsData(cardsData)
     }
     getProducts()
   }, [])
-  if (!cardsData) {
-    return null
-  }
+  
   const CardsProducts = () => {
+    if(cardsData){
     const cards = cardsData!.map((e: any) => {
       return (
         <CardProduct
           key={e.id}
           id={e.id}
-          multimedia={e.img_src}
           title={e.titulo}
           desciption={e.descripcion}
           nameProductCategorie={e.nombre_categoria_producto}
@@ -77,7 +65,9 @@ export default function Home ({ user }: { user: User }) {
       )
     })
     return cards
+    }
   }
+  
 
   return (
     <RootLayout user={user}>

@@ -11,7 +11,6 @@ export default function RootLayout({
   user: User
   children: React.ReactNode
 }>) {
-
   return <><header
     className='font-bold'
   >

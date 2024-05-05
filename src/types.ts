@@ -88,17 +88,15 @@ export type CommentUnadapted = {
 /**
  * The product card data.
  * @property {number} id - The product id.
- * @property {number} multimedia - The product multimedia.
  * @property {string} title - The product title.
  * @property {string} desciption - The product description.
  * @property {string} nameProductCategorie - The product categorie.
  * @property {string} nameProductState - The product state.
  * @property {string} locationTrade - The ubication of the trade
- *  @property {string} image - The first image of the post
+ * @property {string} image - The first image of the post
  */
 export interface CardProductProps {
   id: number
-  multimedia: number
   title: string
   desciption: string
   nameProductCategorie: string
@@ -129,42 +127,42 @@ export interface CardProductProps {
  */
 export interface PostData {
   idPost: number
-  title:string
-  description:string
-  nameProductCategorie:string
-  nameStateProduct:string
-  locationTrade:string
-  question:number
-  postState:number
-  postDate:number
-  idOwnerUser:number
-  nameUser:string
-  surnameUser:string
-  centersChoosed:number
-  user:User
-  profilePicOwner:string
-  comments?:[CommentUnadapted]
-  images:[img]
+  title: string
+  description: string
+  nameProductCategorie: string
+  nameStateProduct: string
+  locationTrade: string
+  question: number
+  postState: number
+  postDate: number
+  idOwnerUser: number
+  nameUser: string
+  surnameUser: string
+  centersChoosed: number
+  user: User
+  profilePicOwner: string
+  comments?: [CommentUnadapted]
+  images: [img]
 }
 
 export interface PostDataAdapter {
   id: number
-  titulo:string
-  descripcion:string
-  nombre_categoria_producto:string
-  nombre_estado_producto:string
-  ubicacion_trade:string
-  preguntas:number
-  estado_publicacion:number
-  fecha_publicacion:number
-  id_usuario:number
-  nombre_usuario:string
-  apellido_usuario:string
-  centros_elegidos:number
-  user:User
-  comentarios?:[CommentUnadapted]
-  base64_imagen:string
-  imagenes:[img]
+  titulo: string
+  descripcion: string
+  nombre_categoria_producto: string
+  nombre_estado_producto: string
+  ubicacion_trade: string
+  preguntas: number
+  estado_publicacion: number
+  fecha_publicacion: number
+  id_usuario: number
+  nombre_usuario: string
+  apellido_usuario: string
+  centros_elegidos: number
+  user: User
+  comentarios?: [CommentUnadapted]
+  base64_imagen: string
+  imagenes: [img]
 }
 
 export const productStatus = ['Nuevo', 'Usado']

@@ -1,9 +1,10 @@
 import { CardProductProps } from '@/types'
-import postImagePreview from 'public/post-image-preview.jpg'
 import Link from 'next/link'
 import Image from 'next/image'
 
-export default function CardProduct(props:any) {
+export default function CardProduct(props:CardProductProps) {
+  console.log('CARD PRODUCT');
+  
   return (
     <Link href={`posts/${props.id}`} className='w-[16rem] h-[20rem] me-[1rem] mb-[1rem] border-[3px] border-blue-900 rounded-md hover:scale-105 duration-300'>
       <div className='h-[145px]'>
