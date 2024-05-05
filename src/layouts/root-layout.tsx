@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import caritasLogo from 'public/caritas-logo.svg'
-
+import profilePicDefault from 'public/profile-pic-default.jpg'
 import { User } from '@/types'
 
 export default function RootLayout({
@@ -11,6 +11,7 @@ export default function RootLayout({
   user: User
   children: React.ReactNode
 }>) {
+
   return <><header
     className='font-bold'
   >
@@ -59,7 +60,10 @@ export default function RootLayout({
             key='link-user'
             href='/user'
           >
-            {user.name}
+            <div className='flex items-center'>
+              <Image alt={`userProfilePic`} className={'me-[10px] w-[30px] rounded-full'} src={localStorage.getItem('profilePic')||profilePicDefault} width={0} height={0} />
+              {user.name}
+            </div>
           </Link>
           <Link
             key='link-signout'
@@ -82,7 +86,10 @@ export default function RootLayout({
             key='link-user'
             href='/user'
           >
-            {user.name}
+            <div className='flex items-center'>
+              <Image alt={`userProfilePic`} className={'me-[10px] w-[30px] rounded-full'} src={localStorage.getItem('profilePic')||profilePicDefault} width={0} height={0}/>
+              {user.name}
+            </div>
           </Link>
           <Link
             key='link-signout'

@@ -1,8 +1,6 @@
-import { GetSSPropsResult } from "@/types"
-import { getUser } from "@/utils/cookies"
-import { clearCookies, requireNoPermission, requireNothing, requirePermission } from "@/utils/permissions"
-import {serialize} from 'cookie';
-import { getCookie, hasCookie } from "cookies-next";
+
+import { clearCookies } from "@/utils/permissions"
+
 import { NextApiRequest, NextApiResponse } from "next"
 
 /**

@@ -8,6 +8,7 @@ import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react";
+import profileDefaultPic from 'public/profile-pic-default.jpg'
 
   export async function getServerSideProps({
     req,
@@ -23,7 +24,8 @@ export default function PostInfo({ user }: { user: User }){
   
     const router=useRouter();
     const [postData, setPostData] = useState<PostDataAdapter>()
-
+    
+  
     useEffect(() => {
         const getProducts = async () => {
         const {data:postData} = await axios.post<PostDataAdapter>(`${FRONT_BASE_URL}post/get`, {id:router.query.id} )
@@ -35,7 +37,7 @@ export default function PostInfo({ user }: { user: User }){
     if(!postData){
         return null
     }    
-      
+
     return( 
         <RootLayout user={user}>
             <ExtendedPostCard
@@ -55,6 +57,7 @@ export default function PostInfo({ user }: { user: User }){
                   comments={postData.comentarios}
                   images={postData.imagenes}
                   user={user}
+                  profilePicOwner={postData.base64_imagen}
             />
         </RootLayout>
     )
