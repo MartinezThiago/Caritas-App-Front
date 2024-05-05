@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import type { GetSSPropsResult, User } from '@/types'
+import { productStatus, type GetSSPropsResult, type User } from '@/types'
 
 import axios from 'axios'
 import { centers as c, locations as l } from '@/utils/examples/locations'
@@ -38,6 +38,7 @@ interface FormData {
   categories: string[] // categorias
   photos: FileList | string[] // imagenes
   center: string // centros_elegidos
+  status: string // estado_producto
 }
 
 /**
@@ -87,6 +88,7 @@ export default function CreatePost ({ user }: { user: User }) {
       makeB64(files[i])
     }
     formData.photos = photos
+    console.log(formData)
     await axios
       .post(`${FRONT_BASE_URL}post/create`, formData)
       .then(() => router.push('/'))
@@ -205,21 +207,40 @@ export default function CreatePost ({ user }: { user: User }) {
                     required:
                       watch('location') && !watch('center')
                         ? 'Campo requerido'
-                        : false
+                        : true
                   }}
                   options={centers}
                   handleChange={handleCenterChange}
                 />
               </div>
             </div>
-            <button
-              key='signup-form-submit-button'
-              type={ButtonEnum.SUBMIT}
-              disabled={loading}
-              className='py-2 px-4 bg-rose-700 font-bold text-white hover:bg-rose-500 active:bg-rose-700'
-            >
-              Crear Publicación
-            </button>
+            <div className='w-full flex flex-col sm:flex-row justify-center items-center gap-4'>
+              <div
+                key='status-select-container'
+                className='w-full sm:basis-1/2'
+              >
+                <Select
+                  id='status'
+                  label='Estado'
+                  register={register}
+                  handleChange={handleLocationChange}
+                  options={productStatus.map(status => ({
+                    value: status,
+                    label: status
+                  }))}
+                />
+              </div>
+              <div className='sm:basis-1/2 text-center'>
+                <button
+                  key='signup-form-submit-button'
+                  type={ButtonEnum.SUBMIT}
+                  disabled={loading}
+                  className='py-2 px-4 bg-rose-700 font-bold text-white hover:bg-rose-500 active:bg-rose-700'
+                >
+                  Crear Publicación
+                </button>
+              </div>
+            </div>
           </form>
         </section>
       </main>
