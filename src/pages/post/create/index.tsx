@@ -18,7 +18,7 @@ import { useState } from 'react'
  * Gets the user from the request and response objects in the server side and pass it
  * to the page component.
  */
-export async function getServerSideProps ({
+export async function getServerSideProps({
   req,
   res
 }: Readonly<{
@@ -44,9 +44,8 @@ interface FormData {
 /**
  * The create post page.
  */
-export default function CreatePost ({ user }: { user: User }) {
+export default function CreatePost({ user }: { user: User }) {
   const router = useRouter()
-
   const [loading, setLoaging] = useState(false)
   const [centers, setCenters] = useState<any>([])
 
@@ -76,32 +75,50 @@ export default function CreatePost ({ user }: { user: User }) {
    */
   const _handleSubmit = async (formData: FormData) => {
     setLoaging(true)
+    console.log(formData);
+    // Función para convertir un archivo a base64
+    const makeB64 = (file: File): Promise<string> => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const result = event.target?.result as string;
+          resolve(result);
+        };
+        reader.onerror = (error) => {
+          reject(error);
+        };
+        reader.readAsDataURL(file);
+      });
+    };
 
-    const files = formData.photos as FileList
-    const photos: string[] = []
-    const makeB64 = (file: File) => {
-      const reader = new FileReader()
-      reader.onload = file => photos.push(file.target?.result as string)
-      reader.readAsDataURL(file)
-    }
-    for (let i = 0; i < files.length; i++) {
-      makeB64(files[i])
-    } 
-  
-    formData.photos = photos
+    // Función para procesar los archivos y convertirlos a base64
+    const processFiles = async () => {
+      const files = formData.photos as FileList;
+      const photosPromises: Promise<string>[] = [];
+      for (let i = 0; i < files.length; i++) {
+        photosPromises.push(makeB64(files[i]));
+      }
+      const photos = await Promise.all(photosPromises);
+      formData.photos = photos;
 
+    };
 
-    await axios
-      .post(`${FRONT_BASE_URL}post/create`, formData)
-      .then(() => router.push('/'))
-      .catch((error: any) => {
-        try {
-          alert(error.response.data.message)
-        } catch (error) {
-          alert('Ah ocurrido un error inesperado, intente nuevamente.')
-        }
-        setLoaging(false)
-      })
+    // Llamar a la función para procesar los archivos
+    processFiles().then(async () => {
+      await axios
+        .post(`${FRONT_BASE_URL}post/create`, formData)
+        .then(() => router.push('/'))
+        .catch((error: any) => {
+          try {
+            alert(error.response.data.message)
+          } catch (error) {
+            alert('Ah ocurrido un error inesperado, intente nuevamente.')
+          }
+          setLoaging(false)
+        })
+    }).catch((error) => {
+      console.error('Error al procesar las fotos:', error);
+    });
   }
 
   return (
@@ -237,7 +254,7 @@ export default function CreatePost ({ user }: { user: User }) {
                   key='signup-form-submit-button'
                   type={ButtonEnum.SUBMIT}
                   disabled={loading}
-                  className='py-2 px-4 bg-rose-700 font-bold text-white hover:bg-rose-500 active:bg-rose-700'
+                  className='text-white rounded-lg py-[12px] px-16  bg-rose-700 font-semibold hover:bg-rose-800 duration-100'
                 >
                   Crear Publicación
                 </button>
