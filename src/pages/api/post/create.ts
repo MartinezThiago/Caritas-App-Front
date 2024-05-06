@@ -50,6 +50,6 @@ export default async function handler(
       } catch {
         res.status(500).json({ message: 'Ah ocurrido un error inesperado.' })
       }
-    },
+    }
     )
 }

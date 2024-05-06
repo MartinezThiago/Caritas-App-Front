@@ -75,7 +75,7 @@ export default function CreatePost({ user }: { user: User }) {
    */
   const _handleSubmit = async (formData: FormData) => {
     setLoaging(true)
-    console.log(formData);
+    //console.log(formData);
     // Función para convertir un archivo a base64
     const makeB64 = (file: File): Promise<string> => {
       return new Promise((resolve, reject) => {
@@ -105,17 +105,9 @@ export default function CreatePost({ user }: { user: User }) {
 
     // Llamar a la función para procesar los archivos
     processFiles().then(async () => {
-      await axios
-        .post(`${FRONT_BASE_URL}post/create`, formData)
-        .then(() => router.push('/'))
-        .catch((error: any) => {
-          try {
-            alert(error.response.data.message)
-          } catch (error) {
-            alert('Ah ocurrido un error inesperado, intente nuevamente.')
-          }
-          setLoaging(false)
-        })
+      console.log('previo a hacer la consulta');
+      console.log(formData);
+      await axios.post(`http://192.168.0.241:3000/api/post/create`, formData).then(() => router.push('/')).catch((error: any) => {try {alert(error.response.data.message)} catch (error) { alert('Ah ocurrido un error inesperado, intente nuevamente.')}setLoaging(false)})
     }).catch((error) => {
       console.error('Error al procesar las fotos:', error);
     });
