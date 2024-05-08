@@ -157,7 +157,7 @@ export default function ExtendedPostCard(props: PostData) {
                     address='54 n1002'
                     openingTime='13:00'
                     closingTime='20:00'
-                    workDays={['Lunes', 'Martes', 'Miercoles', 'Viernes']}
+                    workDays={['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes']}
                   />
                 </div>
                 <div className='flex justify-between w-[100%] mt-5'>
