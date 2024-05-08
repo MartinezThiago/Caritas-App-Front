@@ -57,6 +57,7 @@ export default function RootLayout({
         <Link
           key='link-signup'
           href='/sign/up'
+          className='me-[10px]'
         >
           Registrarse
         </Link>
@@ -78,6 +79,7 @@ export default function RootLayout({
           <Link
             key='link-signout'
             href='/sign/out'
+            className='me-[10px]'
           >
             Cerrar Sesión
           </Link>
@@ -104,6 +106,7 @@ export default function RootLayout({
           <Link
             key='link-signout'
             href='/sign/out'
+            className='me-[10px]'
           >
             Cerrar Sesión
           </Link>

@@ -44,13 +44,10 @@ export default function QuestionPost({
             }
           })
     }
-
-
-
     return (
         <>
             <div className="flex justify-between font-medium  text-gray-600 border-b-[1px] border-gray-600">
-                <p className="text-sm">{questionUserInfo}</p>
+                <p className="text-sm font-bold">{questionUserInfo}</p>
                 <div className="flex items-center">
                     <p className="text-xs">{questionDate}</p>
                     {

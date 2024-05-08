@@ -421,3 +421,8 @@ body {
 main {
   @apply flex-grow
 }
+
+body {
+  overflow-x: hidden;
+  
+}

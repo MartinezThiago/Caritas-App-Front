@@ -10,6 +10,7 @@ import axios from 'axios'
 import { FRONT_BASE_URL } from '@/constants'
 import TradeOfferFull from './trade-offer-full'
 import Image from 'next/image'
+import CenterDescription from './center-description'
 
 interface FormData {
   question: string
@@ -84,17 +85,16 @@ export default function ExtendedPostCard(props: PostData) {
     })
     return comment;
   }
-
   const Images = () => {
-      return props.images.map((e: any) => ({
-        original: e.base64_imagen,
-        thumbnail: e.base64_imagen,
-      }))
+    return props.images.map((e: any) => ({
+      original: e.base64_imagen,
+      thumbnail: e.base64_imagen,
+    }))
   }
-  
+
   return (
     <div>
-      <div className='w-screen h-50vh flex justify-center mt-10 font-sans'>
+      <div className='w-screen h-[68vh] flex justify-center mt-10 font-sans'>
         <div className='w-[500px]'>
           <ImageGallery
             items={Images()}
@@ -129,8 +129,36 @@ export default function ExtendedPostCard(props: PostData) {
                 </div>
                 <p className='font-bold'>Centros elegidos para el intercambio:</p>
                 <div className='ms-3.5 mt-1.5'>
-                  <p className='my-1.5 text-sm'><span className='font-bold text-rose-700 text-base'>Centro nro°{`${props.centersChoosed}:`}</span> 50 y 120 n°25</p>
-                  <p className='my-1.5 text-sm'><span className='font-bold text-rose-700 text-base'>Centro nro°{`${props.centersChoosed}:`}</span> 1 y 57 n°23</p>
+                  <CenterDescription
+                    key={1}
+                    idCenter={1}
+                    name='Centro A'
+                    location='Buenos Aires, La Plata'
+                    address='57 n1240'
+                    openingTime='7:00'
+                    closingTime='20:00'
+                    workDays={['Lunes', 'Martes', 'Viernes']}
+                  />
+                  <CenterDescription
+                    key={2}
+                    idCenter={2}
+                    name='Centro B'
+                    location='Buenos Aires, La Plata'
+                    address='50 n232'
+                    openingTime='9:00'
+                    closingTime='18:00'
+                    workDays={['Lunes', 'Martes']}
+                  />
+                  <CenterDescription
+                    key={3}
+                    idCenter={3}
+                    name='Centro C'
+                    location='Buenos Aires, La Plata'
+                    address='54 n1002'
+                    openingTime='13:00'
+                    closingTime='20:00'
+                    workDays={['Lunes', 'Martes', 'Miercoles', 'Viernes']}
+                  />
                 </div>
                 <div className='flex justify-between w-[100%] mt-5'>
                   <div className='flex items-center mb-[20px]'>
@@ -251,7 +279,6 @@ export default function ExtendedPostCard(props: PostData) {
                 noValidate
                 onSubmit={handleSubmit(_handleSubmit)}
               >
-                {/* <p className='font-bold text-sm'>Preguntale al vendedor</p> */}
                 <div className='flex items-center'>
                   <div className='w-[60%]'>
                     <Input
@@ -274,11 +301,16 @@ export default function ExtendedPostCard(props: PostData) {
                 </div>
               </form> : null
           }
-
         </article>
-
-        <p className='font-bold text-xl'>Ultimas preguntas:</p>
-        {Comments()}
+        <div>
+          {props.comments!.length > 0 ? <div>
+            <p className='font-bold text-xl mb-[10px]'>Ultimas preguntas:</p>
+            {Comments()}
+          </div> :
+            <div className='flex'>
+              <p className='text-l font-bold text-gray-500 mt-[10px] m-auto'>NO HAY PREGUNTAS ACTUALMENTE</p>
+            </div>}
+        </div>
       </div>
     </div>
   )
