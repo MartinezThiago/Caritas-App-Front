@@ -1,4 +1,4 @@
-import { PostData, Comment, CommentUnadapted, img } from '@/types'
+import { PostData, Comment, CommentUnadapted, img, days } from '@/types'
 import FullComment from './full-comment'
 import Input from './inputs/input'
 import { useForm } from 'react-hook-form'
@@ -44,8 +44,6 @@ export default function ExtendedPostCard(props: PostData) {
     handleSubmit,
     formState: { errors }
   } = useForm<FormData>()
-  console.log(props);
-
   const router = useRouter();
   const [lastComments, setLastComments] = useState<[]>();
   const [commentsUpdate, setCommentsUpdate] = useState(false);
@@ -116,8 +114,10 @@ export default function ExtendedPostCard(props: PostData) {
       thumbnail: e.base64_imagen,
     }))
   }
+  
   const Centers = () => {
     const center = props.centersChoosed.map((e) => {
+
       return (
         <CenterDescription
           key={e.id_centro}

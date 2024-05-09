@@ -1,5 +1,5 @@
 import { useState } from "react"
-
+import { days } from "@/types"
 export default function CenterDescription({
     idCenter,
     name,
@@ -15,15 +15,18 @@ export default function CenterDescription({
     address: string
     openingTime: string
     closingTime: string
-    workDays: string[]
+    workDays: days[]
 }) {
-    const dias = workDays.map((e: string) => {
+    const auxDaysCenters:string[]=[]
+    workDays.map((e:days)=>{
+      auxDaysCenters.push(e.descripcion)
+    })
+    const dias = auxDaysCenters.map((e: string) => {
         return `${e} `
     })
-    
     const checkDaysOfWeek = () => {
-        const daysOfWeek = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes'];
-        const allDaysIncluded = daysOfWeek.every(day => workDays.includes(day) && workDays.length === daysOfWeek.length);
+        const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];        
+        const allDaysIncluded = daysOfWeek.every(day => auxDaysCenters.includes(day) && auxDaysCenters.length === daysOfWeek.length);
         return (allDaysIncluded ? true : false)
     };
 
@@ -32,7 +35,7 @@ export default function CenterDescription({
             <p className="text-rose-700 text-l font-bold">{name}</p>
             <div className="mx-2">
                 <p><span className="font-semibold ">Direccion:</span> {address}</p>
-                <p><span className="font-semibold">Dias: </span>{checkDaysOfWeek() ? 'Dias Habiles' : dias}</p>
+                <p><span className="font-semibold">Dias: </span>{checkDaysOfWeek() ? 'Dias Hábiles' : dias}</p>
                 <p><span className="font-semibold">Horarios:</span> {openingTime} - {closingTime}</p>
             </div>
         </div>

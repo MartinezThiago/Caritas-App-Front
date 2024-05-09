@@ -63,9 +63,12 @@ export interface UnadaptedCenter {
   direccion: string
   horario_apertura: string
   horario_cierre: string
-  dias: string[]
+  dias: days[]
 }
-
+export type days = {
+  idDia: number
+  descripcion: string
+}
 
 export type img = {
   base64_imagen: string
