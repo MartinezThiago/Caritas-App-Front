@@ -5,12 +5,14 @@ import { useForm } from 'react-hook-form'
 import ImageGallery from 'react-image-gallery'
 import "react-image-gallery/styles/css/image-gallery.css"
 import { ButtonEnum } from './types'
-import { useRouter } from 'next/router'
+import router, { useRouter } from 'next/router'
 import axios from 'axios'
 import { FRONT_BASE_URL } from '@/constants'
 import TradeOfferFull from './trade-offer-full'
 import Image from 'next/image'
 import CenterDescription from './center-description'
+import { useEffect, useState } from 'react'
+import AllComments from './all-comments'
 
 interface FormData {
   question: string
@@ -34,6 +36,7 @@ function getActualDate() {
 
 }
 
+
 export default function ExtendedPostCard(props: PostData) {
   const {
     register,
@@ -41,6 +44,8 @@ export default function ExtendedPostCard(props: PostData) {
     formState: { errors }
   } = useForm<FormData>()
   const router = useRouter();
+  const [lastComments, setLastComments] = useState<[]>();
+  const [commentsUpdate, setCommentsUpdate] = useState(false);
 
   const _handleSubmit = async (formData: FormData) => {
     const pregunta: questionBody =
@@ -52,7 +57,13 @@ export default function ExtendedPostCard(props: PostData) {
     }
     await axios
       .post(`${FRONT_BASE_URL}question/post`, pregunta)
-      .then(() => router.push(`/posts/${router.query.id}`))
+      .then(async () => {
+        const { data: comm } = await axios.post<[]>(`${FRONT_BASE_URL}comments/get`, { id: router.query.id })
+        setLastComments(comm)
+        setCommentsUpdate(true)
+        console.log(lastComments);
+        
+      })
       .catch((error: { response: { data: { message: string } } }) => {
         console.log(error);
         if (error) {
@@ -60,6 +71,7 @@ export default function ExtendedPostCard(props: PostData) {
 
         }
       })
+
   }
   const Comments = () => {
     const comment = props.comments!.map((e: CommentUnadapted) => {
@@ -85,12 +97,13 @@ export default function ExtendedPostCard(props: PostData) {
     })
     return comment;
   }
+
   const Images = () => {
     return props.images.map((e: any) => ({
       original: e.base64_imagen,
       thumbnail: e.base64_imagen,
     }))
-  }
+  }  
 
   return (
     <div>
@@ -303,9 +316,14 @@ export default function ExtendedPostCard(props: PostData) {
           }
         </article>
         <div>
-          {props.comments!.length > 0 ? <div>
+          {props.comments!.length > 0 || commentsUpdate  ? <div>
             <p className='font-bold text-xl mb-[10px]'>Ultimas preguntas:</p>
-            {Comments()}
+            {commentsUpdate ? <>
+              <AllComments
+                comments={lastComments}
+                user={props.user} />
+            </> :
+              Comments()}
           </div> :
             <div className='flex'>
               <p className='text-l font-bold text-gray-500 mt-[10px] m-auto'>NO HAY PREGUNTAS ACTUALMENTE</p>
