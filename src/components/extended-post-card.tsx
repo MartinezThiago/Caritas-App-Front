@@ -13,6 +13,7 @@ import Image from 'next/image'
 import CenterDescription from './center-description'
 import { useEffect, useState } from 'react'
 import AllComments from './all-comments'
+import { Loading } from './loading'
 
 interface FormData {
   question: string
@@ -46,6 +47,15 @@ export default function ExtendedPostCard(props: PostData) {
   const router = useRouter();
   const [lastComments, setLastComments] = useState<[]>();
   const [commentsUpdate, setCommentsUpdate] = useState(false);
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // Simula una carga de datos
+    setTimeout(() => {
+      setIsLoading(false); // Cambia isLoading a false después de 2 segundos
+    }, 200);
+  }, []);
+
 
   const _handleSubmit = async (formData: FormData) => {
     const pregunta: questionBody =
@@ -58,10 +68,13 @@ export default function ExtendedPostCard(props: PostData) {
     await axios
       .post(`${FRONT_BASE_URL}question/post`, pregunta)
       .then(async () => {
+        
         const { data: comm } = await axios.post<[]>(`${FRONT_BASE_URL}comments/get`, { id: router.query.id })
         setLastComments(comm)
-        setCommentsUpdate(true)     
-        alert('Pregunta enviada correctamente')   
+        setCommentsUpdate(true)
+        alert('Pregunta enviada correctamente')
+        console.log(comm);
+        
       })
       .catch((error: { response: { data: { message: string } } }) => {
         console.log(error);
@@ -100,233 +113,234 @@ export default function ExtendedPostCard(props: PostData) {
       original: e.base64_imagen,
       thumbnail: e.base64_imagen,
     }))
-  }  
+  }
 
   return (
-    <div>
-      <div className='w-screen h-[68vh] flex justify-center mt-10 font-sans'>
-        <div className='w-[500px]'>
-          <ImageGallery
-            items={Images()}
-            showPlayButton={false}
-            showFullscreenButton={false}
-            showIndex={true}
-          />
-        </div>
-        <div className='ms-16 text-black w-[29vw] flex flex-col justify-between h-[405px]'>
-          <div>
-            <div className='flex justify-between w-[80%]'>
-              <h1 className='font-bold'>{props.title}</h1>
-              <span className='font-bold text-sm text-gray-600'>{props.postDate}</span>
-            </div>
-            <div className='ms-5 mt-1'>
-              <div className='h-20'>
-                <p className='font-bold'>Descripcion</p>
-                <p className='ms-3.5 mt-1.5'>{props.description}</p>
-              </div>
-              <div className='w-[60%]'>
-                <div className='flex justify-between '>
-                  <div className='font-bold '>
-                    <p>Estado: </p>
-                    <p className='my-5'>Categoría: </p>
-                    <p className='my-5'>Ubicacion: </p>
-                  </div>
-                  <div>
-                    <p>{props.nameStateProduct}</p>
-                    <p className='my-5'>{props.nameProductCategorie}</p>
-                    <p className='my-5'>{props.locationTrade}</p>
-                  </div>
-                </div>
-                <p className='font-bold'>Centros elegidos para el intercambio:</p>
-                <div className='ms-3.5 mt-1.5'>
-                  <CenterDescription
-                    key={1}
-                    idCenter={1}
-                    name='Centro A'
-                    location='Buenos Aires, La Plata'
-                    address='57 n1240'
-                    openingTime='7:00'
-                    closingTime='20:00'
-                    workDays={['Lunes', 'Martes', 'Viernes']}
-                  />
-                  <CenterDescription
-                    key={2}
-                    idCenter={2}
-                    name='Centro B'
-                    location='Buenos Aires, La Plata'
-                    address='50 n232'
-                    openingTime='9:00'
-                    closingTime='18:00'
-                    workDays={['Lunes', 'Martes']}
-                  />
-                  <CenterDescription
-                    key={3}
-                    idCenter={3}
-                    name='Centro C'
-                    location='Buenos Aires, La Plata'
-                    address='54 n1002'
-                    openingTime='13:00'
-                    closingTime='20:00'
-                    workDays={['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes']}
-                  />
-                </div>
-                <div className='flex justify-between w-[100%] mt-5'>
-                  <div className='flex items-center mb-[20px]'>
-                    <p className='font-bold'>Creador: </p>
-                    <Image alt={`ownerPostProfilePic`} className={'ms-[50px] w-[38px] rounded-full'} width={0} height={0} src={props.profilePicOwner} />
-                    <p className='ms-[10px]'>{props.nameUser} {props.surnameUser}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+    isLoading ? (<div className='flex mt-[50px]'><div className='m-auto'><Loading/></div></div>) : (
+      <div>
+        <div className='w-screen h-[68vh] flex justify-center mt-10 font-sans'>
+          <div className='w-[500px]'>
+            <ImageGallery
+              items={Images()}
+              showPlayButton={false}
+              showFullscreenButton={false}
+              showIndex={true}
+            />
           </div>
-          <div className='text-white ms-5'>
-            {
-              (props.user.role === 'usuario_basico' || (props.user.role === 'non-registered')) ?
-                <>
-                  {
-                    props.user.role === 'usuario_basico' ?
-                      <>
-                        {
-                          (props.user.userId != props.idOwnerUser) ?
-                            <>
-                              {/* ACTIVE SESSION SECTION */}
-                              <button
-                                key='Trade'
-                                className='rounded-lg py-2.5 px-14 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
-                                type={ButtonEnum.BUTTON}
-                                onClick={(() => {
-                                  console.log('USUARIO BASICO: BOTON INTERCAMBIAR FUNCIONA')
-                                })}
-                              >
-                                Intercambiar
-                              </button>
-                              <button
-                                key='Save'
-                                className='rounded-lg ms-12 py-2.5 px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
-                                type={ButtonEnum.BUTTON}
-                                onClick={(() => {
-                                  console.log('USUARIO BASICO: BOTON GUARDAR FUNCIONA')
-                                })}
-                              >
-                                A
-                              </button>
-                            </> :
-                            <>
-                              <button
-                                key='Trade'
-                                className='rounded-lg py-2.5 px-14 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
-                                type={ButtonEnum.BUTTON}
-                                onClick={(() => {
-                                  alert('No podes intercambiarte a ti mismo')
-                                })}
-                              >
-                                Intercambiar
-                              </button>
-                              <button
-                                key='Save'
-                                className='rounded-lg ms-12 py-2.5 px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
-                                type={ButtonEnum.BUTTON}
-                                onClick={(() => {
-                                  alert('No podes guardar tus propias publicaciones')
-                                })}
-                              >
-                                A
-                              </button>
-
-                            </>
-
-                        }
-                      </> : <>
-                        {/* NO ACTIVE SESSION SECTION */}
-                        <button
-                          key='Trade'
-                          className='rounded-lg py-2.5 px-14 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
-                          type={ButtonEnum.BUTTON}
-                          onClick={(() => {
-                            router.push('/sign/in')
-                          })}
-                        >
-                          Intercambiar
-                        </button>
-                        <button
-                          key='Save'
-                          className='rounded-lg ms-12 py-2.5 px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
-                          type={ButtonEnum.BUTTON}
-                          onClick={(() => {
-                            router.push('/sign/in')
-                          })}
-                        >
-                          A
-                        </button></>
-                  }
-                </> :
-                <>
-                  {/* ADMIN SECTION */}
-                  <button
-                    key='Trade'
-                    className='rounded-lg py-2.5 px-14 font-semibold bg-gray-500 hover:bg-gray-600 hover:cursor-not-allowed'
-                  >
-                    Intercambiar
-                  </button>
-                  <button
-                    key='Save'
-                    className='rounded-lg ms-12 py-2.5 px-4 font-semibold bg-gray-500 hover:bg-gray-600 hover:cursor-not-allowed'
-                  >
-                    A
-                  </button>
-                </>
-            }
-          </div>
-
-        </div>
-      </div>
-      <div className='w-[60%] m-auto text-black mt-8'>
-        <article>
-          {
-            (props.user.role === 'usuario_basico') && (props.user.userId != props.idOwnerUser) ?
-              <form
-                noValidate
-                onSubmit={handleSubmit(_handleSubmit)}
-              >
-                <div className='flex items-center'>
-                  <div className='w-[60%]'>
-                    <Input
-                      id='question'
-                      register={register}
-                      type='text'
-                      key='question'
-                      registerOptions={{ required: 'Escriba una pregunta' }}
-                      error={errors.question}
-                      placeholder='Escriba aquí su pregunta'
-                      label={'Preguntale al vendedor'}
+          <div className='ms-16 text-black w-[29vw] flex flex-col justify-between h-[405px]'>
+            <div>
+              <div className='flex justify-between w-[80%]'>
+                <h1 className='font-bold'>{props.title}</h1>
+                <span className='font-bold text-sm text-gray-600'>{props.postDate}</span>
+              </div>
+              <div className='ms-5 mt-1'>
+                <div className='h-20'>
+                  <p className='font-bold'>Descripcion</p>
+                  <p className='ms-3.5 mt-1.5'>{props.description}</p>
+                </div>
+                <div className='w-[60%]'>
+                  <div className='flex justify-between '>
+                    <div className='font-bold '>
+                      <p>Estado: </p>
+                      <p className='my-5'>Categoría: </p>
+                      <p className='my-5'>Ubicacion: </p>
+                    </div>
+                    <div>
+                      <p>{props.nameStateProduct}</p>
+                      <p className='my-5'>{props.nameProductCategorie}</p>
+                      <p className='my-5'>{props.locationTrade}</p>
+                    </div>
+                  </div>
+                  <p className='font-bold'>Centros elegidos para el intercambio:</p>
+                  <div className='ms-3.5 mt-1.5'>
+                    <CenterDescription
+                      key={1}
+                      idCenter={1}
+                      name='Centro A'
+                      location='Buenos Aires, La Plata'
+                      address='57 n1240'
+                      openingTime='7:00'
+                      closingTime='20:00'
+                      workDays={['Lunes', 'Martes', 'Viernes']}
+                    />
+                    <CenterDescription
+                      key={2}
+                      idCenter={2}
+                      name='Centro B'
+                      location='Buenos Aires, La Plata'
+                      address='50 n232'
+                      openingTime='9:00'
+                      closingTime='18:00'
+                      workDays={['Lunes', 'Martes']}
+                    />
+                    <CenterDescription
+                      key={3}
+                      idCenter={3}
+                      name='Centro C'
+                      location='Buenos Aires, La Plata'
+                      address='54 n1002'
+                      openingTime='13:00'
+                      closingTime='20:00'
+                      workDays={['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes']}
                     />
                   </div>
-                  <button
-                    key='ask'
-                    className='rounded-lg w-32 h-10 text-white ms-12 py-2.5 px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
-                  >
-                    Preguntar
-                  </button>
+                  <div className='flex justify-between w-[100%] mt-5'>
+                    <div className='flex items-center mb-[20px]'>
+                      <p className='font-bold'>Creador: </p>
+                      <Image alt={`ownerPostProfilePic`} className={'ms-[50px] w-[38px] rounded-full'} width={0} height={0} src={props.profilePicOwner} />
+                      <p className='ms-[10px]'>{props.nameUser} {props.surnameUser}</p>
+                    </div>
+                  </div>
                 </div>
-              </form> : null
-          }
-        </article>
-        <div>
-          {props.comments!.length > 0 || commentsUpdate  ? <div>
-            <p className='font-bold text-xl mb-[10px]'>Ultimas preguntas:</p>
-            {commentsUpdate ? <>
-              <AllComments
-                comments={lastComments}
-                user={props.user} />
-            </> :
-              Comments()}
-          </div> :
-            <div className='flex'>
-              <p className='text-l font-bold text-gray-500 mt-[10px] m-auto'>NO HAY PREGUNTAS ACTUALMENTE</p>
-            </div>}
+              </div>
+            </div>
+            <div className='text-white ms-5'>
+              {
+                (props.user.role === 'usuario_basico' || (props.user.role === 'non-registered')) ?
+                  <>
+                    {
+                      props.user.role === 'usuario_basico' ?
+                        <>
+                          {
+                            (props.user.userId != props.idOwnerUser) ?
+                              <>
+                                {/* ACTIVE SESSION SECTION */}
+                                <button
+                                  key='Trade'
+                                  className='rounded-lg py-2.5 px-14 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
+                                  type={ButtonEnum.BUTTON}
+                                  onClick={(() => {
+                                    console.log('USUARIO BASICO: BOTON INTERCAMBIAR FUNCIONA')
+                                  })}
+                                >
+                                  Intercambiar
+                                </button>
+                                <button
+                                  key='Save'
+                                  className='rounded-lg ms-12 py-2.5 px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
+                                  type={ButtonEnum.BUTTON}
+                                  onClick={(() => {
+                                    console.log('USUARIO BASICO: BOTON GUARDAR FUNCIONA')
+                                  })}
+                                >
+                                  A
+                                </button>
+                              </> :
+                              <>
+                                <button
+                                  key='Trade'
+                                  className='rounded-lg py-2.5 px-14 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
+                                  type={ButtonEnum.BUTTON}
+                                  onClick={(() => {
+                                    alert('No podes intercambiarte a ti mismo')
+                                  })}
+                                >
+                                  Intercambiar
+                                </button>
+                                <button
+                                  key='Save'
+                                  className='rounded-lg ms-12 py-2.5 px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
+                                  type={ButtonEnum.BUTTON}
+                                  onClick={(() => {
+                                    alert('No podes guardar tus propias publicaciones')
+                                  })}
+                                >
+                                  A
+                                </button>
+
+                              </>
+
+                          }
+                        </> : <>
+                          {/* NO ACTIVE SESSION SECTION */}
+                          <button
+                            key='Trade'
+                            className='rounded-lg py-2.5 px-14 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
+                            type={ButtonEnum.BUTTON}
+                            onClick={(() => {
+                              router.push('/sign/in')
+                            })}
+                          >
+                            Intercambiar
+                          </button>
+                          <button
+                            key='Save'
+                            className='rounded-lg ms-12 py-2.5 px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
+                            type={ButtonEnum.BUTTON}
+                            onClick={(() => {
+                              router.push('/sign/in')
+                            })}
+                          >
+                            A
+                          </button></>
+                    }
+                  </> :
+                  <>
+                    {/* ADMIN SECTION */}
+                    <button
+                      key='Trade'
+                      className='rounded-lg py-2.5 px-14 font-semibold bg-gray-500 hover:bg-gray-600 hover:cursor-not-allowed'
+                    >
+                      Intercambiar
+                    </button>
+                    <button
+                      key='Save'
+                      className='rounded-lg ms-12 py-2.5 px-4 font-semibold bg-gray-500 hover:bg-gray-600 hover:cursor-not-allowed'
+                    >
+                      A
+                    </button>
+                  </>
+              }
+            </div>
+
+          </div>
+        </div>
+        <div className='w-[60%] m-auto text-black mt-8'>
+          <article>
+            {
+              (props.user.role === 'usuario_basico') && (props.user.userId != props.idOwnerUser) ?
+                <form
+                  noValidate
+                  onSubmit={handleSubmit(_handleSubmit)}
+                >
+                  <div className='flex items-center'>
+                    <div className='w-[60%]'>
+                      <Input
+                        id='question'
+                        register={register}
+                        type='text'
+                        key='question'
+                        registerOptions={{ required: 'Escriba una pregunta' }}
+                        error={errors.question}
+                        placeholder='Escriba aquí su pregunta'
+                        label={'Preguntale al vendedor'}
+                      />
+                    </div>
+                    <button
+                      key='ask'
+                      className='rounded-lg w-32 h-10 text-white ms-12 py-2.5 px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
+                    >
+                      Preguntar
+                    </button>
+                  </div>
+                </form> : null
+            }
+          </article>
+          <div>
+            {props.comments!.length > 0 || commentsUpdate ? <div>
+              <p className='font-bold text-xl mb-[10px]'>Ultimas preguntas:</p>
+              {commentsUpdate ? <>
+                <AllComments
+                  comments={lastComments}
+                  user={props.user} />
+              </> :
+                Comments()}
+            </div> :
+              <div className='flex'>
+                <p className='text-l font-bold text-gray-500 mt-[10px] m-auto'>NO HAY PREGUNTAS ACTUALMENTE</p>
+              </div>}
+          </div>
         </div>
       </div>
-    </div>
-  )
+    ))
 }
