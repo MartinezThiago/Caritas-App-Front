@@ -2,6 +2,7 @@ import axios from "axios"
 import { ButtonEnum } from "./types"
 import { useRouter } from "next/router"
 import { FRONT_BASE_URL } from "@/constants"
+import { useState } from "react"
 
 interface deleteQuestionBody {
     id_pregunta: number
@@ -15,7 +16,8 @@ export default function QuestionPost({
     idOwnerQuestion,
     idCurrentUser,
     roleCurrentUser,
-    idQuestion
+    idQuestion,
+    hasAnswer
 }: {
     question: string
     questionUserInfo: string
@@ -24,25 +26,29 @@ export default function QuestionPost({
     idCurrentUser: string
     roleCurrentUser: string
     idQuestion: number
+    hasAnswer: boolean
 }) {
     const router = useRouter();
-
     const DeleteQuestion = async () => {
-        const questionInfo:deleteQuestionBody = {
+        const idQuery = router.query.id
+        const questionInfo: deleteQuestionBody = {
             "id_pregunta": idQuestion,
             "id_usuario_que_va_a_borrar": parseInt(idCurrentUser)
         }
 
         await axios
-          .post(`${FRONT_BASE_URL}question/delete`, questionInfo)
-          .then(() => router.push(`/posts/${router.query.id}`))
-          .catch((error: { response: { data: { message: string } } }) => {
-            console.log(error);
-            if (error) {
-              alert(error.response.data.message)
+            .post(`${FRONT_BASE_URL}question/delete`, questionInfo)
+            .then(async () => {
+                await router.push('/')
+                await router.push(`/posts/${idQuery}`)
+            })
+            .catch((error: { response: { data: { message: string } } }) => {
+                console.log(error);
+                if (error) {
+                    alert(error.response.data.message)
 
-            }
-          })
+                }
+            })
     }
     return (
         <>

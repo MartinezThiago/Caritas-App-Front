@@ -60,9 +60,8 @@ export default function ExtendedPostCard(props: PostData) {
       .then(async () => {
         const { data: comm } = await axios.post<[]>(`${FRONT_BASE_URL}comments/get`, { id: router.query.id })
         setLastComments(comm)
-        setCommentsUpdate(true)
-        console.log(lastComments);
-        
+        setCommentsUpdate(true)     
+        alert('Pregunta enviada correctamente')   
       })
       .catch((error: { response: { data: { message: string } } }) => {
         console.log(error);
@@ -71,7 +70,6 @@ export default function ExtendedPostCard(props: PostData) {
 
         }
       })
-
   }
   const Comments = () => {
     const comment = props.comments!.map((e: CommentUnadapted) => {
@@ -92,7 +90,6 @@ export default function ExtendedPostCard(props: PostData) {
           idCurrentUser={`${props.user.userId}`}
           roleCurrentUser={`${props.user.role}`}
         />
-
       )
     })
     return comment;
