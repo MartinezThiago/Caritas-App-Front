@@ -46,6 +46,27 @@ export interface UnadaptedUser {
   Rol: Rol
 }
 
+/**
+ * The center data from external server.
+ * @property {number} id_centro - The center ID.
+ * @property {string} nombre_centro - The center name.
+ * @property {string} ubicacion - The center location.
+ * @property {string} direccion - The center address.
+ * @property {string} horario_apertura - The center openingTime.
+ * @property {string} horario_cierre - The center closingTime
+ * @property {[string]} [dias] - The center work days.
+ */
+export interface UnadaptedCenter {
+  id_centro: number
+  nombre_centro: string
+  ubicacion: string
+  direccion: string
+  horario_apertura: string
+  horario_cierre: string
+  dias: string[]
+}
+
+
 export type img = {
   base64_imagen: string
 }
@@ -119,11 +140,12 @@ export interface CardProductProps {
  * @property {number} idOwnerUser - The ID of the user who created the post.
  * @property {string} nameUser - The name of the user who created the post.
  * @property {string} surnameUser - The last name of the user who created the post.
- * @property {number} centersChoosed- The post centers.
+ * @property {[UnadaptedCenter]} centersChoosed- The post centers.
  * @property {User} user - The current user. 
  * @property {string} profilePicOwner - The profile pic of the owners post
  * @property {[CommentUnadapted]} [comments] - The post asks/questions.
  * @property {[img]} images - The post asks/questions.
+ * 
  */
 export interface PostData {
   idPost: number
@@ -138,11 +160,11 @@ export interface PostData {
   idOwnerUser: number
   nameUser: string
   surnameUser: string
-  centersChoosed: number
   user: User
   profilePicOwner: string
   comments?: [CommentUnadapted]
   images: [img]
+  centersChoosed: [UnadaptedCenter]
 }
 
 export interface PostDataAdapter {
@@ -158,7 +180,7 @@ export interface PostDataAdapter {
   id_usuario: number
   nombre_usuario: string
   apellido_usuario: string
-  centros_elegidos: number
+  centros: [UnadaptedCenter]
   user: User
   comentarios?: [CommentUnadapted]
   base64_imagen: string

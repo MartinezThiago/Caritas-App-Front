@@ -44,6 +44,8 @@ export default function ExtendedPostCard(props: PostData) {
     handleSubmit,
     formState: { errors }
   } = useForm<FormData>()
+  console.log(props);
+
   const router = useRouter();
   const [lastComments, setLastComments] = useState<[]>();
   const [commentsUpdate, setCommentsUpdate] = useState(false);
@@ -68,13 +70,13 @@ export default function ExtendedPostCard(props: PostData) {
     await axios
       .post(`${FRONT_BASE_URL}question/post`, pregunta)
       .then(async () => {
-        
+
         const { data: comm } = await axios.post<[]>(`${FRONT_BASE_URL}comments/get`, { id: router.query.id })
         setLastComments(comm)
         setCommentsUpdate(true)
         alert('Pregunta enviada correctamente')
         console.log(comm);
-        
+
       })
       .catch((error: { response: { data: { message: string } } }) => {
         console.log(error);
@@ -114,9 +116,26 @@ export default function ExtendedPostCard(props: PostData) {
       thumbnail: e.base64_imagen,
     }))
   }
-
+  const Centers = () => {
+    const center = props.centersChoosed.map((e) => {
+      return (
+        <CenterDescription
+          key={e.id_centro}
+          idCenter={e.id_centro}
+          name={e.nombre_centro}
+          location={e.ubicacion}
+          address={e.direccion}
+          openingTime={e.horario_apertura}
+          closingTime={e.horario_cierre}
+          // workDays={['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes']}
+          workDays={e.dias}
+        />
+      )
+    })
+    return center
+  }
   return (
-    isLoading ? (<div className='flex mt-[50px]'><div className='m-auto'><Loading/></div></div>) : (
+    isLoading ? (<div className='flex mt-[50px]'><div className='m-auto'><Loading /></div></div>) : (
       <div>
         <div className='w-screen h-[68vh] flex justify-center mt-10 font-sans'>
           <div className='w-[500px]'>
@@ -153,36 +172,7 @@ export default function ExtendedPostCard(props: PostData) {
                   </div>
                   <p className='font-bold'>Centros elegidos para el intercambio:</p>
                   <div className='ms-3.5 mt-1.5'>
-                    <CenterDescription
-                      key={1}
-                      idCenter={1}
-                      name='Centro A'
-                      location='Buenos Aires, La Plata'
-                      address='57 n1240'
-                      openingTime='7:00'
-                      closingTime='20:00'
-                      workDays={['Lunes', 'Martes', 'Viernes']}
-                    />
-                    <CenterDescription
-                      key={2}
-                      idCenter={2}
-                      name='Centro B'
-                      location='Buenos Aires, La Plata'
-                      address='50 n232'
-                      openingTime='9:00'
-                      closingTime='18:00'
-                      workDays={['Lunes', 'Martes']}
-                    />
-                    <CenterDescription
-                      key={3}
-                      idCenter={3}
-                      name='Centro C'
-                      location='Buenos Aires, La Plata'
-                      address='54 n1002'
-                      openingTime='13:00'
-                      closingTime='20:00'
-                      workDays={['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes']}
-                    />
+                    {Centers()}
                   </div>
                   <div className='flex justify-between w-[100%] mt-5'>
                     <div className='flex items-center mb-[20px]'>
