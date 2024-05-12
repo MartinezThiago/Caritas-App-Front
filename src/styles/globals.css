@@ -388,7 +388,7 @@ template {
    ========================================================================== */
 
 * {
-  @apply box-border;
+  @apply box-border p-0 m-0;
 }
 
 header {
@@ -420,4 +420,10 @@ body {
 
 main {
   @apply flex-grow
+}
+
+.css-b62m3t-container,
+.css-13cymwt-control,
+.css-t3ipsp-control {
+  @apply !appearance-none !rounded-none border !shadow text-zinc-700 focus:outline-none focus:!shadow-lg !border-zinc-200 bg-white hover:bg-zinc-100 hover:text-zinc-900 hover:cursor-pointer;
 }
