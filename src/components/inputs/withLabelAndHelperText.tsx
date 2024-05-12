@@ -15,7 +15,7 @@ import type {
  */
 export interface Props {
   id: string,
-  label: string,
+  label: string | React.ReactNode,
   error?: FieldError
   register: UseFormRegister<any>
   registerOptions?: RegisterOptions
@@ -37,7 +37,7 @@ const withLabelAndHelperText = <T extends object>(
         <label
           key={`${id}-label`}
           htmlFor={id}
-          className={`block text-sm font-bold mb-2`}
+          className='block w-full text-left text-sm font-bold'
         >
           {label}
         </label>
