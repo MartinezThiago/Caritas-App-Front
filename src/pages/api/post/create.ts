@@ -1,7 +1,4 @@
-import type {
-  NextApiRequest,
-  NextApiResponse
-} from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 import axios from 'axios'
 
@@ -15,9 +12,9 @@ import { getUser } from '@/utils'
  * @arg {NextApiRequest} req
  * @arg {NextApiResponse} res
  */
-export default async function handler(
+export default async function handler (
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ): Promise<void> {
   const token = getCookie('access', { req, res })
   const { userId } = getUser(req, res)
@@ -32,24 +29,26 @@ export default async function handler(
     descripcion: req.body.description,
     imagenesEnBase64: req.body.photos,
     usuario_owner: parseInt(userId.toString()),
-    categoria_producto: parseInt(req.body.categories[0]),
+    categoria_producto: parseInt(req.body.category),
     centros_elegidos: parseInt(req.body.center),
     estado_producto: auxState()
   }
-  console.log(formData);  
+
+  console.log(formData)
+  debugger
+
   await axios
-    .post(
-      `${BACK_BASE_URL}CaritasBack/crearPublicacion`,
-      formData,
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
-    .then((result: any) => { res.status(result.status).json({}) })
+    .post(`${BACK_BASE_URL}CaritasBack/crearPublicacion`, formData, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then((result: any) => {
+      res.status(result.status).json({})
+    })
     .catch((result: any) => {
       try {
         res.status(result.status).json({ message: result.data.message })
       } catch {
         res.status(500).json({ message: 'Ah ocurrido un error inesperado.' })
       }
-    },
-    )
+    })
 }
