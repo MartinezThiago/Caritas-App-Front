@@ -1,7 +1,4 @@
-import type {
-  NextApiRequest,
-  NextApiResponse
-} from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 import axios from 'axios'
 
@@ -13,33 +10,40 @@ import { BACK_BASE_URL } from '@/constants'
  * @arg {NextApiRequest} req
  * @arg {NextApiResponse} res
  */
-export default async function handler(
+export default async function handler (
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ): Promise<void> {
   const formData = req.body
 
   console.log('data', formData)
   debugger
 
-  const adaptedFormData={
-    nombre:formData.name,
-    apellido:formData.surname,
-    dni:formData.dni,
-    email:formData.email,
-    password:formData.password,
-    fecha_nacimiento:formData.birthdate
+  const adaptedFormData = {
+    nombre: formData.name,
+    apellido: formData.surname,
+    dni: formData.dni,
+    email: formData.email,
+    password: formData.password,
+    fecha_nacimiento: formData.birthdate,
+    foto: formData.photo,
+    centros_elegidos: formData.centers
   }
-  
+
   await axios
     .post(`${BACK_BASE_URL}CaritasBack/registrarUsuario`, adaptedFormData)
-    .then((result: any) => {res.status(result.status).json({})})
+    .then((result: any) => {
+      res.status(result.status).json({})
+    })
     .catch((result: any) => {
       try {
         res.status(result.status).json({ message: result.data.message })
       } catch {
-        res.status(500).json({ message: 'Ah ocurrido un error inesperado al registrar un usuario.' })
+        res
+          .status(500)
+          .json({
+            message: 'Ah ocurrido un error inesperado al registrar un usuario.'
+          })
       }
-    },
-    )
+    })
 }
