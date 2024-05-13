@@ -14,6 +14,7 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
+import processFiles from '@/utils/img-files-to-b64'
 
 /**
  * Gets the user from the request and response objects in the server side and pass it
@@ -26,7 +27,7 @@ export async function getServerSideProps ({
   req: NextApiRequest
   res: NextApiResponse
 }>): Promise<GetSSPropsResult> {
-  return requirePermission(getUser(req, res), 'non-registered', '/')
+  return requirePermission(getUser(req, res), 'usuario_basico', '/')
 }
 
 /**
@@ -36,7 +37,7 @@ interface FormData {
   name: string // titulo
   location: string
   description: string // descripcion
-  categories: string[] // categorias
+  category: string // categorias
   photos: FileList | string[] // imagenes
   center: string // centros_elegidos
   status: string // estado_producto
@@ -67,6 +68,18 @@ export default function CreatePost ({ user }: { user: User }) {
     clearErrors('center')
   }
 
+  const handleFromChange = (e: any) => {
+    console.log('from', e.target.value)
+    setValue('from', e.target.value)
+    clearErrors('from')
+  }
+
+  const handleToChange = (e: any) => {
+    console.log('to', e.target.value)
+    setValue('to', e.target.value)
+    clearErrors('to')
+  }
+
   const handleStatusChange = (e: any) => {
     setValue('status', e.target.value)
     clearErrors('status')
@@ -78,36 +91,17 @@ export default function CreatePost ({ user }: { user: User }) {
    */
   const _handleSubmit = async (formData: FormData) => {
     setLoaging(true)
-    console.log(formData)
-    // Función para convertir un archivo a base64
-    const makeB64 = (file: File): Promise<string> => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onload = event => {
-          const result = event.target?.result as string
-          resolve(result)
-        }
-        reader.onerror = error => {
-          reject(error)
-        }
-        reader.readAsDataURL(file)
-      })
+
+    console.log('DATA IMPRESA', formData)
+    debugger
+
+    const processPhotos = async () => {
+      return formData.photos.map(() => {})
     }
 
-    // Función para procesar los archivos y convertirlos a base64
-    const processFiles = async () => {
-      const files = formData.photos as FileList
-      const photosPromises: Promise<string>[] = []
-      for (let i = 0; i < files.length; i++) {
-        photosPromises.push(makeB64(files[i]))
-      }
-      const photos = await Promise.all(photosPromises)
-      formData.photos = photos
-    }
-
-    // Llamar a la función para procesar los archivos
-    processFiles()
-      .then(async () => {
+    await processFiles(formData.photos)
+      .then(async (result: string[]) => {
+        formData.photos = result
         await axios
           .post(`${FRONT_BASE_URL}post/create`, formData)
           .then(() => router.push('/'))
@@ -119,9 +113,11 @@ export default function CreatePost ({ user }: { user: User }) {
             }
             setLoaging(false)
           })
+        return Promise.resolve()
       })
-      .catch(error => {
-        console.error('Error al procesar las fotos:', error)
+      .catch(() => {
+        alert('Ah ocurrido un error inesperado, intente nuevamente.')
+        setLoaging(false)
       })
   }
 
@@ -201,17 +197,17 @@ export default function CreatePost ({ user }: { user: User }) {
             </div>
             <div key='categories-container' className='w-full'>
               <Categories
-                id='categories'
+                id='category'
                 label='Categorías'
-                error={errors.categories as FieldError}
+                error={errors.category}
                 register={register}
                 registerOptions={{ required: 'Campo requerido' }}
-                setValue={(value: string[]) => setValue('categories', value)}
-                clearError={() => clearErrors('categories')}
+                setValue={(value: string) => { console.log(value); setValue('category', value) }}
+                clearError={() => clearErrors('category')}
               />
             </div>
             <div
-              key='create-post-form-container-2'
+              key='create-post-form-container-3'
               className='w-full flex flex-col justify-center items-start'
             >
               <Select
@@ -265,7 +261,7 @@ export default function CreatePost ({ user }: { user: User }) {
                     value: hour.toString(),
                     label: `${hour}:00`
                   }))}
-                  handleChange={handleCenterChange}
+                  handleChange={handleFromChange}
                 />
               </div>
               <div className='basis-1/2 max-w-[50%]'>
@@ -281,7 +277,7 @@ export default function CreatePost ({ user }: { user: User }) {
                     value: hour.toString(),
                     label: `${hour}:00`
                   }))}
-                  handleChange={handleCenterChange}
+                  handleChange={handleToChange}
                 />
               </div>
             </div>
