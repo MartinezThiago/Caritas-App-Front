@@ -19,6 +19,9 @@ export default async function handler(
 ): Promise<void> {
   const formData = req.body
 
+  console.log('data', formData)
+  debugger
+
   const adaptedFormData={
     nombre:formData.name,
     apellido:formData.surname,

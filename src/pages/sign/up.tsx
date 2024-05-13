@@ -59,6 +59,11 @@ export default function Signup ({ user }: { user: User }) {
    */
   const _handleSubmit = async (formData: FormData) => {
     setLoaging(true)
+
+    console.log('data', formData)
+    console.log('url', `${FRONT_BASE_URL}sign/up`)
+    debugger
+
     await axios
       .post(`${FRONT_BASE_URL}sign/up`, formData)
       .then(() => router.push('sign/in'))
