@@ -15,6 +15,7 @@ import { subYears } from 'date-fns'
 import { FieldError, useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
+import processFiles from '@/utils/img-files-to-b64'
 
 /**
  * Gets the user from the request and response objects in the server side and pass it
@@ -59,22 +60,26 @@ export default function Signup ({ user }: { user: User }) {
    */
   const _handleSubmit = async (formData: FormData) => {
     setLoaging(true)
+    processFiles(formData.photo).then(
+      async (result: string[]): Promise<void> => {
+        formData.photo = result
+        console.log('data', formData)
+        debugger
 
-    console.log('data', formData)
-    console.log('url', `${FRONT_BASE_URL}sign/up`)
-    debugger
-
-    await axios
-      .post(`${FRONT_BASE_URL}sign/up`, formData)
-      .then(() => router.push('sign/in'))
-      .catch((error: any) => {
-        try {
-          alert(error.response.data.message)
-        } catch (error) {
-          alert('Ah ocurrido un error inesperado, intente nuevamente.')
-        }
-        setLoaging(false)
-      })
+        await axios
+          .post(`${FRONT_BASE_URL}sign/up`, formData)
+          .then(() => router.push('sign/in'))
+          .catch((error: any) => {
+            try {
+              alert(error.response.data.message)
+            } catch (error) {
+              alert('Ah ocurrido un error inesperado, intente nuevamente.')
+            }
+            setLoaging(false)
+          })
+        return Promise.resolve()
+      }
+    )
   }
 
   return (
