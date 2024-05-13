@@ -1,11 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { productStatus, type GetSSPropsResult, type User } from '@/types'
-import zlib from 'zlib';
 import axios from 'axios'
-import { centers as c, locations as l } from '@/utils/examples/locations'
+import { centers as c } from '@/utils/examples/locations'
 
 import { ButtonEnum } from '@/components/types'
-import { Categories, Input, Select, TextArea } from '@/components'
+import { Categories, Input, MultiSelect, Select, TextArea } from '@/components'
 import { FRONT_BASE_URL } from '@/constants'
 import { getUser } from '@/utils'
 import { requirePermission } from '@/utils'
@@ -13,19 +12,21 @@ import { RootLayout } from '@/layouts'
 import { FieldError, useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Loader2 } from 'lucide-react'
 
 /**
  * Gets the user from the request and response objects in the server side and pass it
  * to the page component.
  */
-export async function getServerSideProps({
+export async function getServerSideProps ({
   req,
   res
 }: Readonly<{
   req: NextApiRequest
   res: NextApiResponse
 }>): Promise<GetSSPropsResult> {
-  return requirePermission(getUser(req, res), 'usuario_basico', '/')
+  return requirePermission(getUser(req, res), 'non-registered', '/')
 }
 
 /**
@@ -39,12 +40,15 @@ interface FormData {
   photos: FileList | string[] // imagenes
   center: string // centros_elegidos
   status: string // estado_producto
+  days: string[] // dias
+  from: string // desde las hs. x
+  to: string // hasta las hs. x
 }
 
 /**
  * The create post page.
  */
-export default function CreatePost({ user }: { user: User }) {
+export default function CreatePost ({ user }: { user: User }) {
   const router = useRouter()
   const [loading, setLoaging] = useState(false)
   const [centers, setCenters] = useState<any>([])
@@ -58,15 +62,14 @@ export default function CreatePost({ user }: { user: User }) {
     clearErrors
   } = useForm<FormData>()
 
-  const handleLocationChange = (e: any) => {
-    console.log(errors)
-    setValue('location', e.target.value)
-    setCenters(c[e.target.value])
-  }
-
   const handleCenterChange = (e: any) => {
     setValue('center', e.target.value)
     clearErrors('center')
+  }
+
+  const handleStatusChange = (e: any) => {
+    setValue('status', e.target.value)
+    clearErrors('status')
   }
 
   /**
@@ -75,66 +78,70 @@ export default function CreatePost({ user }: { user: User }) {
    */
   const _handleSubmit = async (formData: FormData) => {
     setLoaging(true)
-    console.log(formData);
+    console.log(formData)
     // Función para convertir un archivo a base64
     const makeB64 = (file: File): Promise<string> => {
       return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const result = event.target?.result as string;
-          resolve(result);
-        };
-        reader.onerror = (error) => {
-          reject(error);
-        };
-        reader.readAsDataURL(file);
-      });
-    };
+        const reader = new FileReader()
+        reader.onload = event => {
+          const result = event.target?.result as string
+          resolve(result)
+        }
+        reader.onerror = error => {
+          reject(error)
+        }
+        reader.readAsDataURL(file)
+      })
+    }
 
     // Función para procesar los archivos y convertirlos a base64
     const processFiles = async () => {
-      const files = formData.photos as FileList;
-      const photosPromises: Promise<string>[] = [];
+      const files = formData.photos as FileList
+      const photosPromises: Promise<string>[] = []
       for (let i = 0; i < files.length; i++) {
-        photosPromises.push(makeB64(files[i]));
+        photosPromises.push(makeB64(files[i]))
       }
-      const photos = await Promise.all(photosPromises);
-      formData.photos = photos;
-
-    };
+      const photos = await Promise.all(photosPromises)
+      formData.photos = photos
+    }
 
     // Llamar a la función para procesar los archivos
-    processFiles().then(async () => {
-      await axios
-        .post(`${FRONT_BASE_URL}post/create`, formData)
-        .then(() => router.push('/'))
-        .catch((error: any) => {
-          try {
-            alert(error.response.data.message)
-          } catch (error) {
-            alert('Ah ocurrido un error inesperado, intente nuevamente.')
-          }
-          setLoaging(false)
-        })
-    }).catch((error) => {
-      console.error('Error al procesar las fotos:', error);
-    });
+    processFiles()
+      .then(async () => {
+        await axios
+          .post(`${FRONT_BASE_URL}post/create`, formData)
+          .then(() => router.push('/'))
+          .catch((error: any) => {
+            try {
+              alert(error.response.data.message)
+            } catch (error) {
+              alert('Ah ocurrido un error inesperado, intente nuevamente.')
+            }
+            setLoaging(false)
+          })
+      })
+      .catch(error => {
+        console.error('Error al procesar las fotos:', error)
+      })
   }
 
   return (
     <RootLayout user={user}>
-      <main>
+      <main className='flex-1 overflow-x-hidden overflow-y-auto'>
         <section
           key='signin-section'
-          className='h-full flex flex-col justify-center items-center'
+          className='h-full flex flex-col justify-start items-center'
         >
           <form
             key='create-post-form'
             noValidate
             onSubmit={handleSubmit(_handleSubmit)}
-            className='mb-4 p-2 flex flex-col items-center justify-center'
+            className='sm:w-[30rem] p-2 flex flex-col items-center justify-center'
           >
-            <div key='create-post-form-container-1' className='flex gap-4'>
+            <div
+              key='create-post-form-container-1'
+              className='w-full flex gap-4'
+            >
               <div key='name-input-container' className='basis-1/2'>
                 <Input
                   id='name'
@@ -205,61 +212,103 @@ export default function CreatePost({ user }: { user: User }) {
             </div>
             <div
               key='create-post-form-container-2'
-              className=' w-full mb-4 flex gap-4'
+              className='w-full flex flex-col justify-center items-start'
             >
-              <div key='location-select-container' className='basis-1/2'>
+              <Select
+                id='center'
+                label='Centro'
+                register={register}
+                error={errors.center}
+                registerOptions={{
+                  required: watch('center') || 'Campo requerido'
+                }}
+                options={c}
+                handleChange={handleCenterChange}
+              />
+            </div>
+            <div
+              key='create-post-form-container-2'
+              className='w-full flex-col justify-center items-start'
+            >
+              <MultiSelect
+                id='days'
+                label='Días'
+                register={register}
+                registerOptions={{ required: 'Campo requerido' }}
+                error={errors.days as FieldError}
+                props={{
+                  isMulti: true,
+                  options: [
+                    { value: 'lunes', label: 'Lunes' },
+                    { value: 'miercoles', label: 'Miércoles' },
+                    { value: 'martes', label: 'Martes' },
+                    { value: 'jueves', label: 'Jueves' },
+                    { value: 'viernes', label: 'Viernes' },
+                    { value: 'sabado', label: 'Sábado' },
+                    { value: 'domingo', label: 'Domingo' }
+                  ],
+                  setValue: setValue
+                }}
+              />
+            </div>
+            <div className='w-full flex justify-center items-center gap-4'>
+              <div className='flex flex-col basis-1/2 max-w-[50%]'>
                 <Select
-                  id='location'
-                  label='Ubicación'
+                  id='from'
+                  label='Desde las'
                   register={register}
-                  handleChange={handleLocationChange}
-                  options={l}
+                  error={errors.from}
+                  registerOptions={{
+                    required: watch('from') || 'Campo requerido'
+                  }}
+                  options={[...Array(24).keys()].map(hour => ({
+                    value: hour.toString(),
+                    label: `${hour}:00`
+                  }))}
+                  handleChange={handleCenterChange}
                 />
               </div>
-              <div key='center-select-container' className='basis-1/2'>
+              <div className='basis-1/2 max-w-[50%]'>
                 <Select
-                  id='center'
-                  label='Centro'
+                  id='to'
+                  label='Hasta las'
                   register={register}
-                  error={errors.center}
+                  error={errors.to}
                   registerOptions={{
-                    required:
-                      watch('location') && !watch('center')
-                        ? 'Campo requerido'
-                        : true
+                    required: watch('to') || 'Campo requerido'
                   }}
-                  options={centers}
+                  options={[...Array(24).keys()].map(hour => ({
+                    value: hour.toString(),
+                    label: `${hour}:00`
+                  }))}
                   handleChange={handleCenterChange}
                 />
               </div>
             </div>
-            <div className='w-full flex flex-col sm:flex-row justify-center items-center gap-4'>
-              <div
-                key='status-select-container'
-                className='w-full sm:basis-1/2'
-              >
-                <Select
-                  id='status'
-                  label='Estado'
-                  register={register}
-                  handleChange={handleLocationChange}
-                  options={productStatus.map(status => ({
-                    value: status,
-                    label: status
-                  }))}
-                />
-              </div>
-              <div className='sm:basis-1/2 text-center'>
-                <button
-                  key='signup-form-submit-button'
-                  type={ButtonEnum.SUBMIT}
-                  disabled={loading}
-                  className='text-white rounded-lg py-[12px] px-16  bg-rose-700 font-semibold hover:bg-rose-800 duration-100'
-                >
-                  Crear Publicación
-                </button>
-              </div>
+            <div className='w-full flex flex-col justify-center items-start'>
+              <Select
+                id='status'
+                label='Estado'
+                register={register}
+                handleChange={handleStatusChange}
+                options={productStatus.map(status => ({
+                  value: status,
+                  label: status
+                }))}
+              />
             </div>
+            <Button
+              key='signup-form-submit-button'
+              type={ButtonEnum.SUBMIT}
+              disabled={loading}
+              className='appearance-none w-full max-w-48 text-white rounded-lg bg-rose-700 font-semibold hover:bg-rose-800 duration-100'
+            >
+              {loading ? (
+                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+              ) : (
+                'Crear Publicación'
+              )}
+            </Button>
           </form>
         </section>
       </main>
