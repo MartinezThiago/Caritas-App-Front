@@ -15,7 +15,7 @@ interface Props {
   id: string
   register: UseFormRegister<any>
   registerOptions?: RegisterOptions
-  setValue: (value: string[]) => void
+  setValue: (value: string) => void
   clearError: () => void
   placeholders?: string[]
 }
@@ -33,6 +33,7 @@ const Categories = ({
   const handleChange = (e: any) => {
     setCategory(e.target.value)
     setValue(e.target.value)
+    clearError()
   }
 
   return (
