@@ -19,7 +19,7 @@ export default async function handler(
   res: NextApiResponse,
 ): Promise<void> {
   const formData = req.body
-  
+
   await axios
     .post(`${BACK_BASE_URL}Login/iniciarSesion`, formData)
     .then((result: any) => {
