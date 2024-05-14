@@ -30,7 +30,7 @@ export interface User {
  * @property {string} Nombre - The user's name.
  * @property {string} Apellido - The user's surname.
  * @property {string} DNI - The user's DNI. (Argentinian ID)
- * @property {string} FechaNacimiento - The user's birthdate. Always in timestamp.
+ * @property {string} Fecha_Nacimiento - The user's birthdate. Always in timestamp.
  * @property {string} Email - The user's email.
  * @property {number} [Centro] - The user's center. Only for volunteers.
  * @property {Role} Rol - The user's role.
@@ -40,7 +40,7 @@ export interface UnadaptedUser {
   Nombre: string
   Apellido: string
   Centro: number
-  FechaNacimiento: string
+  Fecha_Nacimiento: string
   DNI: string
   Email: string
   Rol: Rol
