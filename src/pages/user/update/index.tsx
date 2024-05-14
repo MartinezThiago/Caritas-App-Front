@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { ButtonEnum } from '@/components/types'
 import { FRONT_BASE_URL } from '@/constants'
 import { GetSSPropsResult, User } from '@/types'
-import { getUser, centers } from '@/utils'
+import { getUser } from '@/utils'
 import { requirePermission } from "@/utils/permissions";
 import { Input, MultiSelect } from '@/components'
 import { RootLayout } from '@/layouts'
@@ -48,7 +48,7 @@ interface CenterData {
  * The signup page.
  */
 export default function UpdateUserInfo({ user }: { user: User }) {
-  const [centersAux, setCentersAux] = useState([]);
+
   const [loading, setLoaging] = useState(false)
   const router = useRouter()
   const centrosMuyAux: any[] = []
@@ -60,23 +60,21 @@ export default function UpdateUserInfo({ user }: { user: User }) {
     setValue
   } = useForm<FormData>()
 
+  const auxLoading = watch('birthdate')||watch('centers')||watch('dni')||watch('name')||watch('password')||watch('photo')||watch('surname')
   useEffect(() => {
     const getCenters = async () => {
       await axios
         .get(`${FRONT_BASE_URL}centers/get`)
         .then((res: any) => {
-
           res.data.map((e: CenterData) => {
             centrosMuyAux.push({
               value: `${e.id_centro}`,
               label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}`
             })
           })
-
         })
     }
     getCenters()
-
   }, [])
   /**
    * Calls the endpoint by sending it the form data
@@ -84,10 +82,8 @@ export default function UpdateUserInfo({ user }: { user: User }) {
    */
   const _handleSubmit = async (formData: any) => {
     setLoaging(true)
-    console.log(formData);
     processFiles(formData.photo as FileList).then(async (result: string[]) => {
       formData.photo = result
-      console.log(result);
       await axios
         .post(`${FRONT_BASE_URL}user/update`, formData)
         .then(() => {
@@ -144,11 +140,15 @@ export default function UpdateUserInfo({ user }: { user: User }) {
                 <Input
                   key='birthdate'
                   id='birthdate'
-                  label='Fecha de nacimiento'
+                  label={`Fecha de nacimiento: ${user.birthdate}`}
                   type='date'
                   register={register}
                   registerOptions={{
                     validate: value => {
+                      console.log(value);
+                      if ((value === null) || (value === undefined) || (value === "")) {
+                        return true
+                      }
                       return (
                         new Date(value) <= subYears(new Date(), 18) ||
                         'Requerido ser mayor de edad.'
@@ -229,14 +229,18 @@ export default function UpdateUserInfo({ user }: { user: User }) {
                 label={
                   <>
                     Centro/s
-                    <span className='opacity-35'> (mínimo 1, máximo 3)</span>
+                    <span className='opacity-35'> (máximo 3)</span>
                   </>
                 }
                 register={register}
                 error={errors.centers as FieldError}
                 registerOptions={{
-                  validate: (value: string[]) =>
-                    value ? value.length <= 3 : 'aaaa' || 'Maximo 3 centros'
+                  validate: (value: string[]) => {
+                    if ((value === null) || (value === undefined)) {
+                      return true
+                    }
+                    return value.length <= 3 || 'Maximo 3 centros'
+                  }
                 }}
                 className='w-full'
                 props={{
@@ -250,7 +254,7 @@ export default function UpdateUserInfo({ user }: { user: User }) {
             <button
               key='signup-form-submit-button'
               type={ButtonEnum.SUBMIT}
-              disabled={loading}
+              disabled={loading || !auxLoading}
               className='py-2 px-4 bg-rose-700 font-bold text-white hover:bg-rose-500 active:bg-rose-700 mt-[20px]'
             >
               Guardar datos
