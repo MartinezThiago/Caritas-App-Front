@@ -16,9 +16,6 @@ export default async function handler (
 ): Promise<void> {
   const formData = req.body
 
-  console.log('data', formData)
-  debugger
-
   const adaptedFormData = {
     nombre: formData.name,
     apellido: formData.surname,
@@ -26,10 +23,11 @@ export default async function handler (
     email: formData.email,
     password: formData.password,
     fecha_nacimiento: formData.birthdate,
-    foto: formData.photo,
-    centros_elegidos: formData.centers
+    foto: formData.photo[0],
+    centros_elegidos: [1,2,3,5]
   }
-
+  console.log(adaptedFormData);
+  
   await axios
     .post(`${BACK_BASE_URL}CaritasBack/registrarUsuario`, adaptedFormData)
     .then((result: any) => {

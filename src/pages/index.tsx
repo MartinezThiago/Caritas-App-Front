@@ -118,7 +118,7 @@ export default function Home ({ user }: { user: User }) {
             })}
           >
             <div className='flex mt-[30px] justify-center w-[100%]'>
-              <div className='w-[50%]'>
+              {/* <div className='w-[50%]'>
                 <Input
                   id='question'
                   register={register}
@@ -138,7 +138,7 @@ export default function Home ({ user }: { user: User }) {
                 className='rounded-full w-[40px] h-[40px] text-white ms-[10px] outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
               >
                 B
-              </button>
+              </button> */}
             </div>
           </form>
         </div>

@@ -37,7 +37,7 @@ export async function getServerSideProps ({
 interface FormData extends Omit<User, 'role'> {
   password: string
   passwordConfirmation: string
-  photo: File
+  photo: FileList | string[]
   centers: string[]
 }
 
@@ -58,28 +58,42 @@ export default function Signup ({ user }: { user: User }) {
    * Calls the endpoint by sending it the form data
    * @arg {FormData} formData
    */
-  const _handleSubmit = async (formData: FormData) => {
+  const _handleSubmit =(formData: FormData) => {
     setLoaging(true)
-    processFiles(formData.photo).then(
-      async (result: string[]): Promise<void> => {
-        formData.photo = result
-        console.log('data', formData)
-        debugger
-
-        await axios
-          .post(`${FRONT_BASE_URL}sign/up`, formData)
-          .then(() => router.push('sign/in'))
-          .catch((error: any) => {
-            try {
-              alert(error.response.data.message)
-            } catch (error) {
-              alert('Ah ocurrido un error inesperado, intente nuevamente.')
-            }
-            setLoaging(false)
-          })
-        return Promise.resolve()
-      }
-    )
+    console.log(formData);
+    processFiles(formData.photo as FileList).then(async (result: string[]) => {
+      formData.photo=result
+      await axios
+        .post(`${FRONT_BASE_URL}sign/up`, formData)
+        .then(() => router.push('/sign/in'))
+        .catch((error: any) => {
+          try {
+            alert(error.response.data.message)
+          } catch (error) {
+            alert('Ah ocurrido un error inesperado, intente nuevamente.')
+          }
+          setLoaging(false)
+        })
+    })   
+    
+    // processFiles(formData.photo as File).then(async (result: string[]) => {
+    //   formData.photos=result
+    //   await axios
+    //     .post(`${FRONT_BASE_URL}post/create`, formData)
+    //     .then(() => router.push('/'))
+    //     .catch((error: any) => {
+    //       try {
+    //         alert(error.response.data.message)
+    //       } catch (error) {
+    //         alert('Ah ocurrido un error inesperado, intente nuevamente.')
+    //       }
+    //       setLoaging(false)
+    //     })
+    // })
+    //   .catch(() => {
+    //     alert('Ah ocurrido un error inesperado, intente nuevamente.')
+    //     setLoaging(false)
+    //   })
   }
 
   return (

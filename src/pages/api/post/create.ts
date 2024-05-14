@@ -30,12 +30,11 @@ export default async function handler (
     imagenesEnBase64: req.body.photos,
     usuario_owner: parseInt(userId.toString()),
     categoria_producto: parseInt(req.body.category),
-    centros_elegidos: parseInt(req.body.center),
+    centros_elegidos: [1,2,5],
     estado_producto: auxState()
   }
+console.log(formData);
 
-  console.log(formData)
-  debugger
 
   await axios
     .post(`${BACK_BASE_URL}CaritasBack/crearPublicacion`, formData, {
