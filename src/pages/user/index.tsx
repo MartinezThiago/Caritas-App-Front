@@ -96,6 +96,7 @@ export default function UserInfo({ user }: { user: User }) {
               <p className="my-[5px]"><span className="font-semibold">Apellido: </span>{user.surname}</p>
               <p className="my-[5px]"><span className="font-semibold">DNI: </span>{user.dni}</p>
               <p className="my-[5px]"><span className="font-semibold">Fecha de nacimiento: </span>{user.birthdate}</p>
+              <p className="my-[5px]"><span className="font-semibold">Correo: </span>{user.email}</p>
               <p className="my-[5px]"><span className="font-semibold">Tipo de usuario: </span>{rol}</p>
             </div>
           </div>
@@ -107,14 +108,12 @@ export default function UserInfo({ user }: { user: User }) {
         >
           Cambiar datos personales
         </button>:<></>
-        
         }
-          
         </div>
         <div className="bg-rose-700 w-[0.5px] h-[100%] mx-[30px]"></div>
         <div className="flex flex-col items-center">
           <p className="font-bold text-black text-xl ">Foto de perfil</p>
-          <Image alt={`userProfilePic`} className={'me-[10px] w-[200px] rounded-full mt-[10px]'} src={profilePic ? profilePic : profilePicDefault} width={0} height={0} />
+          <Image alt={`userProfilePic`} className={'w-[200px] rounded-full mt-[10px]'} src={profilePic ? profilePic : profilePicDefault} width={0} height={0} />
         </div>
         <div className="bg-rose-700 w-[0.5px] h-[100%] mx-[30px]"></div>
         <div>

@@ -34,7 +34,8 @@ export default function CenterDescription({
         <div className="my-2">
             <p className="text-rose-700 text-l font-bold">{name}</p>
             <div className="mx-2 text-black">
-                <p><span className="font-semibold ">Direccion:</span> {address}</p>
+            <p><span className="font-semibold ">Localidad: </span> {location}</p>
+                <p><span className="font-semibold ">Direccion: </span> {address}</p>
                 <p><span className="font-semibold">Dias: </span>{checkDaysOfWeek() ? 'Dias Hábiles' : dias}</p>
                 <p><span className="font-semibold">Horarios:</span> {openingTime} - {closingTime}</p>
             </div>

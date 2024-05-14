@@ -36,12 +36,12 @@ interface FormData extends Omit<User, 'role'> {
   centers: string[]
 }
 
-interface CenterData{
+interface CenterData {
   nombre_centro: string
   direccion: string
   ubicacion: File
-  dias:string[]
-  id_centro:number
+  dias: string[]
+  id_centro: number
 }
 
 /**
@@ -51,7 +51,7 @@ export default function UpdateUserInfo({ user }: { user: User }) {
   const [centersAux, setCentersAux] = useState([]);
   const [loading, setLoaging] = useState(false)
   const router = useRouter()
-  const centrosMuyAux:any[]=[]
+  const centrosMuyAux: any[] = []
   const {
     register,
     handleSubmit,
@@ -59,20 +59,20 @@ export default function UpdateUserInfo({ user }: { user: User }) {
     watch,
     setValue
   } = useForm<FormData>()
-  
+
   useEffect(() => {
     const getCenters = async () => {
       await axios
         .get(`${FRONT_BASE_URL}centers/get`)
         .then((res: any) => {
-          
-          res.data.map((e:CenterData)=>{
+
+          res.data.map((e: CenterData) => {
             centrosMuyAux.push({
               value: `${e.id_centro}`,
               label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}`
             })
           })
-          
+
         })
     }
     getCenters()
@@ -90,7 +90,9 @@ export default function UpdateUserInfo({ user }: { user: User }) {
       console.log(result);
       await axios
         .post(`${FRONT_BASE_URL}user/update`, formData)
-        .then(() => router.push('/'))
+        .then(() => {
+          router.push('/sign/out')
+        })
         .catch((error: any) => {
           try {
             alert(error.response.data.message)
@@ -125,6 +127,7 @@ export default function UpdateUserInfo({ user }: { user: User }) {
                   key='name'
                   id='name'
                   label='Nombres'
+                  placeholder={user.name}
                   type='text'
                   register={register}
                   error={errors.name}
@@ -134,6 +137,7 @@ export default function UpdateUserInfo({ user }: { user: User }) {
                   id='surname'
                   label='Apellidos'
                   type='text'
+                  placeholder={user.surname}
                   register={register}
                   error={errors.surname}
                 />
@@ -161,6 +165,7 @@ export default function UpdateUserInfo({ user }: { user: User }) {
                   id='dni'
                   label='DNI'
                   type='number'
+                  placeholder={user.dni}
                   register={register}
                   registerOptions={{
                     pattern: {
@@ -231,7 +236,7 @@ export default function UpdateUserInfo({ user }: { user: User }) {
                 error={errors.centers as FieldError}
                 registerOptions={{
                   validate: (value: string[]) =>
-                    value.length <= 3 || 'Debe seleccionar entre 1 a 3 centros'
+                    value ? value.length <= 3 : 'aaaa' || 'Maximo 3 centros'
                 }}
                 className='w-full'
                 props={{
