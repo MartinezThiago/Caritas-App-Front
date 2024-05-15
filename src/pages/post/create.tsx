@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { productStatus, type GetSSPropsResult, type User } from '@/types'
 import axios from 'axios'
-import { centers as c } from '@/utils/examples/locations'
+import { Item } from '@/utils/examples/locations'
 
 import { ButtonEnum } from '@/components/types'
 import { Categories, Input, MultiSelect, Select, TextArea } from '@/components'
@@ -11,7 +11,7 @@ import { requirePermission } from '@/utils'
 import { RootLayout } from '@/layouts'
 import { FieldError, useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
 import processFiles from '@/utils/img-files-to-b64'
@@ -40,10 +40,19 @@ interface FormData {
   category: string // categorias
   photos: FileList | string[] // imagenes
   center: string // centros_elegidos
+  centerDos: string // centros_elegidos
   status: string // estado_producto
   days: string[] // dias
   from: string // desde las hs. x
   to: string // hasta las hs. x
+}
+
+interface CenterData {
+  nombre_centro: string
+  direccion: string
+  ubicacion: File
+  dias: string[]
+  id_centro: number
 }
 
 /**
@@ -52,7 +61,7 @@ interface FormData {
 export default function CreatePost({ user }: { user: User }) {
   const router = useRouter()
   const [loading, setLoaging] = useState(false)
-  const [centers, setCenters] = useState<string[]>([])
+  //const [centers, setCenters] = useState<string[]>([])
 
   const {
     register,
@@ -63,12 +72,66 @@ export default function CreatePost({ user }: { user: User }) {
     clearErrors
   } = useForm<FormData>()
 
+  const [centersUltimo, setCentersUltimo] = useState<Item[]>([])
+
+  //ARRAY DE CENTROS DEPENDIENDO LA LOCALIDAD ELEGIDA
+  const [auxCentersOnLocations, setAuxCentersOnLocations] = useState<Item[]>([])
+  //ARRAY DE LOCALIDADES DE LOS CENTROS TRAIDOS
+  const [locationsCentersUltimo, setLocationsCentersUltimo] = useState<Item[]>([])
+
+  //ARRAY DE CENTROS TRAIDOS DESDE LA DB
+  const [centersRaw, setCentersRaw] = useState<CenterData[]>([])
+
+  useEffect(() => {
+    const centrosMuyAux: Item[] = []
+    const locationsMuyAux: Item[] = []
+    const getCenters = async () => {
+      await axios
+        .get(`${FRONT_BASE_URL}centers/get`)
+        .then((res: any) => {
+          setCentersRaw(res.data)
+          res.data.map((e: CenterData) => {
+            centrosMuyAux.push({
+              value: `${e.id_centro}`,
+              label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}`
+            })
+            locationsMuyAux.push({
+              value: `${e.ubicacion}`,
+              label: `${e.ubicacion}`
+            })
+
+          })
+        })
+        //Elimina duplicados de las localidades
+      const eliminarDuplicados = async (arr: Item[]) => {
+        return arr.filter((item, index) => {
+          return arr.findIndex((i) => i.value === item.value) === index;
+        });
+      };
+      setLocationsCentersUltimo(await eliminarDuplicados(locationsMuyAux))
+    }
+    getCenters()
+    setCentersUltimo(centrosMuyAux)
+  }, [])
+
+  const handleCenterDosChange = (e: any) => {
+    //si e.target.value existe en centers, borro de los centers y sino lo agrego
+
+    setValue('center', e.target.value)
+    clearErrors('center')
+  }
   const handleCenterChange = (e: any) => {
     //si e.target.value existe en centers, borro de los centers y sino lo agrego
+
     setValue('center', e.target.value)
     clearErrors('center')
   }
   const handleLocationChange = (e: any) => {
+    //Carga en auxCentersOnLocations, los centros de la localidad elegida en el primer centro
+    setAuxCentersOnLocations(() => {
+      return centersUltimo.filter((i) => i.label.toLowerCase().includes(e.target.value.toLowerCase()))
+    })
+
     setValue('location', e.target.value)
     clearErrors('location')
   }
@@ -207,6 +270,18 @@ export default function CreatePost({ user }: { user: User }) {
                 clearError={() => clearErrors('category')}
               />
             </div>
+            <div className='w-full flex flex-col justify-center items-start'>
+              <Select
+                id='status'
+                label='Estado'
+                register={register}
+                handleChange={handleStatusChange}
+                options={productStatus.map(status => ({
+                  value: status,
+                  label: status
+                }))}
+              />
+            </div>
             <div
               key='create-post-form-container-3'
               className='w-full flex flex-col justify-center items-start'
@@ -219,7 +294,7 @@ export default function CreatePost({ user }: { user: User }) {
                 registerOptions={{
                   required: watch('location') || 'Campo requerido'
                 }}
-                options={c}
+                options={locationsCentersUltimo}
                 handleChange={handleLocationChange}
               />
             </div>
@@ -236,11 +311,11 @@ export default function CreatePost({ user }: { user: User }) {
                 registerOptions={{
                   required: watch('center') || 'Campo requerido'
                 }}
-                options={c}
+                options={auxCentersOnLocations}
                 handleChange={handleCenterChange}
               />
             </div>
-            {centers.map(() => {
+            {/* {centers.map(() => {
               return (
                 <><div
                   key='create-post-form-container-2'
@@ -300,76 +375,151 @@ export default function CreatePost({ user }: { user: User }) {
                     </div>
                   </div> </>
               )
-            })}
-            {/* <div
-            key='create-post-form-container-2'
-            className='w-full flex-col justify-center items-start'
-          >
-            <MultiSelect
-              id='days'
-              label='Días'
-              register={register}
-              registerOptions={{ required: 'Campo requerido' }}
-              error={errors.days as FieldError}
-              props={{
-                isMulti: true,
-                options: [
-                  { value: 'lunes', label: 'Lunes' },
-                  { value: 'miercoles', label: 'Miércoles' },
-                  { value: 'martes', label: 'Martes' },
-                  { value: 'jueves', label: 'Jueves' },
-                  { value: 'viernes', label: 'Viernes' }
-                ],
-                setValue: setValue
-              }}
-            />
-          </div>
-          <div className='w-full flex justify-center items-center gap-4'>
-            <div className='flex flex-col basis-1/2 max-w-[50%]'>
-              <Select
-                id='from'
-                label='Desde las'
+            })} */}
+            <div
+              key='create-post-form-container-2'
+              className='w-full flex-col justify-center items-start'
+              hidden={!watch('center')}
+            >
+              <MultiSelect
+                id='days'
+                label='Días'
                 register={register}
-                error={errors.from}
-                registerOptions={{
-                  required: watch('from') || 'Campo requerido'
+                registerOptions={{ required: 'Campo requerido' }}
+                error={errors.days as FieldError}
+                props={{
+                  isMulti: true,
+                  options: [
+                    { value: 'lunes', label: 'Lunes' },
+                    { value: 'miercoles', label: 'Miércoles' },
+                    { value: 'martes', label: 'Martes' },
+                    { value: 'jueves', label: 'Jueves' },
+                    { value: 'viernes', label: 'Viernes' }
+                  ],
+                  setValue: setValue
                 }}
-                options={[...Array(24).keys()].map(hour => ({
-                  value: hour.toString(),
-                  label: `${hour}:00`
-                }))}
-                handleChange={handleFromChange}
               />
             </div>
-            <div className='basis-1/2 max-w-[50%]'>
+            <div className='w-full flex justify-center items-center gap-4' hidden={!watch('center')}>
+
+              <div className='flex flex-col basis-1/2 max-w-[50%]'>
+                <Select
+                  id='from'
+                  label='Desde las'
+                  register={register}
+                  error={errors.from}
+                  registerOptions={{
+                    required: watch('from') || 'Campo requerido'
+                  }}
+                  options={[...Array(24).keys()].map(hour => ({
+                    value: hour.toString(),
+                    label: `${hour}:00`
+                  }))}
+                  handleChange={handleFromChange}
+                />
+              </div>
+              <div className='basis-1/2 max-w-[50%]'>
+                <Select
+                  id='to'
+                  label='Hasta las'
+                  register={register}
+                  error={errors.to}
+                  registerOptions={{
+                    required: watch('to') || 'Campo requerido'
+                  }}
+                  options={[...Array(24).keys()].map(hour => ({
+                    value: hour.toString(),
+                    label: `${hour}:00`
+                  }))}
+                  handleChange={handleToChange}
+                />
+              </div>
+            </div>
+            {/*Segundo centro*/}
+            <div
+              key='create-post-form-container-4'
+              className='w-full flex flex-col justify-center items-start'
+              hidden={(!watch('center') || !watch('days') || !watch('to') || !watch('from'))}
+            >
               <Select
-                id='to'
-                label='Hasta las'
+                id='centerDos'
+                label='Centro'
                 register={register}
-                error={errors.to}
+                error={errors.center}
                 registerOptions={{
-                  required: watch('to') || 'Campo requerido'
+                  //required: watch('center') || 'Campo requerido'
                 }}
-                options={[...Array(24).keys()].map(hour => ({
-                  value: hour.toString(),
-                  label: `${hour}:00`
-                }))}
-                handleChange={handleToChange}
+                options={auxCentersOnLocations}
+                handleChange={handleCenterDosChange}
               />
             </div>
-          </div> */}
-            <div className='w-full flex flex-col justify-center items-start'>
-              <Select
-                id='status'
-                label='Estado'
+            <div
+              key='create-post-form-container-2'
+              className='w-full flex-col justify-center items-start'
+              hidden={!watch('centerDos')}
+            >
+              <MultiSelect
+                id='days-center-dos'
+                label='Días'
                 register={register}
-                handleChange={handleStatusChange}
-                options={productStatus.map(status => ({
-                  value: status,
-                  label: status
-                }))}
+                registerOptions={{ required: 'Campo requerido' }}
+                error={errors.days as FieldError}
+                props={{
+                  isMulti: true,
+                  options: [
+                    { value: 'lunes', label: 'Lunes' },
+                    { value: 'miercoles', label: 'Miércoles' },
+                    { value: 'martes', label: 'Martes' },
+                    { value: 'jueves', label: 'Jueves' },
+                    { value: 'viernes', label: 'Viernes' }
+                  ],
+                  setValue: setValue
+                }}
               />
             </div>
+            <div
+              className='w-full flex justify-center items-center gap-4'
+              hidden={!watch('centerDos')}>
+
+              <div className='flex flex-col basis-1/2 max-w-[50%]'>
+                <Select
+                  id='from-center-dos'
+                  label='Desde las'
+                  register={register}
+                  error={errors.from}
+                  registerOptions={{
+                    required: watch('from') || 'Campo requerido'
+                  }}
+                  options={[...Array(24).keys()].map(hour => ({
+                    value: hour.toString(),
+                    label: `${hour}:00`
+                  }))}
+                  handleChange={handleFromChange}
+                />
+              </div>
+              <div className='basis-1/2 max-w-[50%]'>
+                <Select
+                  id='to-center-dos'
+                  label='Hasta las'
+                  register={register}
+                  error={errors.to}
+                  registerOptions={{
+                    required: watch('to') || 'Campo requerido'
+                  }}
+                  options={[...Array(24).keys()].map(hour => ({
+                    value: hour.toString(),
+                    label: `${hour}:00`
+                  }))}
+                  handleChange={handleToChange}
+                />
+              </div>
+            </div>
+
+
+
+
+
+
             <Button
               key='signup-form-submit-button'
               type={ButtonEnum.SUBMIT}
@@ -388,3 +538,4 @@ export default function CreatePost({ user }: { user: User }) {
     </RootLayout>
   )
 }
+
