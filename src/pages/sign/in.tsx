@@ -55,7 +55,7 @@ const links = {
   </Link>,
   forgotPassword: <Link
     key='link-forgot-password'
-    href='/sign/forgot-password'
+    href='/password-recovery'
     className='underline'
   >
     Recupérela

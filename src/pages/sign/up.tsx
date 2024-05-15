@@ -13,9 +13,10 @@ import { Input, MultiSelect } from '@/components'
 import { RootLayout } from '@/layouts'
 import { subYears } from 'date-fns'
 import { FieldError, useForm } from 'react-hook-form'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import processFiles from '@/utils/img-files-to-b64'
+import { Item } from '@/utils/examples/locations'
 
 /**
  * Gets the user from the request and response objects in the server side and pass it
@@ -31,6 +32,13 @@ export async function getServerSideProps ({
   return requirePermission(getUser(req, res))
 }
 
+interface CenterData {
+  nombre_centro: string
+  direccion: string
+  ubicacion: File
+  dias: string[]
+  id_centro: number
+}
 /**
  * The form data for the signup page.
  */
@@ -45,6 +53,26 @@ interface FormData extends Omit<User, 'role'> {
  * The signup page.
  */
 export default function Signup ({ user }: { user: User }) {
+   // const centrosMuyAux: any[] = []
+   const [centers,setCenters]=useState<Item[]>([]) 
+   useEffect(() => {
+     const centrosMuyAux:Item[]=[]
+     const getCenters = async () => {
+       await axios
+         .get(`${FRONT_BASE_URL}centers/get`)
+         .then((res: any) => {
+           res.data.map((e: CenterData) => {
+             centrosMuyAux.push({
+               value: `${e.id_centro}`,
+               label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}`
+             })
+             
+           })
+         })
+     }
+     getCenters()
+     setCenters(centrosMuyAux)
+   }, [])
   const [loading, setLoaging] = useState(false)
   const router = useRouter()
   const {
@@ -75,25 +103,6 @@ export default function Signup ({ user }: { user: User }) {
           setLoaging(false)
         })
     })   
-    
-    // processFiles(formData.photo as File).then(async (result: string[]) => {
-    //   formData.photos=result
-    //   await axios
-    //     .post(`${FRONT_BASE_URL}post/create`, formData)
-    //     .then(() => router.push('/'))
-    //     .catch((error: any) => {
-    //       try {
-    //         alert(error.response.data.message)
-    //       } catch (error) {
-    //         alert('Ah ocurrido un error inesperado, intente nuevamente.')
-    //       }
-    //       setLoaging(false)
-    //     })
-    // })
-    //   .catch(() => {
-    //     alert('Ah ocurrido un error inesperado, intente nuevamente.')
-    //     setLoaging(false)
-    //   })
   }
 
   return (
@@ -218,10 +227,15 @@ export default function Signup ({ user }: { user: User }) {
                   error={errors.photo as FieldError}
                   register={register}
                   registerOptions={{
-                    required: 'Campo requerido',
-                    validate: (value: FileList) =>
-                      value[0].size <= 3000000 ||
-                      'La foto no puede superar los 3MB.'
+                    validate: (value: FileList) =>{
+                      if((value===undefined)||(value===null)){
+                        return true
+                      }
+                      if(value.length===0){
+                        return true
+                      }
+                      return value[0].size <= 3000000 ||'La foto no puede superar los 3MB.'
+                    }
                   }}
                   className='hover:cursor-pointer'
                   props={{

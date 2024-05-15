@@ -41,6 +41,7 @@ export default function ExtendedPostCard(props: PostData) {
     register,
     handleSubmit,
     formState: { errors },
+    resetField
   } = useForm<FormData>();
   const router = useRouter();
   const [lastComments, setLastComments] = useState<[]>();
@@ -71,7 +72,7 @@ export default function ExtendedPostCard(props: PostData) {
         setLastComments(comm);
         setCommentsUpdate(true);
         alert("Pregunta enviada correctamente");
-        console.log(comm);
+        resetField('question')
       })
       .catch((error: { response: { data: { message: string } } }) => {
         console.log(error);

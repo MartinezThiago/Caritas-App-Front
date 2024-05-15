@@ -15,6 +15,7 @@ import { FieldError, useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import processFiles from '@/utils/img-files-to-b64'
+import { Item } from '@/utils/examples/locations'
 
 export async function getServerSideProps({
   req,
@@ -51,7 +52,8 @@ export default function UpdateUserInfo({ user }: { user: User }) {
 
   const [loading, setLoaging] = useState(false)
   const router = useRouter()
-  const centrosMuyAux: any[] = []
+  // const centrosMuyAux: any[] = []
+  const [centers,setCenters]=useState<Item[]>([])
   const {
     register,
     handleSubmit,
@@ -62,6 +64,7 @@ export default function UpdateUserInfo({ user }: { user: User }) {
 
   const auxLoading = watch('birthdate')||watch('centers')||watch('dni')||watch('name')||watch('password')||watch('photo')||watch('surname')
   useEffect(() => {
+    const centrosMuyAux:Item[]=[]
     const getCenters = async () => {
       await axios
         .get(`${FRONT_BASE_URL}centers/get`)
@@ -71,10 +74,12 @@ export default function UpdateUserInfo({ user }: { user: User }) {
               value: `${e.id_centro}`,
               label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}`
             })
+            
           })
         })
     }
     getCenters()
+    setCenters(centrosMuyAux)
   }, [])
   /**
    * Calls the endpoint by sending it the form data
@@ -210,9 +215,16 @@ export default function UpdateUserInfo({ user }: { user: User }) {
                   error={errors.photo as FieldError}
                   register={register}
                   registerOptions={{
-                    // validate: (value: FileList) =>
-                    //   value[0].size <= 3000000 ||
-                    //   'La foto no puede superar los 3MB.'
+                    validate: (value: FileList) =>{
+                      if((value===undefined)||(value===null)){
+                        return true
+                      }
+                      if(value.length===0){
+                        return true
+                      }
+                      return value[0].size <= 3000000 ||'La foto no puede superar los 3MB.'
+                    }
+                      
                   }}
                   className='hover:cursor-pointer'
                   props={{
@@ -244,7 +256,7 @@ export default function UpdateUserInfo({ user }: { user: User }) {
                 }}
                 className='w-full'
                 props={{
-                  options: centrosMuyAux,
+                  options: centers,
                   isMulti: true,
                   setValue: setValue
                 }}

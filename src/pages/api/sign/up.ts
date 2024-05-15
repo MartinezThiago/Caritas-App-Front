@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 import axios from 'axios'
 
-import { BACK_BASE_URL } from '@/constants'
+import { BACK_BASE_URL, defaultPhoto } from '@/constants'
 
 /**
  * Async handler function that sends the signup form data to the external server.
@@ -10,11 +10,12 @@ import { BACK_BASE_URL } from '@/constants'
  * @arg {NextApiRequest} req
  * @arg {NextApiResponse} res
  */
-export default async function handler (
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
   const formData = req.body
+  console.log(formData);
 
   const adaptedFormData = {
     nombre: formData.name,
@@ -23,11 +24,11 @@ export default async function handler (
     email: formData.email,
     password: formData.password,
     fecha_nacimiento: formData.birthdate,
-    foto: formData.photo[0],
-    centros_elegidos: [1,2,3,5]
+    foto: formData.photo.length === 0 ? defaultPhoto : formData.photo[0],
+    centros_elegidos: formData.centers
   }
   console.log(adaptedFormData);
-  
+
   await axios
     .post(`${BACK_BASE_URL}CaritasBack/registrarUsuario`, adaptedFormData)
     .then((result: any) => {
