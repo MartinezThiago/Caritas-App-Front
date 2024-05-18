@@ -96,9 +96,9 @@ export default function Signup ({ user }: { user: User }) {
         .then(() => router.push('/sign/in'))
         .catch((error: any) => {
           try {
-            alert(error.response.data.message)
+            alert('El correo electronico ya esta registrado en el sistema')
           } catch (error) {
-            alert('Ah ocurrido un error inesperado, intente nuevamente.')
+            alert('El correo electronico ya esta registrado en el sistema')
           }
           setLoaging(false)
         })

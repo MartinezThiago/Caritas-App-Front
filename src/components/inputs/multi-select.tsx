@@ -21,8 +21,13 @@ function MultiSelect ({
     register(id, registerOptions)
   }, [])
 
-  const handleChange = (options: Item[]) => {
-    const value = options.map(option => option.value)
+  const handleChange = (options: Item[] | Item) => {
+    let value
+    if (options instanceof Array) {
+      value = options.map(option => option.value)
+    } else {
+      value = options.value
+    }
     props.setValue(id, value)
   }
 

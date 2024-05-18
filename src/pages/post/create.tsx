@@ -1,26 +1,27 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-import { productStatus, type GetSSPropsResult, type User } from '@/types'
-import axios from 'axios'
-import { Item } from '@/utils/examples/locations'
-
+import { Button } from '@/components/ui/button'
 import { ButtonEnum } from '@/components/types'
 import { Categories, Input, MultiSelect, Select, TextArea } from '@/components'
+import { FieldError, useForm } from 'react-hook-form'
 import { FRONT_BASE_URL } from '@/constants'
-import { getUser } from '@/utils'
+import { getUser, makeHoursList } from '@/utils'
+import { Item } from '@/utils'
+import { Loader2 } from 'lucide-react'
 import { requirePermission } from '@/utils'
 import { RootLayout } from '@/layouts'
-import { FieldError, useForm } from 'react-hook-form'
-import { useRouter } from 'next/router'
+import { type GetSSPropsResult, type User, productStatus } from '@/types'
 import { useEffect, useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Loader2 } from 'lucide-react'
+import { useRouter } from 'next/router'
+
+import axios from 'axios'
 import processFiles from '@/utils/img-files-to-b64'
+
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 /**
  * Gets the user from the request and response objects in the server side and pass it
  * to the page component.
  */
-export async function getServerSideProps({
+export async function getServerSideProps ({
   req,
   res
 }: Readonly<{
@@ -39,12 +40,11 @@ interface FormData {
   description: string // descripcion
   category: string // categorias
   photos: FileList | string[] // imagenes
-  center: string // centros_elegidos
-  centerDos: string // centros_elegidos
   status: string // estado_producto
-  days: string[] // dias
-  from: string // desde las hs. x
-  to: string // hasta las hs. x
+  centers: string[] // centros_elegidos
+  days: Record<string | number, string[]> // dias_elegidos
+  from: Record<string | number, string> // desde
+  to: Record<string | number, string> // hasta
 }
 
 interface CenterData {
@@ -58,10 +58,9 @@ interface CenterData {
 /**
  * The create post page.
  */
-export default function CreatePost({ user }: { user: User }) {
+export default function CreatePost ({ user }: { user: User }) {
   const router = useRouter()
   const [loading, setLoaging] = useState(false)
-  //const [centers, setCenters] = useState<string[]>([])
 
   const {
     register,
@@ -72,85 +71,103 @@ export default function CreatePost({ user }: { user: User }) {
     clearErrors
   } = useForm<FormData>()
 
-  const [centersUltimo, setCentersUltimo] = useState<Item[]>([])
+  const [centers, setCenters] = useState<Item[]>([])
 
   //ARRAY DE CENTROS DEPENDIENDO LA LOCALIDAD ELEGIDA
-  const [auxCentersOnLocations, setAuxCentersOnLocations] = useState<Item[]>([])
-  //ARRAY DE LOCALIDADES DE LOS CENTROS TRAIDOS
-  const [locationsCentersUltimo, setLocationsCentersUltimo] = useState<Item[]>([])
+  const [locationCenters, setLocationCenters] = useState<Item[]>([])
 
-  //ARRAY DE CENTROS TRAIDOS DESDE LA DB
-  const [centersRaw, setCentersRaw] = useState<CenterData[]>([])
+  //ARRAY DE LOCALIDADES DE LOS CENTROS TRAIDOS
+  const [locations, setLocations] = useState<Item[]>([])
+
+  const [raw, setRaw] = useState<
+    Array<{
+      id_centro: number
+      nombre_centro: string
+      ubicacion: string
+      direccion: string
+      horario_apertura: string
+      horario_cierre: string
+      dias: Array<{
+        idDia: number
+        descripcion: string
+      }>
+    }>
+  >([])
 
   useEffect(() => {
     const centrosMuyAux: Item[] = []
     const locationsMuyAux: Item[] = []
     const getCenters = async () => {
-      await axios
-        .get(`${FRONT_BASE_URL}centers/get`)
-        .then((res: any) => {
-          setCentersRaw(res.data)
-          res.data.map((e: CenterData) => {
-            centrosMuyAux.push({
-              value: `${e.id_centro}`,
-              label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}`
-            })
-            locationsMuyAux.push({
-              value: `${e.ubicacion}`,
-              label: `${e.ubicacion}`
-            })
-
+      await axios.get(`${FRONT_BASE_URL}centers/get`).then((res: any) => {
+        setRaw(res.data)
+        res.data.map((e: CenterData) => {
+          centrosMuyAux.push({
+            value: `${e.id_centro}`,
+            label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}`
+          })
+          locationsMuyAux.push({
+            value: `${e.ubicacion}`,
+            label: `${e.ubicacion}`
           })
         })
-        //Elimina duplicados de las localidades
+      })
+      //Elimina duplicados de las localidades
       const eliminarDuplicados = async (arr: Item[]) => {
         return arr.filter((item, index) => {
-          return arr.findIndex((i) => i.value === item.value) === index;
-        });
-      };
-      setLocationsCentersUltimo(await eliminarDuplicados(locationsMuyAux))
+          return arr.findIndex(i => i.value === item.value) === index
+        })
+      }
+      setLocations(await eliminarDuplicados(locationsMuyAux))
     }
     getCenters()
-    setCentersUltimo(centrosMuyAux)
+    setCenters(centrosMuyAux)
   }, [])
-
-  const handleCenterDosChange = (e: any) => {
-    //si e.target.value existe en centers, borro de los centers y sino lo agrego
-
-    setValue('center', e.target.value)
-    clearErrors('center')
-  }
-  const handleCenterChange = (e: any) => {
-    //si e.target.value existe en centers, borro de los centers y sino lo agrego
-
-    setValue('center', e.target.value)
-    clearErrors('center')
-  }
-  const handleLocationChange = (e: any) => {
-    //Carga en auxCentersOnLocations, los centros de la localidad elegida en el primer centro
-    setAuxCentersOnLocations(() => {
-      return centersUltimo.filter((i) => i.label.toLowerCase().includes(e.target.value.toLowerCase()))
-    })
-
-    setValue('location', e.target.value)
-    clearErrors('location')
-  }
-
-  const handleFromChange = (e: any) => {
-    console.log('from', e.target.value)
-    setValue('from', e.target.value)
-    clearErrors('from')
-  }
-
-  const handleToChange = (e: any) => {
-    console.log('to', e.target.value)
-    setValue('to', e.target.value)
-    clearErrors('to')
-  }
 
   const handleStatusChange = (e: any) => {
     setValue('status', e.target.value)
     clearErrors('status')
+  }
+
+  const setLocationValue = (id: any, value: any) => {
+    clearCentersOnLocationChange()
+    setLocationCenters(() => {
+      return centers.filter(i =>
+        i.label.toLowerCase().includes(value.toLowerCase())
+      )
+    })
+    setValue(id, value)
+    clearErrors(id)
+    setValue('days', {})
+    setValue('from', {})
+    setValue('to', {})
+    setValue('centers', [])
+  }
+
+  const handleCenterChange = (id: any, value: any) => {
+    let trueValue: any[] = []
+    value.forEach((v: any) => {
+      raw.forEach((r: any, index: number) => {
+        if (r.id_centro === Number(v)) {
+          trueValue = [...trueValue, index.toString()]
+        }
+      })
+    })
+    setValue(id, trueValue)
+    clearErrors(id)
+    console.log('ESTO QUEDA EN centers', watch('centers'))
+  }
+
+  const setTimeValue = (id: any, value: any, timeType: any) => {
+    let time: Record<string | number, string[] | string> | undefined =
+      watch(timeType) || {}
+    time![id] = value
+    setValue(timeType, time)
+    clearErrors(timeType)
+    console.log('ESTO QUEDA EN ', timeType, watch(timeType))
+  }
+
+  const clearCentersOnLocationChange = () => {
+    setValue('centers', [])
   }
 
   /**
@@ -160,25 +177,26 @@ export default function CreatePost({ user }: { user: User }) {
   const _handleSubmit = async (formData: FormData) => {
     setLoaging(true)
 
-    console.log('DATA IMPRESA', formData)
+    console.log('ESTE ES EL FORMDATA FINAL ANTES DE ENVIARSE AL ENDPOINT DE NEXTJS', formData)
 
     // const processPhotos = async () => {
     //   return formData.photos.map(() => {})
     // }
-    processFiles(formData.photos as FileList).then(async (result: string[]) => {
-      formData.photos = result
-      await axios
-        .post(`${FRONT_BASE_URL}post/create`, formData)
-        .then(() => router.push('/'))
-        .catch((error: any) => {
-          try {
-            alert(error.response.data.message)
-          } catch (error) {
-            alert('Ah ocurrido un error inesperado, intente nuevamente.')
-          }
-          setLoaging(false)
-        })
-    })
+    processFiles(formData.photos as FileList)
+      .then(async (result: string[]) => {
+        formData.photos = result
+        await axios
+          .post(`${FRONT_BASE_URL}post/create`, formData)
+          .then(() => router.push('/'))
+          .catch((error: any) => {
+            try {
+              alert(error.response.data.message)
+            } catch (error) {
+              alert('Ah ocurrido un error inesperado, intente nuevamente.')
+            }
+            setLoaging(false)
+          })
+      })
       .catch(() => {
         alert('Ah ocurrido un error inesperado, intente nuevamente.')
         setLoaging(false)
@@ -266,7 +284,9 @@ export default function CreatePost({ user }: { user: User }) {
                 error={errors.category}
                 register={register}
                 registerOptions={{ required: 'Campo requerido' }}
-                setValue={(value: string) => { console.log(value); setValue('category', value) }}
+                setValue={(value: string) => {
+                  setValue('category', value)
+                }}
                 clearError={() => clearErrors('category')}
               />
             </div>
@@ -286,7 +306,7 @@ export default function CreatePost({ user }: { user: User }) {
               key='create-post-form-container-3'
               className='w-full flex flex-col justify-center items-start'
             >
-              <Select
+              <MultiSelect
                 id='location'
                 label='Localidad'
                 register={register}
@@ -294,8 +314,11 @@ export default function CreatePost({ user }: { user: User }) {
                 registerOptions={{
                   required: watch('location') || 'Campo requerido'
                 }}
-                options={locationsCentersUltimo}
-                handleChange={handleLocationChange}
+                props={{
+                  isMulti: false,
+                  options: locations,
+                  setValue: setLocationValue
+                }}
               />
             </div>
             <div
@@ -303,223 +326,100 @@ export default function CreatePost({ user }: { user: User }) {
               className='w-full flex flex-col justify-center items-start'
               hidden={!watch('location')}
             >
-              <Select
-                id='center'
-                label='Centro'
-                register={register}
-                error={errors.center}
-                registerOptions={{
-                  required: watch('center') || 'Campo requerido'
-                }}
-                options={auxCentersOnLocations}
-                handleChange={handleCenterChange}
-              />
-            </div>
-            {/* {centers.map(() => {
-              return (
-                <><div
-                  key='create-post-form-container-2'
-                  className='w-full flex-col justify-center items-start'
-                >
-                  <MultiSelect
-                    id='days'
-                    label='Días'
-                    register={register}
-                    registerOptions={{ required: 'Campo requerido' }}
-                    error={errors.days as FieldError}
-                    props={{
-                      isMulti: true,
-                      options: [
-                        { value: 'lunes', label: 'Lunes' },
-                        { value: 'miercoles', label: 'Miércoles' },
-                        { value: 'martes', label: 'Martes' },
-                        { value: 'jueves', label: 'Jueves' },
-                        { value: 'viernes', label: 'Viernes' }
-                      ],
-                      setValue: setValue
-                    }}
-                  />
-                </div>
-                  <div className='w-full flex justify-center items-center gap-4'>
-                    <div className='flex flex-col basis-1/2 max-w-[50%]'>
-                      <Select
-                        id='from'
-                        label='Desde las'
-                        register={register}
-                        error={errors.from}
-                        registerOptions={{
-                          required: watch('from') || 'Campo requerido'
-                        }}
-                        options={[...Array(24).keys()].map(hour => ({
-                          value: hour.toString(),
-                          label: `${hour}:00`
-                        }))}
-                        handleChange={handleFromChange}
-                      />
-                    </div>
-                    <div className='basis-1/2 max-w-[50%]'>
-                      <Select
-                        id='to'
-                        label='Hasta las'
-                        register={register}
-                        error={errors.to}
-                        registerOptions={{
-                          required: watch('to') || 'Campo requerido'
-                        }}
-                        options={[...Array(24).keys()].map(hour => ({
-                          value: hour.toString(),
-                          label: `${hour}:00`
-                        }))}
-                        handleChange={handleToChange}
-                      />
-                    </div>
-                  </div> </>
-              )
-            })} */}
-            <div
-              key='create-post-form-container-2'
-              className='w-full flex-col justify-center items-start'
-              hidden={!watch('center')}
-            >
               <MultiSelect
-                id='days'
-                label='Días'
+                id='centers'
+                label='Centros'
                 register={register}
-                registerOptions={{ required: 'Campo requerido' }}
-                error={errors.days as FieldError}
+                error={errors.centers as FieldError}
+                registerOptions={{
+                  required: !!watch('centers') || 'Campo requerido'
+                }}
                 props={{
                   isMulti: true,
-                  options: [
-                    { value: 'lunes', label: 'Lunes' },
-                    { value: 'miercoles', label: 'Miércoles' },
-                    { value: 'martes', label: 'Martes' },
-                    { value: 'jueves', label: 'Jueves' },
-                    { value: 'viernes', label: 'Viernes' }
-                  ],
-                  setValue: setValue
+                  options: locationCenters,
+                  setValue: handleCenterChange
                 }}
               />
             </div>
-            <div className='w-full flex justify-center items-center gap-4' hidden={!watch('center')}>
-
-              <div className='flex flex-col basis-1/2 max-w-[50%]'>
-                <Select
-                  id='from'
-                  label='Desde las'
-                  register={register}
-                  error={errors.from}
-                  registerOptions={{
-                    required: watch('from') || 'Campo requerido'
-                  }}
-                  options={[...Array(24).keys()].map(hour => ({
-                    value: hour.toString(),
-                    label: `${hour}:00`
-                  }))}
-                  handleChange={handleFromChange}
-                />
-              </div>
-              <div className='basis-1/2 max-w-[50%]'>
-                <Select
-                  id='to'
-                  label='Hasta las'
-                  register={register}
-                  error={errors.to}
-                  registerOptions={{
-                    required: watch('to') || 'Campo requerido'
-                  }}
-                  options={[...Array(24).keys()].map(hour => ({
-                    value: hour.toString(),
-                    label: `${hour}:00`
-                  }))}
-                  handleChange={handleToChange}
-                />
-              </div>
-            </div>
-            {/*Segundo centro*/}
-            <div
-              key='create-post-form-container-4'
-              className='w-full flex flex-col justify-center items-start'
-              hidden={(!watch('center') || !watch('days') || !watch('to') || !watch('from'))}
-            >
-              <Select
-                id='centerDos'
-                label='Centro'
-                register={register}
-                error={errors.center}
-                registerOptions={{
-                  //required: watch('center') || 'Campo requerido'
-                }}
-                options={auxCentersOnLocations}
-                handleChange={handleCenterDosChange}
-              />
-            </div>
-            <div
-              key='create-post-form-container-2'
-              className='w-full flex-col justify-center items-start'
-              hidden={!watch('centerDos')}
-            >
-              <MultiSelect
-                id='days-center-dos'
-                label='Días'
-                register={register}
-                registerOptions={{ required: 'Campo requerido' }}
-                error={errors.days as FieldError}
-                props={{
-                  isMulti: true,
-                  options: [
-                    { value: 'lunes', label: 'Lunes' },
-                    { value: 'miercoles', label: 'Miércoles' },
-                    { value: 'martes', label: 'Martes' },
-                    { value: 'jueves', label: 'Jueves' },
-                    { value: 'viernes', label: 'Viernes' }
-                  ],
-                  setValue: setValue
-                }}
-              />
-            </div>
-            <div
-              className='w-full flex justify-center items-center gap-4'
-              hidden={!watch('centerDos')}>
-
-              <div className='flex flex-col basis-1/2 max-w-[50%]'>
-                <Select
-                  id='from-center-dos'
-                  label='Desde las'
-                  register={register}
-                  error={errors.from}
-                  registerOptions={{
-                    required: watch('from') || 'Campo requerido'
-                  }}
-                  options={[...Array(24).keys()].map(hour => ({
-                    value: hour.toString(),
-                    label: `${hour}:00`
-                  }))}
-                  handleChange={handleFromChange}
-                />
-              </div>
-              <div className='basis-1/2 max-w-[50%]'>
-                <Select
-                  id='to-center-dos'
-                  label='Hasta las'
-                  register={register}
-                  error={errors.to}
-                  registerOptions={{
-                    required: watch('to') || 'Campo requerido'
-                  }}
-                  options={[...Array(24).keys()].map(hour => ({
-                    value: hour.toString(),
-                    label: `${hour}:00`
-                  }))}
-                  handleChange={handleToChange}
-                />
-              </div>
-            </div>
-
-
-
-
-
-
+            {!!watch('centers') &&
+              watch('centers').map((center: string, index: number) => {
+                const hoursList = makeHoursList(raw, center)
+                const title = `${raw[Number(center)].ubicacion} - ${
+                  raw[Number(center)].direccion
+                }`
+                return (
+                  <>
+                    <p
+                      key={`description-${index}`}
+                      className='w-full border-b border-primary text-sm font-bold'
+                    >
+                      {title}
+                    </p>
+                    <div
+                      key='create-post-form-container-2'
+                      className='w-full flex-col justify-center items-start'
+                    >
+                      <MultiSelect
+                        id='days'
+                        label='Días'
+                        register={register}
+                        registerOptions={{
+                          required:
+                            !!watch('centers')[index] || 'Campo requerido'
+                        }}
+                        error={errors.days as unknown as FieldError}
+                        props={{
+                          isMulti: true,
+                          options: raw[Number(center)].dias.map(dia => ({
+                            label: dia.descripcion,
+                            value: dia.idDia
+                          })),
+                          setValue: (id: any, value: any) =>
+                            setTimeValue(index, value, 'days')
+                        }}
+                      />
+                    </div>
+                    <div className='w-full flex justify-center items-center gap-4'>
+                      <div className='flex flex-col basis-1/2 max-w-[50%]'>
+                        <MultiSelect
+                          id='from'
+                          label='Desde las'
+                          register={register}
+                          error={errors.days as unknown as FieldError}
+                          registerOptions={{
+                            required:
+                              !!watch('centers')[index] || 'Campo requerido'
+                          }}
+                          props={{
+                            isMulti: false,
+                            options: hoursList,
+                            setValue: (id: any, value: any) =>
+                              setTimeValue(index, value, 'from')
+                          }}
+                        />
+                      </div>
+                      <div className='basis-1/2 max-w-[50%]'>
+                        <MultiSelect
+                          id='to'
+                          label='Hasta las'
+                          register={register}
+                          error={errors.to as unknown as FieldError}
+                          registerOptions={{
+                            required:
+                              !!watch('centers')[index] || 'Campo requerido'
+                          }}
+                          props={{
+                            isMulti: false,
+                            options: hoursList,
+                            setValue: (id: any, value: any) =>
+                              setTimeValue(index, value, 'to')
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </>
+                )
+              })}
             <Button
               key='signup-form-submit-button'
               type={ButtonEnum.SUBMIT}
@@ -538,4 +438,3 @@ export default function CreatePost({ user }: { user: User }) {
     </RootLayout>
   )
 }
-

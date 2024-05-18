@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import axios from 'axios'
-import Link from 'next/link'
 
 import { ButtonEnum } from '@/components/types'
 import { FRONT_BASE_URL } from '@/constants'
@@ -92,7 +91,7 @@ export default function UpdateUserInfo({ user }: { user: User }) {
       await axios
         .post(`${FRONT_BASE_URL}user/update`, formData)
         .then(() => {
-          router.push('/sign/out')
+          router.push('/sign/out/sign-in')
         })
         .catch((error: any) => {
           try {

@@ -28,7 +28,7 @@ export default function RootLayout({
     <Image
       alt='Logo Cáritas'
       src={caritasLogo}
-      className='w-[3rem] h-[3rem]'
+      className='w-[3rem] h-[3rem] p-1'
     />
     <Link
       key='link-home'
@@ -78,7 +78,7 @@ export default function RootLayout({
           </Link>
           <Link
             key='link-signout'
-            href='/sign/out'
+            href='/sign/out/a'
             className='me-[10px]'
           >
             Cerrar Sesión
@@ -105,7 +105,7 @@ export default function RootLayout({
           </Link>
           <Link
             key='link-signout'
-            href='/sign/out'
+            href='/sign/out/sign-in'
             className='me-[10px]'
           >
             Cerrar Sesión
