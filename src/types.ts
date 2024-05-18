@@ -127,6 +127,7 @@ export interface CardProductProps {
   nameProductState: string
   locationTrade: string
   image: string
+  ownerPost: boolean
 }
 
 /**

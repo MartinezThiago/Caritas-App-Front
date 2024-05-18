@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import auxPic from 'public/post-image-preview.jpg'
 
-export async function getServerSideProps ({
+export async function getServerSideProps({
   req,
   res
 }: Readonly<{
@@ -32,7 +32,7 @@ interface FormData {
   question: string
 }
 
-export default function Home ({ user }: { user: User }) {
+export default function Home({ user }: { user: User }) {
   const router = useRouter()
   const [cardsData, setCardsData] = useState<any[]>()
 
@@ -70,6 +70,7 @@ export default function Home ({ user }: { user: User }) {
             image={
               e.imagenes[0].base64_imagen ? e.imagenes[0].base64_imagen : auxPic
             }
+            ownerPost={e.usuario_owner === parseInt(user.userId.toString())}
           />
         )
       })

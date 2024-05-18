@@ -7,7 +7,7 @@ import { FRONT_BASE_URL } from '@/constants'
 import { GetSSPropsResult, User } from '@/types'
 import { getUser } from '@/utils'
 import { requirePermission } from "@/utils/permissions";
-import { Input, MultiSelect } from '@/components'
+import { Input, MultiSelect, Select } from '@/components'
 import { RootLayout } from '@/layouts'
 import { subYears } from 'date-fns'
 import { FieldError, useForm } from 'react-hook-form'
@@ -34,6 +34,7 @@ interface FormData extends Omit<User, 'role'> {
   passwordConfirmation: string
   photo: File
   centers: string[]
+  location: string
 }
 
 interface CenterData {
@@ -48,11 +49,8 @@ interface CenterData {
  * The signup page.
  */
 export default function UpdateUserInfo({ user }: { user: User }) {
-
   const [loading, setLoaging] = useState(false)
   const router = useRouter()
-  // const centrosMuyAux: any[] = []
-  const [centers,setCenters]=useState<Item[]>([])
   const {
     register,
     handleSubmit,
@@ -60,10 +58,13 @@ export default function UpdateUserInfo({ user }: { user: User }) {
     watch,
     setValue
   } = useForm<FormData>()
-
-  const auxLoading = watch('birthdate')||watch('centers')||watch('dni')||watch('name')||watch('password')||watch('photo')||watch('surname')
+  const [centers, setCenters] = useState<Item[]>([])
+  const [locationsCentersUltimo, setLocationsCentersUltimo] = useState<Item[]>([])
+  const [auxCentersOnLocations, setAuxCentersOnLocations] = useState<Item[]>([])
+  const auxLoading = watch('birthdate') || watch('centers') || watch('dni') || watch('name') || watch('password') || watch('photo') || watch('surname')
   useEffect(() => {
-    const centrosMuyAux:Item[]=[]
+    const centrosMuyAux: Item[] = []
+    const locationsMuyAux: Item[] = []
     const getCenters = async () => {
       await axios
         .get(`${FRONT_BASE_URL}centers/get`)
@@ -73,9 +74,18 @@ export default function UpdateUserInfo({ user }: { user: User }) {
               value: `${e.id_centro}`,
               label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}`
             })
-            
+            locationsMuyAux.push({
+              value: `${e.ubicacion}`,
+              label: `${e.ubicacion}`
+            })
           })
         })
+      const eliminarDuplicados = async (arr: Item[]) => {
+        return arr.filter((item, index) => {
+          return arr.findIndex((i) => i.value === item.value) === index;
+        });
+      };
+      setLocationsCentersUltimo(await eliminarDuplicados(locationsMuyAux))
     }
     getCenters()
     setCenters(centrosMuyAux)
@@ -104,7 +114,15 @@ export default function UpdateUserInfo({ user }: { user: User }) {
     })
 
   }
+  const handleLocationChange = (e: any) => {
+    //Carga en auxCentersOnLocations, los centros de la localidad elegida en el primer centro
+    setAuxCentersOnLocations(() => {
+      return centers.filter((i) => i.label.toLowerCase().includes(e.target.value.toLowerCase()))
+    })
 
+    setValue('location', e.target.value)
+    //clearErrors('location')
+  }
   return (
     <RootLayout user={user}>
       <main className='flex-1 py-[.1rem] overflow-auto'>
@@ -214,16 +232,16 @@ export default function UpdateUserInfo({ user }: { user: User }) {
                   error={errors.photo as FieldError}
                   register={register}
                   registerOptions={{
-                    validate: (value: FileList) =>{
-                      if((value===undefined)||(value===null)){
+                    validate: (value: FileList) => {
+                      if ((value === undefined) || (value === null)) {
                         return true
                       }
-                      if(value.length===0){
+                      if (value.length === 0) {
                         return true
                       }
-                      return value[0].size <= 3000000 ||'La foto no puede superar los 3MB.'
+                      return value[0].size <= 3000000 || 'La foto no puede superar los 3MB.'
                     }
-                      
+
                   }}
                   className='hover:cursor-pointer'
                   props={{
@@ -233,7 +251,26 @@ export default function UpdateUserInfo({ user }: { user: User }) {
                 />
               </div>
             </div>
-            <div className='w-full flex flex-col flex-nowrap whitespace-nowrap justify-center items-start'>
+            <div
+              key='create-post-form-container-3'
+              className='w-full flex flex-col justify-center items-start'
+            >
+              <Select
+                id='location'
+                label='Localidad'
+                register={register}
+                error={errors.location}
+                registerOptions={{
+                  required: watch('location') || 'Campo requerido'
+                }}
+                options={locationsCentersUltimo}
+                handleChange={handleLocationChange}
+              />
+            </div>
+            <div
+              className='w-full flex flex-col flex-nowrap whitespace-nowrap justify-center items-start'
+              hidden={!watch('location')}
+            >
               <MultiSelect
                 key='center-selector'
                 id='centers'
@@ -255,7 +292,7 @@ export default function UpdateUserInfo({ user }: { user: User }) {
                 }}
                 className='w-full'
                 props={{
-                  options: centers,
+                  options: auxCentersOnLocations,
                   isMulti: true,
                   setValue: setValue
                 }}
