@@ -24,30 +24,32 @@ export default async function handler (
       return 1
     } else return 2
   }
-  const formData = {
-    titulo: req.body.name,
-    descripcion: req.body.description,
-    imagenesEnBase64: req.body.photos,
-    usuario_owner: parseInt(userId.toString()),
-    categoria_producto: parseInt(req.body.category),
-    centros_elegidos: [1,2,5],
-    estado_producto: auxState()
-  }
-console.log(formData);
+  console.log(req.body);
+  
+//   const formData = {
+//     titulo: req.body.name,
+//     descripcion: req.body.description,
+//     imagenesEnBase64: req.body.photos,
+//     usuario_owner: parseInt(userId.toString()),
+//     categoria_producto: parseInt(req.body.category),
+//     centros_elegidos: [1,2,5],
+//     estado_producto: auxState()
+//   }
+// console.log(formData);
 
 
-  await axios
-    .post(`${BACK_BASE_URL}CaritasBack/crearPublicacion`, formData, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    .then((result: any) => {
-      res.status(result.status).json({})
-    })
-    .catch((result: any) => {
-      try {
-        res.status(result.status).json({ message: result.data.message })
-      } catch {
-        res.status(500).json({ message: 'Ah ocurrido un error inesperado.' })
-      }
-    })
+  // await axios
+  //   .post(`${BACK_BASE_URL}CaritasBack/crearPublicacion`, formData, {
+  //     headers: { Authorization: `Bearer ${token}` }
+  //   })
+  //   .then((result: any) => {
+  //     res.status(result.status).json({})
+  //   })
+  //   .catch((result: any) => {
+  //     try {
+  //       res.status(result.status).json({ message: result.data.message })
+  //     } catch {
+  //       res.status(500).json({ message: 'Ah ocurrido un error inesperado.' })
+  //     }
+  //   })
 }

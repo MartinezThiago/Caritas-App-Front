@@ -103,7 +103,7 @@ export default function UserInfo({ user }: { user: User }) {
           {user.role== 'usuario_basico'?
           <button
           key='ChangeData'
-          className='w-[100%] text-white rounded-lg py-[10px] outline-transparent outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200'
+          className='w-[100%] text-white rounded-lg py-[10px] outline-transparent outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
           onClick={() => router.push('/user/update')}
         >
           Cambiar datos personales
