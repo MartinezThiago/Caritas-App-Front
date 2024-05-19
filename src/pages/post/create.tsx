@@ -196,13 +196,13 @@ export default function CreatePost({ user }: { user: User }) {
             try {
               alert(error.response.data.message)
             } catch (error) {
-              alert('Ah ocurrido un error inesperado, intente nuevamente.')
+              alert('Ha ocurrido un error inesperado, intente nuevamente.')
             }
             setLoaging(false)
           })
       })
       .catch(() => {
-        alert('Ah ocurrido un error inesperado, intente nuevamente.')
+        alert('Ha ocurrido un error inesperado, intente nuevamente.')
         setLoaging(false)
       })
   }
@@ -246,7 +246,7 @@ export default function CreatePost({ user }: { user: User }) {
                   registerOptions={{
                     required: 'Campo requerido',
                     validate: (value: FileList) => {
-                      if (value.length > 0) {
+                      if ((value.length > 0)&&(value.length<5)) {
                         let size = 0
                         for (let i = 0; i < value.length; i++)
                           size += value[i].size
@@ -258,7 +258,7 @@ export default function CreatePost({ user }: { user: User }) {
                         }
                       } else {
                         alert(
-                          'Por favor cargue al menos una foto para la publicación'
+                          'Por favor cargue entre 1 a 4 fotos'
                         )
                         return false
                       }
@@ -336,7 +336,13 @@ export default function CreatePost({ user }: { user: User }) {
                 register={register}
                 error={errors.centers as FieldError}
                 registerOptions={{
-                  required: !!watch('centers') || 'Campo requerido'
+                  required: !!watch('centers') || 'Campo requerido',
+                  validate: (value: string[]) => {
+                    if ((value === null) || (value === undefined)) {
+                      return true
+                    }
+                    return value.length <= 3 || 'Maximo 3 centros'
+                  }
                 }}
                 props={{
                   isMulti: true,
