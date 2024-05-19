@@ -28,7 +28,7 @@ export default function RootLayout({
     <Image
       alt='Logo Cáritas'
       src={caritasLogo}
-      className='w-[3rem] h-[3rem] p-1'
+      className='w-[3rem] h-[3rem] '
     />
     <Link
       key='link-home'
