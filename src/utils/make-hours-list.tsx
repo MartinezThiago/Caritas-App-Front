@@ -1,4 +1,9 @@
 export const makeHoursList = (raw: any, center: any) => {
+  for (let index = 0; index < raw.length; index++) {
+    if(raw[index].id_centro === center){
+      center=index
+    }
+  }
   return Array.from(
     {
       length:

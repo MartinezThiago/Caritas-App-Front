@@ -113,7 +113,7 @@ export default function ExtendedPostCard(props: PostData) {
   };
 
   const Centers = () => {
-    const center = props.centersChoosed.map((e) => {
+    const center = props.centersChoosed.map((e, index) => {
       return (
         <CenterDescription
           key={e.id_centro}
@@ -121,10 +121,12 @@ export default function ExtendedPostCard(props: PostData) {
           name={e.nombre_centro}
           location={e.ubicacion}
           address={e.direccion}
-          openingTime={e.horario_apertura}
-          closingTime={e.horario_cierre}
+          openingTime={props.centersChoosedInfoTrade[index].desde}
+          closingTime={props.centersChoosedInfoTrade[index].hasta}
           // workDays={['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes']}
-          workDays={e.dias}
+          // workDays={props.centersChoosedInfoTrade[index].diasDeIntercambio}
+          onPost={true}
+          daysPostTrade={props.centersChoosedInfoTrade[index].diasDeIntercambio}
         />
       );
     });

@@ -7,7 +7,9 @@ export default function CenterDescription({
     address,
     openingTime,
     closingTime,
-    workDays
+    workDays,
+    onPost,
+    daysPostTrade
 }: {
     idCenter: number
     name: string
@@ -15,17 +17,26 @@ export default function CenterDescription({
     address: string
     openingTime: string
     closingTime: string
-    workDays: days[]
+    workDays?: days[]
+    onPost: boolean
+    daysPostTrade?: string[]
 }) {
-    const auxDaysCenters:string[]=[]
-    workDays.map((e:days)=>{
-      auxDaysCenters.push(e.descripcion)
-    })
+    const auxDaysCenters: string[] = []
+    if (!onPost) {
+        workDays!.map((e: days) => {
+            auxDaysCenters.push(e.descripcion)
+        })
+    }
+    if (onPost) {
+        daysPostTrade!.map((e: string) => {
+            auxDaysCenters.push(e)
+        })
+    }
     const dias = auxDaysCenters.map((e: string) => {
         return `${e} `
     })
     const checkDaysOfWeek = () => {
-        const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];        
+        const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
         const allDaysIncluded = daysOfWeek.every(day => auxDaysCenters.includes(day) && auxDaysCenters.length === daysOfWeek.length);
         return (allDaysIncluded ? true : false)
     };
@@ -34,9 +45,9 @@ export default function CenterDescription({
         <div className="my-2">
             <p className="text-rose-700 text-l font-bold">{name}</p>
             <div className="mx-2 text-black">
-            <p><span className="font-semibold ">Localidad: </span> {location}</p>
+                <p><span className="font-semibold ">Localidad: </span> {location}</p>
                 <p><span className="font-semibold ">Direccion: </span> {address}</p>
-                <p><span className="font-semibold">Dias: </span>{checkDaysOfWeek() ? 'Dias Hábiles' : dias}</p>
+                <p><span className="font-semibold">Dias: </span>{onPost ? dias : checkDaysOfWeek() ? 'Dias Hábiles' : dias}</p>
                 <p><span className="font-semibold">Horarios:</span> {openingTime} - {closingTime}</p>
             </div>
         </div>

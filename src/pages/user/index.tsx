@@ -79,6 +79,7 @@ export default function UserInfo({ user }: { user: User }) {
           openingTime={e.horario_apertura}
           closingTime={e.horario_cierre}
           workDays={e.dias}
+          onPost={false}
         />
       );
     });

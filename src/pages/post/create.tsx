@@ -21,7 +21,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
  * Gets the user from the request and response objects in the server side and pass it
  * to the page component.
  */
-export async function getServerSideProps ({
+export async function getServerSideProps({
   req,
   res
 }: Readonly<{
@@ -58,7 +58,7 @@ interface CenterData {
 /**
  * The create post page.
  */
-export default function CreatePost ({ user }: { user: User }) {
+export default function CreatePost({ user }: { user: User }) {
   const router = useRouter()
   const [loading, setLoaging] = useState(false)
 
@@ -148,7 +148,7 @@ export default function CreatePost ({ user }: { user: User }) {
     value.forEach((v: any) => {
       raw.forEach((r: any, index: number) => {
         if (r.id_centro === Number(v)) {
-          trueValue = [...trueValue, index.toString()]
+          trueValue = [...trueValue, r.id_centro]
         }
       })
     })
@@ -187,7 +187,11 @@ export default function CreatePost ({ user }: { user: User }) {
         formData.photos = result
         await axios
           .post(`${FRONT_BASE_URL}post/create`, formData)
-          .then(() => router.push('/'))
+          .then(() => {
+            alert('Publicacion creada exitosamente')
+            router.push('/')
+          }
+          )
           .catch((error: any) => {
             try {
               alert(error.response.data.message)
@@ -344,9 +348,13 @@ export default function CreatePost ({ user }: { user: User }) {
             {!!watch('centers') &&
               watch('centers').map((center: string, index: number) => {
                 const hoursList = makeHoursList(raw, center)
-                const title = `${raw[Number(center)].ubicacion} - ${
-                  raw[Number(center)].direccion
-                }`
+                for (let index = 0; index < raw.length; index++) {
+                  if (raw[index].id_centro === parseInt(center)) {
+                    center = index.toString()
+                  }
+                }
+                const title = `${raw[Number(center)].ubicacion} - ${raw[Number(center)].direccion
+                  }`
                 return (
                   <>
                     <p

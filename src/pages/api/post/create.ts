@@ -6,6 +6,14 @@ import { BACK_BASE_URL } from "@/constants";
 import { getCookie } from "cookies-next";
 import { getUser } from "@/utils";
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '15mb', // Incrementa el límite a 15MB
+    },
+  },
+};
+
 /**
  * Async handler function that sends the signin form data to the external server.
  * Filters the response and retrieves the appropriate status code and message
@@ -41,25 +49,31 @@ export default async function handler(
     });
     return auxArr;
   };
-  console.log(desdeAux());
 
+  const parseCentrosToInt=()=>{
+    const auxCentros:string[]=formData.centers
+    const centrosParseados:number[]=[]
+    auxCentros.map((e:string)=>{
+      centrosParseados.push(parseInt(e))
+    })
+    return centrosParseados
+  }
   const formDataAdapted = {
     titulo: formData.name,
     descripcion: formData.description,
     imagenesEnBase64: formData.photos,
     usuario_owner: parseInt(userId.toString()),
     categoria_producto: parseInt(formData.category),
-    centros_elegidos: formData.centers,
+    centros_elegidos: parseCentrosToInt(),
     estado_producto: auxState(),
     ubicacion_trade: formData.location,
-    dias: Object.values(formData.days),
+    dias_elegidos: Object.values(formData.days),
     desde: desdeAux(),
     hasta: HastaAux(),
   };
-  console.log(formDataAdapted);
 
   await axios
-    .post(`${BACK_BASE_URL}CaritasBack/crearPublicacion`, formData, {
+    .post(`${BACK_BASE_URL}CaritasBack/crearPublicacion`, formDataAdapted, {
       headers: { Authorization: `Bearer ${token}` }
     })
     .then((result: any) => {
@@ -69,7 +83,7 @@ export default async function handler(
       try {
         res.status(result.status).json({ message: result.data.message })
       } catch {
-        res.status(500).json({ message: 'Ah ocurrido un error inesperado.' })
+        res.status(500).json({ message: 'Ha ocurrido un error inesperado.' })
       }
     })
 }

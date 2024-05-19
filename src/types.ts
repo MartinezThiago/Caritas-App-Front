@@ -69,7 +69,14 @@ export type days = {
   idDia: number
   descripcion: string
 }
-
+export interface UnadaptedCenterPublicacion {
+  id_cp: number
+  id_publicacion: number
+  nombre_centro: string
+  desde: string
+  hasta: string
+  diasDeIntercambio: string[]
+}
 export type img = {
   base64_imagen: string
 }
@@ -145,6 +152,7 @@ export interface CardProductProps {
  * @property {string} nameUser - The name of the user who created the post.
  * @property {string} surnameUser - The last name of the user who created the post.
  * @property {[UnadaptedCenter]} centersChoosed- The post centers.
+ * @property {[UnadaptedCenterPublicacion]} centersChoosedInfoTrade- The post centers.
  * @property {User} user - The current user. 
  * @property {string} profilePicOwner - The profile pic of the owners post
  * @property {[CommentUnadapted]} [comments] - The post asks/questions.
@@ -169,6 +177,7 @@ export interface PostData {
   comments?: [CommentUnadapted]
   images: [img]
   centersChoosed: [UnadaptedCenter]
+  centersChoosedInfoTrade:[UnadaptedCenterPublicacion]
 }
 
 export interface PostDataAdapter {
@@ -185,6 +194,7 @@ export interface PostDataAdapter {
   nombre_usuario: string
   apellido_usuario: string
   centros: [UnadaptedCenter]
+  centros_Publicacion: [UnadaptedCenterPublicacion]
   user: User
   comentarios?: [CommentUnadapted]
   base64_imagen: string
