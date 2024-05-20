@@ -182,6 +182,12 @@ export default function CreatePost ({ user }: { user: User }) {
     // const processPhotos = async () => {
     //   return formData.photos.map(() => {})
     // }
+
+    if (formData.photos.length > 4) {
+      alert('No se pueden subir más de 4 fotos por publicación')
+      return
+    }
+
     processFiles(formData.photos as FileList)
       .then(async (result: string[]) => {
         formData.photos = result
