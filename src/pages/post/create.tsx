@@ -21,7 +21,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
  * Gets the user from the request and response objects in the server side and pass it
  * to the page component.
  */
-export async function getServerSideProps({
+export async function getServerSideProps ({
   req,
   res
 }: Readonly<{
@@ -58,7 +58,7 @@ interface CenterData {
 /**
  * The create post page.
  */
-export default function CreatePost({ user }: { user: User }) {
+export default function CreatePost ({ user }: { user: User }) {
   const router = useRouter()
   const [loading, setLoaging] = useState(false)
 
@@ -98,19 +98,35 @@ export default function CreatePost({ user }: { user: User }) {
     const centrosMuyAux: Item[] = []
     const locationsMuyAux: Item[] = []
     const getCenters = async () => {
-      await axios.get(`${FRONT_BASE_URL}centers/get`).then((res: any) => {
+      await axios.get(`${FRONT_BASE_URL}centers/get`).then(async (res: any) => {
         setRaw(res.data)
-        res.data.map((e: CenterData) => {
-          centrosMuyAux.push({
-            value: `${e.id_centro}`,
-            label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}`
+
+        await axios
+          .get(`${FRONT_BASE_URL}centers-user/get`)
+          .then((res2: any) => {
+            res.data.map((e: CenterData) => {
+              // si es el centro elegido metele la estrellita
+              console.log(res2.data)
+              const isSelected = res2.data.find(
+                (c: any) => c.id_centro === e.id_centro
+              )
+              centrosMuyAux.push({
+                value: `${e.id_centro}`,
+                label: `${isSelected ? '✰ ' : ''}${e.ubicacion} - ${
+                  e.direccion
+                } - ${e.nombre_centro}`
+              })
+              locationsMuyAux.push({
+                value: `${e.ubicacion}`,
+                label: `${e.ubicacion}`
+              })
+            })
           })
-          locationsMuyAux.push({
-            value: `${e.ubicacion}`,
-            label: `${e.ubicacion}`
+          .catch(() => {
+            console.log('ERROR AL BUSCAR LOS CENTROS SELECCIONADOS DEL USUARIO')
           })
-        })
       })
+
       //Elimina duplicados de las localidades
       const eliminarDuplicados = async (arr: Item[]) => {
         return arr.filter((item, index) => {
@@ -177,11 +193,28 @@ export default function CreatePost({ user }: { user: User }) {
   const _handleSubmit = async (formData: FormData) => {
     setLoaging(true)
 
-    console.log('ESTE ES EL FORMDATA FINAL ANTES DE ENVIARSE AL ENDPOINT DE NEXTJS', formData)
+    console.log(
+      'ESTE ES EL FORMDATA FINAL ANTES DE ENVIARSE AL ENDPOINT DE NEXTJS',
+      formData
+    )
+    console.log('ESTO QUEDA EN STATUS', watch('status'))
 
-    // const processPhotos = async () => {
-    //   return formData.photos.map(() => {})
-    // }
+    if (watch('status') !== 'Nuevo' || 'Usado') {
+      alert('El estado del producto debe ser Nuevo o Usado')
+      return
+    }
+
+    // completar todos los desde y hasta
+    if (Object.keys(watch('to')).length !== Object.keys(watch('from')).length) {
+      alert('Por favor complete todoso los rangos horarios por centro')
+      return
+    }
+
+    // completar los dias
+    if (Object.keys(watch('days')).length !== watch('centers').length) {
+      alert('Por favor ingrese días por centro')
+      return
+    }
 
     if (formData.photos.length > 4) {
       alert('No se pueden subir más de 4 fotos por publicación')
@@ -196,8 +229,7 @@ export default function CreatePost({ user }: { user: User }) {
           .then(() => {
             alert('Publicacion creada exitosamente')
             router.push('/')
-          }
-          )
+          })
           .catch((error: any) => {
             try {
               alert(error.response.data.message)
@@ -252,7 +284,7 @@ export default function CreatePost({ user }: { user: User }) {
                   registerOptions={{
                     required: 'Campo requerido',
                     validate: (value: FileList) => {
-                      if ((value.length > 0)&&(value.length<5)) {
+                      if (value.length > 0 && value.length < 5) {
                         let size = 0
                         for (let i = 0; i < value.length; i++)
                           size += value[i].size
@@ -263,9 +295,7 @@ export default function CreatePost({ user }: { user: User }) {
                           return false
                         }
                       } else {
-                        alert(
-                          'Por favor cargue entre 1 a 4 fotos'
-                        )
+                        alert('Por favor cargue entre 1 a 4 fotos')
                         return false
                       }
                       return true
@@ -344,7 +374,7 @@ export default function CreatePost({ user }: { user: User }) {
                 registerOptions={{
                   required: !!watch('centers') || 'Campo requerido',
                   validate: (value: string[]) => {
-                    if ((value === null) || (value === undefined)) {
+                    if (value === null || value === undefined) {
                       return true
                     }
                     return value.length <= 3 || 'Maximo 3 centros'
@@ -365,8 +395,9 @@ export default function CreatePost({ user }: { user: User }) {
                     center = index.toString()
                   }
                 }
-                const title = `${raw[Number(center)].ubicacion} - ${raw[Number(center)].direccion
-                  }`
+                const title = `${raw[Number(center)].ubicacion} - ${
+                  raw[Number(center)].direccion
+                }`
                 return (
                   <>
                     <p
@@ -408,7 +439,25 @@ export default function CreatePost({ user }: { user: User }) {
                           error={errors.days as unknown as FieldError}
                           registerOptions={{
                             required:
-                              !!watch('centers')[index] || 'Campo requerido'
+                              !!watch('centers')[index] || 'Campo requerido',
+                            validate: () => {
+                              const from = Number(watch('from')[index])
+                              const to = Number(watch('to')[index])
+                              console.log(
+                                'ESTO QUEDA COMO FROM Y TO EN FROM',
+                                from,
+                                typeof from,
+                                to,
+                                typeof to
+                              )
+                              if (to < from) {
+                                return 'La hora de inicio no puede ser mayor a la hora de fin'
+                              }
+                              return (
+                                String(from) !== 'Seleccione un horario' ||
+                                'Campo requerido'
+                              )
+                            }
                           }}
                           props={{
                             isMulti: false,
@@ -426,7 +475,28 @@ export default function CreatePost({ user }: { user: User }) {
                           error={errors.to as unknown as FieldError}
                           registerOptions={{
                             required:
-                              !!watch('centers')[index] || 'Campo requerido'
+                              !!watch('centers')[index] || 'Campo requerido',
+                            validate: () => {
+                              const from = Number(watch('from')[index])
+                              const to = Number(watch('to')[index])
+                              console.log(
+                                'ESTO QUEDA COMO FROM Y TO EN TO',
+                                from,
+                                typeof from,
+                                to,
+                                typeof to
+                              )
+                              if (from > to) {
+                                alert(
+                                  'La hora de fin no puede ser menor a la hora de inicio'
+                                )
+                                return false
+                              }
+                              return (
+                                String(to) !== 'Seleccione un horario' ||
+                                'Campo requerido'
+                              )
+                            }
                           }}
                           props={{
                             isMulti: false,

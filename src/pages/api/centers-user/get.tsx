@@ -12,27 +12,30 @@ import { getUser } from '@/utils'
  * @arg {NextApiRequest} req
  * @arg {NextApiResponse} res
  */
-export default async function handler(
-    req: NextApiRequest,
-    res: NextApiResponse
+export default async function handler (
+  req: NextApiRequest,
+  res: NextApiResponse
 ): Promise<void> {
-    const token = getCookie('access', { req, res })
-    const { userId } = getUser(req, res)
-    const config = {
-        headers: {
-            Authorization: `Bearer ${token}`
-        },
+  const token = getCookie('access', { req, res })
+  const { userId } = getUser(req, res)
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
     }
-    await axios
-        .get(`${BACK_BASE_URL}CaritasBack/getCentrosUserEspecifico?idUser=${userId}`,config)
-        .then((result: any) => {
-            res.status(result.status).json(result.data)  
-        })
-        .catch((result: any) => {
-            try {
-                res.status(result.status).json({ message: result.data.message })
-            } catch {
-                res.status(500).json({ message: 'Ah ocurrido un error inesperado.' })
-            }
-        })
+  }
+  await axios
+  .get(
+    `${BACK_BASE_URL}CaritasBack/getCentrosUserEspecifico?idUser=${userId}`,
+    config
+  )
+  .then((result: any) => {
+      res.status(result.status).json(result.data)
+    })
+    .catch((result: any) => {
+      try {
+        res.status(result.status).json({ message: result.data.message })
+      } catch {
+        res.status(500).json({ message: 'Ah ocurrido un error inesperado.' })
+      }
+    })
 }
