@@ -113,7 +113,7 @@ export default function ExtendedPostCard(props: PostData) {
   };
 
   const Centers = () => {
-    const center = props.centersChoosed.map((e) => {
+    const center = props.centersChoosed.map((e, index) => {
       return (
         <CenterDescription
           key={e.id_centro}
@@ -121,10 +121,12 @@ export default function ExtendedPostCard(props: PostData) {
           name={e.nombre_centro}
           location={e.ubicacion}
           address={e.direccion}
-          openingTime={e.horario_apertura}
-          closingTime={e.horario_cierre}
+          openingTime={props.centersChoosedInfoTrade[index].desde}
+          closingTime={props.centersChoosedInfoTrade[index].hasta}
           // workDays={['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes']}
-          workDays={e.dias}
+          // workDays={props.centersChoosedInfoTrade[index].diasDeIntercambio}
+          onPost={true}
+          daysPostTrade={props.centersChoosedInfoTrade[index].diasDeIntercambio}
         />
       );
     });
@@ -327,7 +329,7 @@ export default function ExtendedPostCard(props: PostData) {
                 </div>
                 <button
                   key="ask"
-                  className="rounded-lg w-32 h-10 text-white ms-12 py-2.5 px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200"
+                  className="rounded-lg w-32 h-10 text-white ms-12 py-2.5 px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200"
                 >
                   Preguntar
                 </button>

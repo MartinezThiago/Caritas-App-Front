@@ -113,7 +113,7 @@ const PasswordRecovery: NextPage<{ user: User }> = ({ user }) => {
                 <Button
                   type={ButtonEnum.SUBMIT}
                   disabled={loading}
-                  className='appearance-none py-2 px-4 bg-rose-700 font-bold text-white hover:bg-rose-500 active:bg-rose-700'
+                  className='appearance-none py-2 px-8 font-semibold outline-transparent outline bg-rose-700 hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 text-white active:text-white active:bg-rose-700'
                 >
                   {loading ? (
                     <Loader2 className='h-4 w-4 animate-spin' />

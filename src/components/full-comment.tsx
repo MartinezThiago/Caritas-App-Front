@@ -139,7 +139,7 @@ export default function FullComment({
                     </div>
                     <button
                         key={`ask${idQuestion}`}
-                        className='rounded-lg w-32 h-10 text-white ms-2.5 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
+                        className='rounded-lg w-32 h-10 text-white ms-2.5 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
                     >
                         Responder
                     </button>

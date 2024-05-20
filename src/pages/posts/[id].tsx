@@ -58,6 +58,7 @@ export default function PostInfo({ user }: { user: User }){
                   user={user}
                   profilePicOwner={postData.base64_imagen}
                   centersChoosed={postData.centros}
+                  centersChoosedInfoTrade={postData.centros_Publicacion}
             />
         </RootLayout>
     )
