@@ -107,7 +107,7 @@ export default function UpdateUserInfo({ user }: { user: User }) {
           try {
             alert(error.response.data.message)
           } catch (error) {
-            alert('Ah ocurrido un error inesperado, intente nuevamente.')
+            alert('Ha ocurrido un error inesperado, intente nuevamente.')
           }
           setLoaging(false)
         })

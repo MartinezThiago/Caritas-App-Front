@@ -80,7 +80,7 @@ const Send: NextPage<any> = props => {
         try {
           alert(error.response.data.message)
         } catch (error) {
-          alert('Ah ocurrido un error inesperado, intente nuevamente.')
+          alert('Ha ocurrido un error inesperado, intente nuevamente.')
         }
         setLoaging(false)
       })

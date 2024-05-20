@@ -199,14 +199,14 @@ export default function CreatePost ({ user }: { user: User }) {
     )
     console.log('ESTO QUEDA EN STATUS', watch('status'))
 
-    if (watch('status') !== 'Nuevo' || 'Usado') {
+    if (((watch('status')!=='Nuevo')&&(watch('status')!=='Usado'))) {
       alert('El estado del producto debe ser Nuevo o Usado')
       return
     }
 
     // completar todos los desde y hasta
     if (Object.keys(watch('to')).length !== Object.keys(watch('from')).length) {
-      alert('Por favor complete todoso los rangos horarios por centro')
+      alert('Por favor complete todos los rangos horarios por centro')
       return
     }
 
