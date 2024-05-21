@@ -61,19 +61,19 @@ const PasswordRecovery: NextPage<{ user: User }> = ({ user }) => {
       .post(`${FRONT_BASE_URL}forgot-password`, values)
       .then(() => {
         alert(
-          'Si el correo especificado pertenece al sistema, se le enviaron las instrucciones para recuperar su contraseña.'
+          'Si el correo especificado pertenece al sistema, se le enviarán las instrucciones para recuperar su contraseña.'
         )
         router.push('sign/in')
       })
       .catch((error: any) => {
         try {
           alert(
-            'Si el correo especificado pertenece al sistema, se le enviaron las instrucciones para recuperar su contraseña.'
+            'Si el correo especificado pertenece al sistema, se le enviarán las instrucciones para recuperar su contraseña.'
           )
           router.push('sign/in')
         } catch (error) {
           alert(
-            'Si el correo especificado pertenece al sistema, se le enviaron las instrucciones para recuperar su contraseña.'
+            'Si el correo especificado pertenece al sistema, se le enviarán las instrucciones para recuperar su contraseña.'
           )
           router.push('sign/in')
         }

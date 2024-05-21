@@ -6,7 +6,7 @@ export default function CardProduct(props: CardProductProps) {
   return (
     <Link href={`posts/${props.id}`} className='w-[16rem] h-[20rem] me-[1rem] mb-[1rem] border-[2px] border-blue-900 rounded-tl-[15px] rounded-br-[15px] hover:scale-105 duration-300'>
       <div className='h-[145px] flex items-center justify-center'>
-        <Image alt={`post-image-${props.id}`} className={'h-auto w-[140px]'} src={props.image} width={0} height={0} />
+        <Image alt={`post-image-${props.id}`} className={'h-auto w-[130px]'} src={props.image} width={0} height={0} />
       </div>
       <div className={'flex flex-col justify-between h-[54%] '}>
         <div className='mt-2.5 ms-2.5 h-full flex flex-col justify-between'>

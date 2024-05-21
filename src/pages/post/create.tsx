@@ -201,23 +201,27 @@ export default function CreatePost ({ user }: { user: User }) {
 
     if (((watch('status')!=='Nuevo')&&(watch('status')!=='Usado'))) {
       alert('El estado del producto debe ser Nuevo o Usado')
+      setLoaging(false)
       return
     }
 
     // completar todos los desde y hasta
     if (Object.keys(watch('to')).length !== Object.keys(watch('from')).length) {
       alert('Por favor complete todos los rangos horarios por centro')
+      setLoaging(false)
       return
     }
 
     // completar los dias
     if (Object.keys(watch('days')).length !== watch('centers').length) {
       alert('Por favor ingrese días por centro')
+      setLoaging(false)
       return
     }
 
     if (formData.photos.length > 4) {
       alert('No se pueden subir más de 4 fotos por publicación')
+      setLoaging(false)
       return
     }
 
