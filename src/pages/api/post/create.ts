@@ -85,10 +85,5 @@ export default async function handler(
       } catch {
         res.status(500).json({ message: 'Ha ocurrido un error inesperado.' })
       }
-<<<<<<< HEAD
-    }
-    )
-=======
     })
->>>>>>> cefd374d77379fff0557627320cf365c9f496ac8
 }
