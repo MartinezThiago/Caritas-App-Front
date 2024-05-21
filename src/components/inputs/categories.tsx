@@ -1,40 +1,6 @@
-import type {
-  RegisterOptions,
-  UseFormRegister
-} from 'react-hook-form'
-
-import withLabelAndHelperText from './withLabelAndHelperText'
-import { register } from 'module'
 import { useState } from 'react'
-
-const checkbox = (
-  key: string,
-  value: string,
-  handleCategoryChange: (e: any) => any,
-  label: string,
-  checked: boolean = false
-) => {
-  return <div
-    key={`${key}-container`}
-    className=''
-  >
-    <input
-      key={key}
-      id={key}
-      type='checkbox'
-      value={value}
-      checked={checked}
-      onChange={handleCategoryChange}
-      className='me-2 bg-blue-900 ring-1 ring-blue-900'
-    />
-    <label
-      key={`${key}-label`}
-      htmlFor={key}
-    >
-      {label}
-    </label>
-  </div>
-}
+import withLabelAndHelperText from './withLabelAndHelperText'
+import { RegisterOptions, UseFormRegister } from 'react-hook-form'
 
 /**
  * The props for the custom input component.
@@ -49,70 +15,78 @@ interface Props {
   id: string
   register: UseFormRegister<any>
   registerOptions?: RegisterOptions
-  setValue: (value: string[]) => void
+  setValue: (value: string) => void
   clearError: () => void
   placeholders?: string[]
 }
 
-function Categories({
+const Categories = ({
   id,
   register,
   registerOptions,
   setValue,
-  clearError,
-}: Readonly<Props>) {
-  const [categories, setCategories] = useState<string[]>([])
+  clearError
+}: Readonly<Props>): React.ReactNode => {
   register(id, registerOptions)
+  const [category, setCategory] = useState<string>('1')
 
   const handleChange = (e: any) => {
-    let newCategories = [...categories]
-    if (e.target.checked) {
-      newCategories.push(e.target.value)
-    } else {
-      newCategories = newCategories.filter(
-        (category: string) => category !== e.target.value
-      )
-    }
-    if (newCategories.length > 0) {
-      clearError()
-    }
-    setCategories(newCategories)
-    setValue(newCategories)
+    setCategory(e.target.value)
+    setValue(e.target.value)
+    clearError()
   }
 
-  return <fieldset
-    key='categories'
-    className='w-full h-[2.5rem] mb-2 py-2 px-3 flex place-content-evenly text-sm font-bold shadow border focus:outline-none focus:shadow-outline'
-  >
-    {checkbox(
-      '3',
-      '3',
-      handleChange,
-      'Limpieza',
-      categories.includes('3')
-    )}
-    {checkbox(
-      '2',
-      '2',
-      handleChange,
-      'Alimento',
-      categories.includes('2')
-    )}
-    {checkbox(
-      '4',
-      '4',
-      handleChange,
-      'Ropa',
-      categories.includes('4')
-    )}
-    {checkbox(
-      '1',
-      '1',
-      handleChange,
-      'Útiles escolares',
-      categories.includes('1')
-    )}
-  </fieldset >
+  return (
+    <fieldset
+      key='categories'
+      className='w-full h-[2.5rem] mb-2 py-2 px-3 flex place-content-evenly text-sm font-bold shadow border focus:outline-none focus:shadow-outline'
+    >
+      <div className='flex items-center justify-center gap-2'>
+        <input
+          key='Útiles escolares-category'
+          id='1'
+          type='radio'
+          value='1'
+          name='category'
+          onChange={handleChange}
+        />
+        <label htmlFor='1'>Útil escolar</label>
+      </div>
+      <div className='flex items-center justify-center gap-2'>
+        <input
+          key='Alimento-category'
+          id='2'
+          type='radio'
+          value='2'
+          name='category'
+          onChange={handleChange}
+        />
+        <label htmlFor='2'>Alimento</label>
+      </div>
+      <div className='flex items-center justify-center gap-2'>
+        <input
+          key='Limpieza-category'
+          id='3'
+          type='radio'
+          value='3'
+          name='category'
+          onChange={handleChange}
+        />
+        <label htmlFor='3'>Limpieza</label>
+      </div>
+      <div className='flex items-center justify-center gap-2'>
+        <input
+          key='Ropa-category'
+          id='4'
+          type='radio'
+          value='4'
+          name='category'
+          onChange={handleChange}
+        />
+        <label htmlFor='4'>Ropa</label>
+      </div>
+    </fieldset>
+  )
 }
 
 export default withLabelAndHelperText(Categories)

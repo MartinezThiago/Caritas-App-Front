@@ -21,6 +21,7 @@ interface Props {
   autoFocus?: boolean
   register: UseFormRegister<any>
   registerOptions?: RegisterOptions
+  className?: string
   props?: DetailedHTMLProps<
     InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
@@ -34,6 +35,7 @@ const Input: React.FC<Props> = ({
   autoFocus = false,
   register,
   registerOptions = {},
+  className,
   props
 }) => {
   return (
@@ -45,7 +47,7 @@ const Input: React.FC<Props> = ({
       autoFocus={autoFocus}
       {...register(id, registerOptions)}
       multiple={type === 'file'}
-      className={`w-full h-[2.5rem] mb-2 py-2 px-3 appearance-none border shadow text-zinc-700 focus:outline-none focus:shadow-outline`}
+      className={`w-full h-[2.5rem] py-2 px-3 appearance-none border shadow text-zinc-700 focus:outline-none focus:shadow-lg border-zinc-200 bg-white hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 ${className}`}
       {...props}
     />
   )

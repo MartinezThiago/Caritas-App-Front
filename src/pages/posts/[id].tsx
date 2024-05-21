@@ -1,7 +1,7 @@
 import ExtendedPostCard from "@/components/extended-post-card";
 import { FRONT_BASE_URL } from "@/constants";
 import RootLayout from "@/layouts/root-layout";
-import { GetSSPropsResult, PostData, PostDataAdapter, User } from "@/types";
+import { GetSSPropsResult, PostData, PostDataAdapter, UnadaptedCenter, User } from "@/types";
 import { getUser } from "@/utils";
 import { requireNothing } from "@/utils/permissions";
 import axios from "axios";
@@ -53,11 +53,12 @@ export default function PostInfo({ user }: { user: User }){
                   idOwnerUser={postData.id_usuario}
                   nameUser={postData.nombre_usuario}
                   surnameUser={postData.apellido_usuario}
-                  centersChoosed={0}
                   comments={postData.comentarios}
                   images={postData.imagenes}
                   user={user}
                   profilePicOwner={postData.base64_imagen}
+                  centersChoosed={postData.centros}
+                  centersChoosedInfoTrade={postData.centros_Publicacion}
             />
         </RootLayout>
     )

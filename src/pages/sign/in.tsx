@@ -55,7 +55,7 @@ const links = {
   </Link>,
   forgotPassword: <Link
     key='link-forgot-password'
-    href='/forgot-password'
+    href='/password-recovery'
     className='underline'
   >
     Recupérela
@@ -129,7 +129,7 @@ export default function Signin({ user }: { user: User }) {
             key='signin-form-submit-button'
             type={ButtonEnum.SUBMIT}
             disabled={loading}
-            className='py-2 px-4 bg-rose-700 font-bold text-white hover:bg-rose-500 active:bg-rose-700'
+            className='py-2 px-4 outline-transparent outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 text-white active:text-white active:bg-rose-700'
           >
             Iniciar Sesión
           </button>

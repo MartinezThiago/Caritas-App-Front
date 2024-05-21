@@ -23,12 +23,12 @@ export default function RootLayout({
     }
   }, []);
   return <><header
-    className='font-bold'
+    className='font-bold h-[3rem]'
   >
     <Image
       alt='Logo Cáritas'
       src={caritasLogo}
-      className='w-[3rem]'
+      className='w-[3rem] h-[3rem] '
     />
     <Link
       key='link-home'
@@ -36,12 +36,12 @@ export default function RootLayout({
     >
       Inicio
     </Link>
-    <Link
+    {/* <Link
       key='link-we'
       href='/we'
     >
       Nosotros
-    </Link>
+    </Link> */}
     {
       user.role === 'non-registered' ? <>
         <div
@@ -57,6 +57,7 @@ export default function RootLayout({
         <Link
           key='link-signup'
           href='/sign/up'
+          className='me-[10px]'
         >
           Registrarse
         </Link>
@@ -77,17 +78,18 @@ export default function RootLayout({
           </Link>
           <Link
             key='link-signout'
-            href='/sign/out'
+            href='/sign/out/a'
+            className='me-[10px]'
           >
             Cerrar Sesión
           </Link>
         </> : <>
-          <Link
+          {/* <Link
             key='link-statistics'
             href='/statistics'
           >
             Estadísticas
-          </Link>
+          </Link> */}
           <div
             key='header-separator'
             className='flex-grow'
@@ -103,7 +105,8 @@ export default function RootLayout({
           </Link>
           <Link
             key='link-signout'
-            href='/sign/out'
+            href='/sign/out/sign-in'
+            className='me-[10px]'
           >
             Cerrar Sesión
           </Link>
