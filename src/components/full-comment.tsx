@@ -5,6 +5,7 @@ import Input from "./inputs/input";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { FRONT_BASE_URL } from "@/constants";
+import { useState } from "react";
 
 function getActualDate() {
     const fechaActual = new Date();
@@ -14,8 +15,19 @@ function getActualDate() {
     const day = String(fechaActual.getDate()).padStart(2, '0');
     // Formatear la fecha como "yyyy/MM/DD"
     return `${year}-${month}-${day}`;
+}
+
+function getFormatActualDate() {
+    const fechaActual = new Date();
+    // Obtener año, mes y día por separado
+    const year = fechaActual.getFullYear();
+    const month = String(fechaActual.getMonth() + 1).padStart(2, '0'); // Sumamos 1 porque los meses van de 0 a 11
+    const day = String(fechaActual.getDate()).padStart(2, '0');
+    // Formatear la fecha como "yyyy/MM/DD"
+    return `${day}/${month}/${year}`;
 
 }
+
 interface answerBody {
     usuario_owner_respuesta: number
     contenido_respuesta: string
@@ -55,8 +67,6 @@ export default function FullComment({
     idPost: number
     roleCurrentUser: string
 }) {
-
-
     const {
         register,
         handleSubmit,
@@ -64,6 +74,9 @@ export default function FullComment({
     } = useForm<FormData>()
     const currentUser = parseInt(idCurrentUser)
     const router = useRouter();
+    const [auxAnswer, setAuxAnswer] = useState<answerBody>();
+    const [flagNewAnswer, setFlagNewAnswer] = useState(false);
+    const idQuery = router.query.id
     const _handleSubmit = async (formData: FormData) => {
         const respuesta: answerBody = {
             "usuario_owner_respuesta": currentUser,
@@ -71,9 +84,14 @@ export default function FullComment({
             "fecha_publicacion_respuesta": getActualDate(),
             "id_pregunta": idQuestion
         }
+        setAuxAnswer(respuesta)
         await axios
             .post(`${FRONT_BASE_URL}answer/post`, respuesta)
-            .then(() => router.push(`/posts/${router.query.id}`))
+            .then(async () => {
+                setFlagNewAnswer(true)
+                await router.push('/')
+                await router.push(`/posts/${idQuery}`)
+            })
             .catch((error: { response: { data: { message: string } } }) => {
                 console.log(error);
                 if (error) {
@@ -92,6 +110,7 @@ export default function FullComment({
                 idQuestion={idQuestion}
                 idCurrentUser={idCurrentUser}
                 roleCurrentUser={roleCurrentUser}
+                hasAnswer={(answer && answerDate && idAnswer && idOwnerAnswer) ? true : false}
             />
             {(answer && answerDate && idAnswer && idOwnerAnswer) ? <AnswerPost
                 answer={answer}
@@ -116,14 +135,11 @@ export default function FullComment({
                             registerOptions={{ required: 'Responder' }}
                             placeholder='Escriba aquí su respuesta'
                             label=""
-                            // className={{
-                            //     'input': 'rounded-md border-blue-900 border-2 w-full h-7'
-                            // }}
                         />
                     </div>
                     <button
                         key={`ask${idQuestion}`}
-                        className='rounded-lg w-32 h-10 text-white ms-2.5 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
+                        className='rounded-lg w-32 h-10 text-white ms-2.5 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
                     >
                         Responder
                     </button>

@@ -69,7 +69,7 @@ export const getUser = (
     name: user.Nombre,
     surname: user.Apellido,
     dni: user.DNI,
-    birthdate: new Date(user.FechaNacimiento).getTime().toString(),
+    birthdate: user.Fecha_Nacimiento,
     email: user.Email,
     role: user.Rol,
     center: user.Centro

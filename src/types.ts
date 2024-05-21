@@ -30,7 +30,7 @@ export interface User {
  * @property {string} Nombre - The user's name.
  * @property {string} Apellido - The user's surname.
  * @property {string} DNI - The user's DNI. (Argentinian ID)
- * @property {string} FechaNacimiento - The user's birthdate. Always in timestamp.
+ * @property {string} Fecha_Nacimiento - The user's birthdate. Always in timestamp.
  * @property {string} Email - The user's email.
  * @property {number} [Centro] - The user's center. Only for volunteers.
  * @property {Role} Rol - The user's role.
@@ -40,12 +40,43 @@ export interface UnadaptedUser {
   Nombre: string
   Apellido: string
   Centro: number
-  FechaNacimiento: string
+  Fecha_Nacimiento: string
   DNI: string
   Email: string
   Rol: Rol
 }
 
+/**
+ * The center data from external server.
+ * @property {number} id_centro - The center ID.
+ * @property {string} nombre_centro - The center name.
+ * @property {string} ubicacion - The center location.
+ * @property {string} direccion - The center address.
+ * @property {string} horario_apertura - The center openingTime.
+ * @property {string} horario_cierre - The center closingTime
+ * @property {[string]} [dias] - The center work days.
+ */
+export interface UnadaptedCenter {
+  id_centro: number
+  nombre_centro: string
+  ubicacion: string
+  direccion: string
+  horario_apertura: string
+  horario_cierre: string
+  dias: days[]
+}
+export type days = {
+  idDia: number
+  descripcion: string
+}
+export interface UnadaptedCenterPublicacion {
+  id_cp: number
+  id_publicacion: number
+  nombre_centro: string
+  desde: string
+  hasta: string
+  diasDeIntercambio: string[]
+}
 export type img = {
   base64_imagen: string
 }
@@ -103,6 +134,7 @@ export interface CardProductProps {
   nameProductState: string
   locationTrade: string
   image: string
+  ownerPost: boolean
 }
 
 /**
@@ -119,11 +151,13 @@ export interface CardProductProps {
  * @property {number} idOwnerUser - The ID of the user who created the post.
  * @property {string} nameUser - The name of the user who created the post.
  * @property {string} surnameUser - The last name of the user who created the post.
- * @property {number} centersChoosed- The post centers.
+ * @property {[UnadaptedCenter]} centersChoosed- The post centers.
+ * @property {[UnadaptedCenterPublicacion]} centersChoosedInfoTrade- The post centers.
  * @property {User} user - The current user. 
  * @property {string} profilePicOwner - The profile pic of the owners post
  * @property {[CommentUnadapted]} [comments] - The post asks/questions.
  * @property {[img]} images - The post asks/questions.
+ * 
  */
 export interface PostData {
   idPost: number
@@ -138,11 +172,12 @@ export interface PostData {
   idOwnerUser: number
   nameUser: string
   surnameUser: string
-  centersChoosed: number
   user: User
   profilePicOwner: string
   comments?: [CommentUnadapted]
   images: [img]
+  centersChoosed: [UnadaptedCenter]
+  centersChoosedInfoTrade:[UnadaptedCenterPublicacion]
 }
 
 export interface PostDataAdapter {
@@ -158,7 +193,8 @@ export interface PostDataAdapter {
   id_usuario: number
   nombre_usuario: string
   apellido_usuario: string
-  centros_elegidos: number
+  centros: [UnadaptedCenter]
+  centros_Publicacion: [UnadaptedCenterPublicacion]
   user: User
   comentarios?: [CommentUnadapted]
   base64_imagen: string

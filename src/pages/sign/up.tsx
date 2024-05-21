@@ -8,19 +8,21 @@ import { Button } from '@/components/ui/button'
 import { ButtonEnum } from '@/components/types'
 import { FRONT_BASE_URL } from '@/constants'
 import { GetSSPropsResult, User } from '@/types'
-import { getUser, requirePermission, centers, Center } from '@/utils'
-import { Input, MultiSelect } from '@/components'
+import { getUser, requirePermission } from '@/utils'
+import { Input, MultiSelect, Select } from '@/components'
 import { RootLayout } from '@/layouts'
 import { subYears } from 'date-fns'
 import { FieldError, useForm } from 'react-hook-form'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import processFiles from '@/utils/img-files-to-b64'
+import { Item } from '@/utils/examples/locations'
 
 /**
  * Gets the user from the request and response objects in the server side and pass it
  * to the page component.
  */
-export async function getServerSideProps ({
+export async function getServerSideProps({
   req,
   res
 }: Readonly<{
@@ -30,20 +32,61 @@ export async function getServerSideProps ({
   return requirePermission(getUser(req, res))
 }
 
+interface CenterData {
+  nombre_centro: string
+  direccion: string
+  ubicacion: File
+  dias: string[]
+  id_centro: number
+}
 /**
  * The form data for the signup page.
  */
 interface FormData extends Omit<User, 'role'> {
   password: string
   passwordConfirmation: string
-  photo: File
+  photo: FileList | string[]
   centers: string[]
+  location: string
 }
 
 /**
  * The signup page.
  */
-export default function Signup ({ user }: { user: User }) {
+export default function Signup({ user }: { user: User }) {
+  // const centrosMuyAux: any[] = []
+  const [centers, setCenters] = useState<Item[]>([])
+  const [locationsCentersUltimo, setLocationsCentersUltimo] = useState<Item[]>([])
+  const [auxCentersOnLocations, setAuxCentersOnLocations] = useState<Item[]>([])
+  useEffect(() => {
+    const centrosMuyAux: Item[] = []
+    const locationsMuyAux: Item[] = []
+    const getCenters = async () => {
+      await axios
+        .get(`${FRONT_BASE_URL}centers/get`)
+        .then((res: any) => {
+          res.data.map((e: CenterData) => {
+            centrosMuyAux.push({
+              value: `${e.id_centro}`,
+              label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}`
+            })
+            locationsMuyAux.push({
+              value: `${e.ubicacion}`,
+              label: `${e.ubicacion}`
+            })
+          })
+        })
+      //Elimina duplicados de las localidades
+      const eliminarDuplicados = async (arr: Item[]) => {
+        return arr.filter((item, index) => {
+          return arr.findIndex((i) => i.value === item.value) === index;
+        });
+      };
+      setLocationsCentersUltimo(await eliminarDuplicados(locationsMuyAux))
+    }
+    getCenters()
+    setCenters(centrosMuyAux)
+  }, [])
   const [loading, setLoaging] = useState(false)
   const router = useRouter()
   const {
@@ -57,26 +100,33 @@ export default function Signup ({ user }: { user: User }) {
    * Calls the endpoint by sending it the form data
    * @arg {FormData} formData
    */
-  const _handleSubmit = async (formData: FormData) => {
+  const _handleSubmit = (formData: FormData) => {
     setLoaging(true)
-
-    console.log('data', formData)
-    console.log('url', `${FRONT_BASE_URL}sign/up`)
-    debugger
-
-    await axios
-      .post(`${FRONT_BASE_URL}sign/up`, formData)
-      .then(() => router.push('sign/in'))
-      .catch((error: any) => {
-        try {
-          alert(error.response.data.message)
-        } catch (error) {
-          alert('Ah ocurrido un error inesperado, intente nuevamente.')
-        }
-        setLoaging(false)
-      })
+    console.log(formData);
+    processFiles(formData.photo as FileList).then(async (result: string[]) => {
+      formData.photo = result
+      await axios
+        .post(`${FRONT_BASE_URL}sign/up`, formData)
+        .then(() => router.push('/sign/in'))
+        .catch((error: any) => {
+          try {
+            alert('El correo electronico ya esta registrado en el sistema')
+          } catch (error) {
+            alert('El correo electronico ya esta registrado en el sistema')
+          }
+          setLoaging(false)
+        })
+    })
   }
+  const handleLocationChange = (e: any) => {
+    //Carga en auxCentersOnLocations, los centros de la localidad elegida en el primer centro
+    setAuxCentersOnLocations(() => {
+      return centers.filter((i) => i.label.toLowerCase().includes(e.target.value.toLowerCase()))
+    })
 
+    setValue('location', e.target.value)
+    //clearErrors('location')
+  }
   return (
     <RootLayout user={user}>
       <main className='flex-1 py-[.1rem] overflow-auto'>
@@ -199,10 +249,15 @@ export default function Signup ({ user }: { user: User }) {
                   error={errors.photo as FieldError}
                   register={register}
                   registerOptions={{
-                    required: 'Campo requerido',
-                    validate: (value: FileList) =>
-                      value[0].size <= 3000000 ||
-                      'La foto no puede superar los 3MB.'
+                    validate: (value: FileList) => {
+                      if ((value === undefined) || (value === null)) {
+                        return true
+                      }
+                      if (value.length === 0) {
+                        return true
+                      }
+                      return value[0].size <= 3000000 || 'La foto no puede superar los 3MB.'
+                    }
                   }}
                   className='hover:cursor-pointer'
                   props={{
@@ -212,7 +267,26 @@ export default function Signup ({ user }: { user: User }) {
                 />
               </div>
             </div>
-            <div className='w-full flex flex-col flex-nowrap whitespace-nowrap justify-center items-start'>
+            <div
+              key='create-post-form-container-3'
+              className='w-full flex flex-col justify-center items-start'
+            >
+              <Select
+                id='location'
+                label='Localidad'
+                register={register}
+                error={errors.location}
+                registerOptions={{
+                  required: watch('location') || 'Campo requerido'
+                }}
+                options={locationsCentersUltimo}
+                handleChange={handleLocationChange}
+              />
+            </div>
+            <div
+              className='w-full flex flex-col flex-nowrap whitespace-nowrap justify-center items-start'
+              hidden={!watch('location')}
+            >
               <MultiSelect
                 key='center-selector'
                 id='centers'
@@ -231,7 +305,7 @@ export default function Signup ({ user }: { user: User }) {
                 }}
                 className='w-full'
                 props={{
-                  options: centers,
+                  options: auxCentersOnLocations,
                   isMulti: true,
                   setValue: setValue
                 }}
@@ -241,7 +315,7 @@ export default function Signup ({ user }: { user: User }) {
               key='signup-form-submit-button'
               type={ButtonEnum.SUBMIT}
               disabled={loading}
-              className='appearance-none py-2 px-4 bg-rose-700 font-bold text-white hover:bg-rose-500 active:bg-rose-700'
+              className='appearance-none py-2 px-6 font-semibold outline-transparent outline bg-rose-700 hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 text-white active:text-white active:bg-rose-700'
             >
               {loading ? (
                 <Loader2 className='mr-2 h-4 w-4 animate-spin' />

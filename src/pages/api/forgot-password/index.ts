@@ -1,12 +1,10 @@
-import type {
-  NextApiRequest,
-  NextApiResponse
-} from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 import axios from 'axios'
 
 import { BACK_BASE_URL } from '@/constants'
-import { setToken } from '@/utils'
+import { getCookie } from 'cookies-next'
+import { getUser } from '@/utils'
 
 /**
  * Async handler function that sends the signin form data to the external server.
@@ -16,29 +14,26 @@ import { setToken } from '@/utils'
  */
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ): Promise<void> {
-  const formData = req.body
-
+  const formData={correo:req.body.email}
+  console.log('LLEGA HASTA ACA FORGOT PASSWORD');
+  
+  console.log(formData);
+  console.log(`${BACK_BASE_URL}CaritasBack/recuperarClave`);
+  
   await axios
-    .post(`${BACK_BASE_URL}Login/iniciarSesion`, formData)
+    .post(`${BACK_BASE_URL}CaritasBack/recuperarClave?correo=${formData.correo}`)
     .then((result: any) => {
-      setToken(
-        'access',
-        result.data,
-        req,
-        res,
-      )
-
+      console.log(result.status, result.data);
+      
       res.status(result.status).json({})
-    },
-    )
+    })
     .catch((result: any) => {
       try {
         res.status(result.status).json({ message: result.data.message })
       } catch {
-        res.status(500).json({ message: 'Credenciales incorrectas vuelve a intentarlo.' })
+        res.status(500).json({ message: 'Ah ocurrido un error inesperado.' })
       }
-    },
-    )
+    })
 }

@@ -24,6 +24,7 @@ export default function AnswerPost({
     roleCurrentUser: string
 }) {
     const router = useRouter();
+    const idQuery = router.query.id
     const DeleteAnswer = async () => {
         const answerInfo: deleteAnswerBody = {
             "id_respuesta": idAnswer,
@@ -31,7 +32,10 @@ export default function AnswerPost({
         }
         await axios
             .post(`${FRONT_BASE_URL}answer/delete`, answerInfo)
-            .then(() => router.push(`/posts/${router.query.id}`))
+            .then(async () => {
+                await router.push('/')
+                await router.push(`/posts/${idQuery}`)
+            })
             .catch((error: { response: { data: { message: string } } }) => {
                 console.log(error);
                 if (error) {

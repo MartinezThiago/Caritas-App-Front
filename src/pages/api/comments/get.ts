@@ -20,10 +20,11 @@ import type {
   ): Promise<void> {
     
     const body = req.body
+    
     await axios
-      .get(`${BACK_BASE_URL}CaritasBack/getPublicacion?idPublicacion=${body.id}`)
-      .then((result: any) => {                
-        res.status(result.status).json(result.data)      
+      .get(`${BACK_BASE_URL}CaritasBack/getComentarios?idPublicacion=${body.id}`)
+      .then((result: any) => {    
+        res.status(result.status).json(result.data)              
       },
       )
       .catch((result: any) => {

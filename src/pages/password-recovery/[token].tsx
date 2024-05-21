@@ -50,7 +50,6 @@ const formSchema = z
   })
 
 const Send: NextPage<any> = props => {
-  console.log(props)
   const [loading, setLoaging] = useState(false)
   const router = useRouter()
 
@@ -61,21 +60,27 @@ const Send: NextPage<any> = props => {
       newPasswordConfirmation: ''
     }
   })
-
+  
   async function onSubmit (values: z.infer<typeof formSchema>) {
     setLoaging(true)
-    console.log(values)
+    const formData={
+      token:router.query.token,
+      clave:values.newPassword,
+      confirmarClave:values.newPasswordConfirmation
+    }
+    console.log(formData);
+    
     await axios
-      .post(`${FRONT_BASE_URL}forgot-password`, values)
+      .post(`${FRONT_BASE_URL}recovery-password`, formData)
       .then(() => {
         alert('Contraseña recuperada.')
-        router.push('sign/in')
+        router.push('/sign/in')
       })
       .catch((error: any) => {
         try {
           alert(error.response.data.message)
         } catch (error) {
-          alert('Ah ocurrido un error inesperado, intente nuevamente.')
+          alert('Ha ocurrido un error inesperado, intente nuevamente.')
         }
         setLoaging(false)
       })
