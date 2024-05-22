@@ -61,7 +61,28 @@ export default function UpdateUserInfo({ user }: { user: User }) {
   const [centers, setCenters] = useState<Item[]>([])
   const [locationsCentersUltimo, setLocationsCentersUltimo] = useState<Item[]>([])
   const [auxCentersOnLocations, setAuxCentersOnLocations] = useState<Item[]>([])
+  const [centersChoosedUser, setCentersChoosedUser] = useState([])
   const auxLoading = watch('birthdate') || watch('centers') || watch('dni') || watch('name') || watch('password') || watch('photo') || watch('surname')
+  useEffect(() => {
+    const getCentersUser = async () => {
+      await axios
+        .get(`${FRONT_BASE_URL}centers-user/get`)
+        .then((res: any) => {
+          setCentersChoosedUser(res.data)
+        })
+    }
+    getCentersUser()
+  }, [])
+
+  const centerListUser = () => {
+    const centerList = centersChoosedUser!.map((e: any) => {
+      return (
+        <p><span className='font-semibold'>{e.ubicacion}:</span> {e.nombre_centro} {e.direccion}</p>
+      )
+    })
+    return centerList
+  }
+
   useEffect(() => {
     const centrosMuyAux: Item[] = []
     const locationsMuyAux: Item[] = []
@@ -159,6 +180,7 @@ export default function UpdateUserInfo({ user }: { user: User }) {
                   register={register}
                   error={errors.surname}
                 />
+
                 <Input
                   key='birthdate'
                   id='birthdate'
@@ -179,8 +201,14 @@ export default function UpdateUserInfo({ user }: { user: User }) {
                   }}
                   error={errors.birthdate}
                 />
-
+                <div>
+                  <p className='font-bold'>Centros elegidos previamente:</p>
+                  <div className='ms-[10px] text-gray-600'>
+                    {centerListUser()}
+                  </div>
+                </div>
               </div>
+
               <div key='col-2' className=''>
                 <Input
                   key='dni'
@@ -211,6 +239,7 @@ export default function UpdateUserInfo({ user }: { user: User }) {
                   }}
                   error={errors.password}
                 />
+
                 <Input
                   key='passwordConfirmation'
                   id='passwordConfirmation'
@@ -224,6 +253,7 @@ export default function UpdateUserInfo({ user }: { user: User }) {
                   }}
                   error={errors.passwordConfirmation}
                 />
+
                 <Input
                   id='photo'
                   label='Foto de perfil'
@@ -251,6 +281,7 @@ export default function UpdateUserInfo({ user }: { user: User }) {
                 />
               </div>
             </div>
+
             <div
               key='create-post-form-container-3'
               className='w-full flex flex-col justify-center items-start'

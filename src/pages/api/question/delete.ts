@@ -37,7 +37,7 @@ export default async function handler(
             try {
                 res.status(result.status).json({ message: result.data.message })
             } catch {
-                res.status(500).json({ message: 'Ah ocurrido un error inesperado al momento de eliminar una pregunta.' })
+                res.status(500).json({ message: 'Ha ocurrido un error inesperado al momento de eliminar una pregunta.' })
             }
         },
         )

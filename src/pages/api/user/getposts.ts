@@ -6,7 +6,9 @@ import type {
 import axios from 'axios'
 
 import { BACK_BASE_URL } from '@/constants'
+import { getUser } from '@/utils/cookies'
 import { getCookie } from 'cookies-next'
+
 
 /**
  * Async handler function that sends the signin form data to the external server.
@@ -18,25 +20,26 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse,
 ): Promise<void> {
-    const body = req.body    
     const token = getCookie('access', { req, res })
+    const { userId } = getUser(req, res)
     const config = {
         headers: {
             Authorization: `Bearer ${token}`
         },
     }
+
     await axios
-      .post(`${BACK_BASE_URL}CaritasBack/subirRespuesta`,body, config)
-      .then((result: any) => {        
-        res.status(result.status).json(result.data)      
-      },
-      )
-      .catch((result: any) => {
-        try {
-          res.status(result.status).json({ message: result.data.message })
-        } catch {
-          res.status(500).json({ message: 'Ha ocurrido un error inesperado al momento de responder.' })
-        }
-      },
-      ) 
+        .get(`${BACK_BASE_URL}CaritasBack/getPublicacionesUser?id=${userId}`, config)
+        .then((result: any) => {
+            res.status(result.status).json(result.data)
+        },
+        )
+        .catch((result: any) => {
+            try {
+                res.status(result.status).json({ message: result.data.message })
+            } catch {
+                res.status(500).json({ message: 'Ha ocurrido un error inesperado.' })
+            }
+        },
+        )
 }
