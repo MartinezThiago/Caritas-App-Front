@@ -63,6 +63,19 @@ export default function RootLayout({
         </Link>
       </> :
         user.role === 'usuario_basico' ? <>
+          <Link
+            key='link-trade-user-offers'
+            href='/user/posts'
+          >
+            Mis publicaciones
+          </Link>
+          <Link
+            key='link-trade-user-offers'
+            href='/trade-user-offers'
+          >
+            Ofertas de intercambio
+          </Link>
+          
           <div
             key='header-separator'
             className='flex-grow'
@@ -72,7 +85,7 @@ export default function RootLayout({
             href='/user'
           >
             <div className='flex items-center'>
-              <Image alt={`userProfilePic`} className={'me-[10px] w-[30px] rounded-full'} src={profilePic?profilePic:profilePicDefault} width={0} height={0} />
+              <Image alt={`userProfilePic`} className={'me-[10px] w-[30px] rounded-full'} src={profilePic ? profilePic : profilePicDefault} width={0} height={0} />
               {user.name}
             </div>
           </Link>
@@ -99,7 +112,7 @@ export default function RootLayout({
             href='/user'
           >
             <div className='flex items-center'>
-              <Image alt={`userProfilePic`} className={'me-[10px] w-[30px] rounded-full'} src={profilePic?profilePic:profilePicDefault} width={0} height={0}/>
+              <Image alt={`userProfilePic`} className={'me-[10px] w-[30px] rounded-full'} src={profilePic ? profilePic : profilePicDefault} width={0} height={0} />
               {user.name}
             </div>
           </Link>

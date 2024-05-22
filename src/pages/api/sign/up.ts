@@ -41,7 +41,7 @@ export default async function handler(
         res
           .status(500)
           .json({
-            message: 'Ah ocurrido un error inesperado al registrar un usuario.'
+            message: 'Ha ocurrido un error inesperado al registrar un usuario.'
           })
       }
     })

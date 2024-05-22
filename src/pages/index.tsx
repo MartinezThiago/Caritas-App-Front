@@ -9,6 +9,7 @@ import { FRONT_BASE_URL } from '@/constants'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import auxPic from 'public/post-image-preview.jpg'
+import { Loading } from '@/components/loading'
 
 export async function getServerSideProps({
   req,
@@ -35,6 +36,7 @@ interface FormData {
 export default function Home({ user }: { user: User }) {
   const router = useRouter()
   const [cardsData, setCardsData] = useState<any[]>()
+  const [isLoading, setIsLoading] = useState(true);
 
   const {
     register,
@@ -77,38 +79,46 @@ export default function Home({ user }: { user: User }) {
       return cards
     }
   }
-
+  useEffect(() => {
+    // Simula una carga de datos
+    setTimeout(() => {
+      setIsLoading(false); // Cambia isLoading a false después de 2 segundos
+    }, 200);
+  }, []);
   return (
     <RootLayout user={user}>
       <main className='flex'>
         <div className='w-[30vw]'>
           {user.role == 'usuario_basico' ? (
-            <>
+            <div className='flex'>
               <button
                 key='Post'
-                className='ms-[25%] mt-[15%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
+                className='m-auto mt-[15%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
                 onClick={() => router.push('/post/create/')}
               >
                 Crear publicacion
               </button>
-            </>
+            </div>
           ) : user.role == 'non-registered' ? (
-            <>
+            <div className='flex'>
               <button
                 key='Post'
-                className='ms-[25%] mt-[15%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
+                className='m-auto mt-[15%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
                 onClick={() => router.push('/sign/in/')}
               >
                 Crear publicacion
               </button>
-            </>
+            </div>
           ) : (
-            <button
-              key='Post'
-              className='ms-[25%] mt-[15%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline font-semibold hover:outline-[3px] bg-gray-500 hover:bg-gray-600 hover:cursor-not-allowed '
-            >
-              Crear publicacion
-            </button>
+            <div className='flex'>
+
+              <button
+                key='Post'
+                className='m-auto mt-[15%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline font-semibold hover:outline-[3px] bg-gray-500 hover:bg-gray-600 hover:cursor-not-allowed '
+              >
+                Crear publicacion
+              </button>
+            </div>
           )}
           <form
             noValidate
@@ -143,9 +153,19 @@ export default function Home({ user }: { user: User }) {
             </div>
           </form>
         </div>
-        <div className='flex flex-wrap justify-center items-center mt-[4.4%] w-[70vw]'>
-          {CardsProducts()}
-        </div>
+        <div className="bg-blue-900 w-[1px] h-[100%]"></div>
+        {isLoading ? (
+          <div className='w-[70vw]'>
+            <div className="flex mt-[50px]">
+              <div className="m-auto">
+                <Loading />
+              </div>
+            </div>
+          </div>
+        ) :
+          <div className='flex flex-wrap justify-center items-center mt-[4.4%] w-[70vw]'>
+            {CardsProducts()}
+          </div>}
       </main>
     </RootLayout>
   )

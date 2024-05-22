@@ -96,7 +96,7 @@ export default function CreatePost({ user }: { user: User }) {
       })
       .catch(() => {
         alert(
-          'Ah ocurrido un error inesperado, por favor intente nuevamente más tarde.'
+          'Ha ocurrido un error inesperado, por favor intente nuevamente más tarde.'
         )
         router.push('/')
       })
