@@ -27,8 +27,8 @@ export default async function handler(
             Authorization: `Bearer ${token}`
         },
     }
-    console.log(req.body.action);
-    console.log(req.body.idPost);
+    console.log(req.body);
+    
     // await axios
     //     .post(`${BACK_BASE_URL}CaritasBack/`)
     //     .then(() => {

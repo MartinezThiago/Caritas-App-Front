@@ -117,6 +117,31 @@ export type CommentUnadapted = {
 }
 
 /**
+ * The trade card data.
+ * @property {number} idPost - The product id.
+ * @property {string} title - The product title.
+ * @property {string} desciption - The product description.
+ * @property {string} nameProductCategorie - The product categorie.
+ * @property {string} nameProductState - The product state.
+ * @property {string} image - The first image of the post
+ * @property {string} profilePic - The profile pic image of the post
+ * @property {[UnadaptedCenterPublicacion]} centersChoosedInfoTrade- The post centers.
+ */
+export interface TradeCardProductProps {
+  idPost: number
+  title: string
+  desciption: string
+  nameProductCategorie: string
+  nameProductState: string
+  imagePost: string
+  profilePic: string
+  centersChoosedInfoTrade:[UnadaptedCenterPublicacion]
+  name:string
+  surname:string
+}
+
+
+/**
  * The product card data.
  * @property {number} id - The product id.
  * @property {string} title - The product title.

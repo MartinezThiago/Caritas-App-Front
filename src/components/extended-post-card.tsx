@@ -115,10 +115,10 @@ export default function ExtendedPostCard(props: PostData) {
     }));
   };
 
-  const _handleSubmitSave = async (action:string) => {
+  const _handleSubmitSave = async (action:boolean) => {
     const formData={
       action:action,
-      idPost:props.idPost
+      idPost:props.idPost,
     }
     await axios
       .post(`${FRONT_BASE_URL}user/favs/postfav`, formData)
@@ -129,10 +129,18 @@ export default function ExtendedPostCard(props: PostData) {
     
 
   };
-  const _handleSubmitUnSave = async (action:string) => {
+  const _handleSubmitUnSave = async (action:boolean) => {
+    const formData={
+      action:action,
+      idPost:props.idPost,
+    }
+    await axios
+      .post(`${FRONT_BASE_URL}user/favs/postfav`, formData)
+      .then(async () => {
+        console.log('ok');
+        
+      })
     
-    console.log(action);
-
   };
 
   const Centers = () => {
@@ -245,7 +253,7 @@ export default function ExtendedPostCard(props: PostData) {
                             className="rounded-lg ms-6 py-2.5 px-6 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200 "
                             type={ButtonEnum.BUTTON}
                             onClick={() => {
-                              _handleSubmitSave('save')
+                              _handleSubmitSave(true)
                             }}
                           >
                             Guardar
@@ -254,7 +262,7 @@ export default function ExtendedPostCard(props: PostData) {
                           className="rounded-lg ms-6 py-2.5 px-4 outline -outline-offset-2 outline-[3px] outline-rose-700 bg-white text-rose-700 font-semibold hover:bg-rose-700 hover:text-white hover:outline-white hover:-outline-offset-0 duration-200"
                           type={ButtonEnum.BUTTON}
                           onClick={() => {
-                            _handleSubmitUnSave('unsave')
+                            _handleSubmitUnSave(false)
                           }}
                         >
                           Desguardar
