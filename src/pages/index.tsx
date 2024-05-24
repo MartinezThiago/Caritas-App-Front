@@ -37,7 +37,7 @@ export default function Home({ user }: { user: User }) {
   const router = useRouter()
   const [cardsData, setCardsData] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true);
-
+  const [postsFavsUser, setPostFavsUser] = useState<number[]>([])
   const {
     register,
     handleSubmit,
@@ -57,6 +57,21 @@ export default function Home({ user }: { user: User }) {
     }
     getProducts()
   }, [])
+  useEffect(() => {
+    const getIdsPostFavs = async () => {
+      await axios
+        .get<any[]>(`${FRONT_BASE_URL}/user/favs/getIdFavs`)
+        .then((res: any) => {
+          console.log(res.data);
+          setPostFavsUser(res.data)
+
+        })
+        .catch((err: any) => {
+          setPostFavsUser([])
+        })
+    }
+    getIdsPostFavs();
+  }, []);
 
   const CardsProducts = () => {
     if (cardsData) {
@@ -73,7 +88,7 @@ export default function Home({ user }: { user: User }) {
             image={
               e.imagenes[0].base64_imagen ? e.imagenes[0].base64_imagen : auxPic
             }
-            ownerPost={e.usuario_owner === parseInt(user.userId.toString())}
+            ownerPost={postsFavsUser.includes(e.id)}
           />
         )
       })

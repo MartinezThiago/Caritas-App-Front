@@ -78,7 +78,7 @@ export default function RootLayout({
           </Link>
           <Link
             key='link-trade-user-offers'
-            href='/trade-user-offers'
+            href='/user/trade-offers'
           >
             Ofertas de intercambio
           </Link>
