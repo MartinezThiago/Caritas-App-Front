@@ -50,13 +50,32 @@ export default function ExtendedPostCard(props: PostData) {
   const [lastComments, setLastComments] = useState<[]>();
   const [commentsUpdate, setCommentsUpdate] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [postsFavsUser, setPostFavsUser] = useState<number[]>([])
+  const [savedPost, setSavedPost] = useState(true);
   useEffect(() => {
     // Simula una carga de datos
     setTimeout(() => {
       setIsLoading(false); // Cambia isLoading a false después de 2 segundos
     }, 200);
   }, []);
+
+  useEffect(() => {
+    const getIdsPostFavs = async () => {
+      await axios
+        .get<any[]>(`${FRONT_BASE_URL}/user/favs/getIdFavs`)
+        .then((res: any) => {
+          console.log(res.data);
+          setPostFavsUser(res.data)
+          setSavedPost(!res.data.includes(props.idPost))
+
+        })
+        .catch((err: any) => {
+          setPostFavsUser([])
+        })
+    }
+    getIdsPostFavs();
+  }, []);
+
 
   const _handleSubmit = async (formData: FormData) => {
     const pregunta: questionBody = {
@@ -115,32 +134,38 @@ export default function ExtendedPostCard(props: PostData) {
     }));
   };
 
-  const _handleSubmitSave = async (action:boolean) => {
-    const formData={
-      action:action,
-      idPost:props.idPost,
+  const _handleSubmitSave = async (action: boolean) => {
+    const formData = {
+      action: action,
+      id_publicacion: props.idPost,
     }
+    console.log(formData);
     await axios
-      .post(`${FRONT_BASE_URL}user/favs/postfav`, formData)
+      .post(`${FRONT_BASE_URL}user/favs/postFav`, formData)
       .then(async () => {
-        console.log('ok');
-        
+        router.push(`/`);
+        router.push(`/posts/${props.idPost}`);
       })
-    
+      .catch((error: { response: { data: { message: string } } }) => {
+        console.log(error);
+
+      });
 
   };
-  const _handleSubmitUnSave = async (action:boolean) => {
-    const formData={
-      action:action,
-      idPost:props.idPost,
+  const _handleSubmitUnSave = async (action: boolean) => {
+    const formData = {
+      action: action,
+      id_publicacion: props.idPost,
     }
+    console.log(formData);
     await axios
-      .post(`${FRONT_BASE_URL}user/favs/postfav`, formData)
+      .post(`${FRONT_BASE_URL}user/favs/postFav`, formData)
       .then(async () => {
-        console.log('ok');
-        
+        router.push(`/`);
+        router.push(`/posts/${props.idPost}`);
+
       })
-    
+
   };
 
   const Centers = () => {
@@ -247,7 +272,7 @@ export default function ExtendedPostCard(props: PostData) {
                           Intercambiar
                         </button>
                         {/* ESTA AFIRMACION SE TIENE QUE HACER SI LA PUBLICACION ESTA EN EL ARRAY DE GUARDADOS DEL USUARIO */}
-                        {true?
+                        {savedPost ?
                           <button
                             key="Save"
                             className="rounded-lg ms-6 py-2.5 px-6 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200 "
@@ -257,16 +282,16 @@ export default function ExtendedPostCard(props: PostData) {
                             }}
                           >
                             Guardar
-                          </button>:<button
-                          key="Save"
-                          className="rounded-lg ms-6 py-2.5 px-4 outline -outline-offset-2 outline-[3px] outline-rose-700 bg-white text-rose-700 font-semibold hover:bg-rose-700 hover:text-white hover:outline-white hover:-outline-offset-0 duration-200"
-                          type={ButtonEnum.BUTTON}
-                          onClick={() => {
-                            _handleSubmitUnSave(false)
-                          }}
-                        >
-                          Desguardar
-                        </button>
+                          </button> : <button
+                            key="Save"
+                            className="rounded-lg ms-6 py-2.5 px-4 outline -outline-offset-2 outline-[3px] outline-rose-700 bg-white text-rose-700 font-semibold hover:bg-rose-700 hover:text-white hover:outline-white hover:-outline-offset-0 duration-200"
+                            type={ButtonEnum.BUTTON}
+                            onClick={() => {
+                              _handleSubmitUnSave(false)
+                            }}
+                          >
+                            Desguardar
+                          </button>
                         }
                       </div>
                     ) : (

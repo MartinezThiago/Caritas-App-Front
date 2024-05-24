@@ -15,7 +15,7 @@ export default function CardProduct(props: CardProductProps) {
             <p className='ms-2.5 mt-0.5'>{props.desciption}</p>
           </div>
           <div>
-            {props.ownerPost ? <p className='font-bold text-sm text-rose-700'>Tu publicacion</p> : <></>}
+            {props.ownerPost ? <p className='font-bold text-sm text-rose-700'>Guardado</p> : <></>}
             <p className='font-semibold mb-1.5'>{props.locationTrade}</p>
           </div>
         </div>

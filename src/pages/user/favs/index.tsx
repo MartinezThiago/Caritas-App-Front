@@ -24,52 +24,54 @@ export async function getServerSideProps({
 }
 
 export default function UserPostsFavs({ user }: { user: User }) {
-  // const [posts, setPosts] = useState([])
+  const [posts, setPosts] = useState([])
   const [isLoading, setIsLoading] = useState(true);
-  // useEffect(() => {
-  //   const getPosts = async () => {
-  //     await axios
-  //       .get(`${FRONT_BASE_URL}user/getposts`)
-  //       .then((res: any) => {
-  //         setPosts(res.data);
-  //       })
-  //       .catch((res: any) => {
-  //         try {
-  //           // res.status(res.status).json({ message: res.data.message })
-  //           setPosts([])
+  useEffect(() => {
+    const getPosts = async () => {
+      await axios
+        .get(`${FRONT_BASE_URL}user/favs/getPostFavs`)
+        .then((res: any) => {
+          setPosts(res.data);
+          console.log(res.data);
 
-  //         } catch {
-  //           //res.status(500).json({ message: 'Ha ocurrido un error inesperado.' })
-  //           setPosts([])
-  //         }
-  //       },
-  //       )
-  //   }
-  //   getPosts()
-  // }, [])
+        })
+        .catch((res: any) => {
+          try {
+            // res.status(res.status).json({ message: res.data.message })
+            setPosts([])
 
-  // const CardsProducts = () => {
-  //   if (posts) {
-  //     const cards = posts!.map((e: any) => {
-  //       return (
-  //         <CardProduct
-  //           key={e.id}
-  //           id={e.id}
-  //           title={e.titulo}
-  //           desciption={e.descripcion}
-  //           nameProductCategorie={e.nombre_categoria_producto}
-  //           nameProductState={e.nombre_estado_producto}
-  //           locationTrade={e.ubicacion_trade}
-  //           image={
-  //             e.imagenes[0].base64_imagen ? e.imagenes[0].base64_imagen : auxPic
-  //           }
-  //           ownerPost={e.usuario_owner === parseInt(user.userId.toString())}
-  //         />
-  //       )
-  //     })
-  //     return cards
-  //   }
-  // }
+          } catch {
+            //res.status(500).json({ message: 'Ha ocurrido un error inesperado.' })
+            setPosts([])
+          }
+        },
+        )
+    }
+    getPosts()
+  }, [])
+
+  const CardsProducts = () => {
+    if (posts) {
+      const cards = posts!.map((e: any) => {
+        return (
+          <CardProduct
+            key={e.id}
+            id={e.id}
+            title={e.titulo}
+            desciption={e.descripcion}
+            nameProductCategorie={e.nombre_categoria_producto}
+            nameProductState={e.nombre_estado_producto}
+            locationTrade={e.localidad}
+            image={
+              e.imagenEnBase64
+            }
+            ownerPost={e.usuario_owner === parseInt(user.userId.toString())}
+          />
+        )
+      })
+      return cards
+    }
+  }
   useEffect(() => {
     // Simula una carga de datos
     setTimeout(() => {
@@ -78,10 +80,30 @@ export default function UserPostsFavs({ user }: { user: User }) {
   }, []);
   return (
     <RootLayout user={user}>
-      <p className="text-xl font-bold text-blue-900 mt-[20px] m-auto">
-        MIS FAVORITOS
-      </p>
+      <div className="flex flex-col w-[100vw] ">
+        <p className="text-xl font-bold text-blue-900 mt-[20px] m-auto ">
+          MIS FAVORITOS
+        </p>
+        <div className="flex justify-between">
+          <div className="w-[15vw] border-e-[0.5px] border-blue-900"></div>
+          <div>
+            {isLoading ?
+              <div className="flex">
+                <div className="m-auto">
+                  <Loading />
+                </div>
+              </div> : 
+              <div className="flex mt-[40px]">
+                <div className="flex m-auto">
 
+                  {CardsProducts()}
+                </div>
+              </div>}
+          </div>
+          {/* <div className="bg-blue-900 w-[0.5px] h-[70vh] ms-[50px]"></div> */}
+          <div className="w-[15vw] h-[85vh] border-s-[0.5px] border-blue-900"></div>
+        </div>
+      </div>
     </RootLayout>
   )
 }
