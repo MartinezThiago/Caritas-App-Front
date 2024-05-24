@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 export default function CardProduct(props: CardProductProps) {
   return (
-    <Link href={`posts/${props.id}`} className='w-[16rem] h-[20rem] me-[1rem] mb-[1rem] border-[2px] border-blue-900 rounded-tl-[15px] rounded-br-[15px] hover:scale-105 duration-300'>
+    <Link href={`/posts/${props.id}`} className='w-[16rem] h-[20rem] me-[1rem] mb-[1rem] border-[2px] border-blue-900 rounded-tl-[15px] rounded-br-[15px] hover:scale-105 duration-300'>
       <div className='h-[145px] flex items-center justify-center'>
         <Image alt={`post-image-${props.id}`} className={'h-auto w-[130px]'} src={props.image} width={0} height={0} />
       </div>
@@ -15,7 +15,7 @@ export default function CardProduct(props: CardProductProps) {
             <p className='ms-2.5 mt-0.5'>{props.desciption}</p>
           </div>
           <div>
-            {props.ownerPost ? <p className='font-bold text-sm text-rose-700'>Tu publicacion</p> : <></>}
+            {props.ownerPost ? <p className='font-bold text-sm text-rose-700'>Guardado</p> : <></>}
             <p className='font-semibold mb-1.5'>{props.locationTrade}</p>
           </div>
         </div>

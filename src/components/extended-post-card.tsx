@@ -14,6 +14,9 @@ import CenterDescription from "./center-description";
 import { useEffect, useState } from "react";
 import AllComments from "./all-comments";
 import { Loading } from "./loading";
+import save from 'public/save.png'
+import unsave from 'public/unsave.png'
+import { Link } from "lucide-react";
 
 interface FormData {
   question: string;
@@ -47,13 +50,32 @@ export default function ExtendedPostCard(props: PostData) {
   const [lastComments, setLastComments] = useState<[]>();
   const [commentsUpdate, setCommentsUpdate] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [postsFavsUser, setPostFavsUser] = useState<number[]>([])
+  const [savedPost, setSavedPost] = useState(true);
   useEffect(() => {
     // Simula una carga de datos
     setTimeout(() => {
       setIsLoading(false); // Cambia isLoading a false después de 2 segundos
     }, 200);
   }, []);
+
+  useEffect(() => {
+    const getIdsPostFavs = async () => {
+      await axios
+        .get<any[]>(`${FRONT_BASE_URL}/user/favs/getIdFavs`)
+        .then((res: any) => {
+          console.log(res.data);
+          setPostFavsUser(res.data)
+          setSavedPost(!res.data.includes(props.idPost))
+
+        })
+        .catch((err: any) => {
+          setPostFavsUser([])
+        })
+    }
+    getIdsPostFavs();
+  }, []);
+
 
   const _handleSubmit = async (formData: FormData) => {
     const pregunta: questionBody = {
@@ -112,6 +134,40 @@ export default function ExtendedPostCard(props: PostData) {
     }));
   };
 
+  const _handleSubmitSave = async (action: boolean) => {
+    const formData = {
+      action: action,
+      id_publicacion: props.idPost,
+    }
+    console.log(formData);
+    await axios
+      .post(`${FRONT_BASE_URL}user/favs/postFav`, formData)
+      .then(async () => {
+        router.push(`/`);
+        router.push(`/posts/${props.idPost}`);
+      })
+      .catch((error: { response: { data: { message: string } } }) => {
+        console.log(error);
+
+      });
+
+  };
+  const _handleSubmitUnSave = async (action: boolean) => {
+    const formData = {
+      action: action,
+      id_publicacion: props.idPost,
+    }
+    console.log(formData);
+    await axios
+      .post(`${FRONT_BASE_URL}user/favs/postFav`, formData)
+      .then(async () => {
+        router.push(`/`);
+        router.push(`/posts/${props.idPost}`);
+
+      })
+
+  };
+
   const Centers = () => {
     const center = props.centersChoosed.map((e, index) => {
       return (
@@ -123,8 +179,6 @@ export default function ExtendedPostCard(props: PostData) {
           address={e.direccion}
           openingTime={props.centersChoosedInfoTrade[index].desde}
           closingTime={props.centersChoosedInfoTrade[index].hasta}
-          // workDays={['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes']}
-          // workDays={props.centersChoosedInfoTrade[index].diasDeIntercambio}
           onPost={true}
           daysPostTrade={props.centersChoosedInfoTrade[index].diasDeIntercambio}
         />
@@ -198,16 +252,16 @@ export default function ExtendedPostCard(props: PostData) {
           </div>
           <div className="text-white">
             {props.user.role === "usuario_basico" ||
-            props.user.role === "non-registered" ? (
+              props.user.role === "non-registered" ? (
               <>
                 {props.user.role === "usuario_basico" ? (
                   <>
                     {props.user.userId != props.idOwnerUser ? (
-                      <>
+                      <div className="flex">
                         {/* ACTIVE SESSION SECTION */}
-                        {/*<button
+                        <button
                           key="Trade"
-                          className="rounded-lg py-2.5 px-14 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 w-[100%]"
+                          className="rounded-lg py-2.5 px-14 w-[100%] outline outline-transparent bg-rose-700 font-semibold hover:bg-white  hover:text-rose-700 hover:outline-rose-700 hover:-outline-offset-1 duration-200"
                           type={ButtonEnum.BUTTON}
                           onClick={() => {
                             console.log(
@@ -217,19 +271,29 @@ export default function ExtendedPostCard(props: PostData) {
                         >
                           Intercambiar
                         </button>
-                         <button
-                          key="Save"
-                          className="rounded-lg ms-12 py-2.5 px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200 "
-                          type={ButtonEnum.BUTTON}
-                          onClick={() => {
-                            console.log(
-                              "USUARIO BASICO: BOTON GUARDAR FUNCIONA"
-                            );
-                          }}
-                        >
-                          A
-                        </button> */}
-                      </>
+                        {/* ESTA AFIRMACION SE TIENE QUE HACER SI LA PUBLICACION ESTA EN EL ARRAY DE GUARDADOS DEL USUARIO */}
+                        {savedPost ?
+                          <button
+                            key="Save"
+                            className="rounded-lg ms-6 py-2.5 px-6 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200 "
+                            type={ButtonEnum.BUTTON}
+                            onClick={() => {
+                              _handleSubmitSave(true)
+                            }}
+                          >
+                            Guardar
+                          </button> : <button
+                            key="Save"
+                            className="rounded-lg ms-6 py-2.5 px-4 outline -outline-offset-2 outline-[3px] outline-rose-700 bg-white text-rose-700 font-semibold hover:bg-rose-700 hover:text-white hover:outline-white hover:-outline-offset-0 duration-200"
+                            type={ButtonEnum.BUTTON}
+                            onClick={() => {
+                              _handleSubmitUnSave(false)
+                            }}
+                          >
+                            Desguardar
+                          </button>
+                        }
+                      </div>
                     ) : (
                       <>
                         {/*<button
@@ -312,7 +376,7 @@ export default function ExtendedPostCard(props: PostData) {
       <div className="w-[60%] m-auto text-black mt-8">
         <article>
           {props.user.role === "usuario_basico" &&
-          props.user.userId != props.idOwnerUser ? (
+            props.user.userId != props.idOwnerUser ? (
             <form noValidate onSubmit={handleSubmit(_handleSubmit)}>
               <div className="flex items-center">
                 <div className="w-[60%]">

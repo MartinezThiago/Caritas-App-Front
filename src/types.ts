@@ -117,6 +117,67 @@ export type CommentUnadapted = {
 }
 
 /**
+ * The trade card data.
+ * @property {number} idPost - The product id.
+ * @property {string} title - The product title.
+ * @property {string} desciption - The product description.
+ * @property {string} nameProductCategorie - The product categorie.
+ * @property {string} nameProductState - The product state.
+ * @property {string} image - The first image of the post
+ * @property {string} profilePic - The profile pic image of the post
+ * @property {[UnadaptedCenterPublicacion]} centersChoosedInfoTrade- The post centers.
+ */
+export interface TradeCardProductProps {
+  idPost: number
+  title: string
+  desciption: string
+  nameProductCategorie: string
+  nameProductState: string
+  imagePost: string
+  profilePic: string
+  centersChoosedInfoTrade:UnadaptedCenterPublicacion
+  name:string
+  surname:string
+}
+
+export interface FullOfferTradeCard {
+  //INFORMACION DEL USUARIO QUE RECIBIO LA OFERTA Y SU PUBLICACION
+  idUserOwner:number
+  nameUserOwner:string
+  surnameUserOwner:string
+  profilePicUserOwner:string
+  idPostOwner: number
+  titlePostOwner: string
+  desciptionPostOwner: string
+  nameProductCategoriePostOwner: string
+  nameProductStatePostOwner: string
+  locationTradePostOwner: string
+  imagePostOwner: string
+
+  //INFORMACION DEL USUARIO QUE OFERTO Y SU PUBLICACION
+  idUserOffer:number
+  nameUserOffer:string
+  surnameUserOffer:string
+  profilePicUserOffer:string
+  idPostOffer: number
+  titlePostOffer: string
+  desciptionPostOffer: string
+  nameProductCategoriePostOffer: string
+  nameProductStatePostOffer: string
+  locationTradePostOffer: string
+  imagePostOffer: string
+
+  //INFORMACION QUE ELIGIO EL OFERTANTE Centro, hora y fecha
+  idCenterPostChoosedTrade:number
+  nameCenterChoosedTrade:string
+  addressCenterChoosedTrade:string
+  hourCenterChoosedTrade:string
+  dateCenterChooseTrade:string
+
+}
+
+
+/**
  * The product card data.
  * @property {number} id - The product id.
  * @property {string} title - The product title.
