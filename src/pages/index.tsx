@@ -35,7 +35,7 @@ interface FormData {
 
 export default function Home({ user }: { user: User }) {
   const router = useRouter()
-  const [cardsData, setCardsData] = useState<any[]>()
+  const [cardsData, setCardsData] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true);
 
   const {
@@ -49,6 +49,7 @@ export default function Home({ user }: { user: User }) {
         .get<any[]>(`${FRONT_BASE_URL}posts/get`)
         .then((res: any) => {
           setCardsData(res.data.filter((post: { usuario_owner: number }) => post.usuario_owner != user.userId))
+          //setCardsData([])
         })
         .catch((err: any) => {
           setCardsData([])
@@ -162,11 +163,31 @@ export default function Home({ user }: { user: User }) {
               </div>
             </div>
           </div>
-        ) :
-          <div className='flex flex-wrap justify-center items-center mt-[4.4%] w-[70vw]'>
-            {CardsProducts()}
+        ) : cardsData.length > 0 ?
+          <div className='flex flex-col'>
+            <div className='flex flex-wrap justify-center items-center mt-[4.4%] w-[70vw]'>
+              {CardsProducts()}
+            </div>
+            {
+              user.role == 'admin_centro' ?
+
+                <button
+                  key='hiddenPosts'
+                  className='m-auto mt-[3%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
+                  onClick={() => { setCardsData([]) }}
+                >
+                  Vaciar publicaciones
+                </button> : <>
+                </>
+            }
+
+          </div> :
+          <div className="flex w-[70vw]">
+            <p className="text-xl font-bold text-blue-900 mt-[50px] m-auto">
+              NO HAY PUBLICACIONES ACTUALMENTE
+            </p>
           </div>}
       </main>
-    </RootLayout>
+    </RootLayout >
   )
 }
