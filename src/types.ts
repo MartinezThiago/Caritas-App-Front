@@ -135,9 +135,45 @@ export interface TradeCardProductProps {
   nameProductState: string
   imagePost: string
   profilePic: string
-  centersChoosedInfoTrade:[UnadaptedCenterPublicacion]
+  centersChoosedInfoTrade:UnadaptedCenterPublicacion
   name:string
   surname:string
+}
+
+export interface FullOfferTradeCard {
+  //INFORMACION DEL USUARIO QUE RECIBIO LA OFERTA Y SU PUBLICACION
+  idUserOwner:number
+  nameUserOwner:string
+  surnameUserOwner:string
+  profilePicUserOwner:string
+  idPostOwner: number
+  titlePostOwner: string
+  desciptionPostOwner: string
+  nameProductCategoriePostOwner: string
+  nameProductStatePostOwner: string
+  locationTradePostOwner: string
+  imagePostOwner: string
+
+  //INFORMACION DEL USUARIO QUE OFERTO Y SU PUBLICACION
+  idUserOffer:number
+  nameUserOffer:string
+  surnameUserOffer:string
+  profilePicUserOffer:string
+  idPostOffer: number
+  titlePostOffer: string
+  desciptionPostOffer: string
+  nameProductCategoriePostOffer: string
+  nameProductStatePostOffer: string
+  locationTradePostOffer: string
+  imagePostOffer: string
+
+  //INFORMACION QUE ELIGIO EL OFERTANTE Centro, hora y fecha
+  idCenterPostChoosedTrade:number
+  nameCenterChoosedTrade:string
+  addressCenterChoosedTrade:string
+  hourCenterChoosedTrade:string
+  dateCenterChooseTrade:string
+
 }
 
 
