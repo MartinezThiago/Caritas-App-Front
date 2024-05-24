@@ -23,7 +23,7 @@ export default function RootLayout({
     }
   }, []);
   return <><header
-    className='font-bold h-[3rem]'
+    className='font-semibold h-[3rem]'
   >
     <Image
       alt='Logo Cáritas'
@@ -64,10 +64,17 @@ export default function RootLayout({
       </> :
         user.role === 'usuario_basico' ? <>
           <Link
-            key='link-trade-user-offers'
+            key='link-user-posts'
             href='/user/posts'
           >
             Mis publicaciones
+          </Link>
+          <Link
+            key='link-user-favs'
+            href='/user/favs'
+            
+          >
+            Favoritos
           </Link>
           <Link
             key='link-trade-user-offers'

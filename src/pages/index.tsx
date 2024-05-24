@@ -48,7 +48,7 @@ export default function Home({ user }: { user: User }) {
       await axios
         .get<any[]>(`${FRONT_BASE_URL}posts/get`)
         .then((res: any) => {
-          setCardsData(res.data)
+          setCardsData(res.data.filter((post: { usuario_owner: number }) => post.usuario_owner != user.userId))
         })
         .catch((err: any) => {
           setCardsData([])
