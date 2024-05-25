@@ -13,6 +13,7 @@ import FullComment from './full-comment'
 import Input from './inputs/input'
 import { Loading } from './loading'
 import { ButtonEnum } from './types'
+import Link from 'next/link'
 
 interface FormData {
   question: string
@@ -251,7 +252,7 @@ export default function ExtendedPostCard (props: PostData) {
                         {/* ACTIVE SESSION SECTION */}
                         <button
                           key='Trade'
-                          className='rounded-lg py-2.5 px-14 w-[100%] outline outline-transparent bg-rose-700 font-semibold hover:bg-white  hover:text-rose-700 hover:outline-rose-700 hover:-outline-offset-1 duration-200'
+                          className='rounded-lg w-[100%] outline outline-transparent bg-rose-700 font-semibold hover:bg-white  hover:text-rose-700 hover:outline-rose-700 hover:-outline-offset-1 duration-200'
                           type={ButtonEnum.BUTTON}
                           onClick={() => {
                             console.log(
@@ -259,7 +260,12 @@ export default function ExtendedPostCard (props: PostData) {
                             )
                           }}
                         >
-                          Intercambiar
+                          <Link
+                            href={`/posts/${router.query.id}/trade`}
+                            className='size-full py-2.5 px-14'
+                          >
+                            Intercambiar
+                          </Link>
                         </button>
                         {/* ESTA AFIRMACION SE TIENE QUE HACER SI LA PUBLICACION ESTA EN EL ARRAY DE GUARDADOS DEL USUARIO */}
                         {savedPost ? (
