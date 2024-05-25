@@ -3,10 +3,7 @@ import { Loading } from '@/components/loading'
 import CardProduct from '@/components/post-card'
 import { FRONT_BASE_URL } from '@/constants'
 import RootLayout from '@/layouts/root-layout'
-import {
-  GetSSPropsResult,
-  User
-} from '@/types'
+import { GetSSPropsResult, User } from '@/types'
 import { getUser } from '@/utils'
 import { requireNothing } from '@/utils/permissions'
 import axios from 'axios'
