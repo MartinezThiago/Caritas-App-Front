@@ -60,20 +60,22 @@ export default function ExtendedPostCard(props: PostData) {
   }, []);
 
   useEffect(() => {
-    const getIdsPostFavs = async () => {
-      await axios
-        .get<any[]>(`${FRONT_BASE_URL}/user/favs/getIdFavs`)
-        .then((res: any) => {
-          console.log(res.data);
-          setPostFavsUser(res.data)
-          setSavedPost(!res.data.includes(props.idPost))
+    if (props.user.role == 'usuario_basico') {
+      const getIdsPostFavs = async () => {
+        await axios
+          .get<any[]>(`${FRONT_BASE_URL}/user/favs/getIdFavs`)
+          .then((res: any) => {
+            console.log(res.data);
+            setPostFavsUser(res.data)
+            setSavedPost(!res.data.includes(props.idPost))
 
-        })
-        .catch((err: any) => {
-          setPostFavsUser([])
-        })
+          })
+          .catch((err: any) => {
+            setPostFavsUser([])
+          })
+      }
+      getIdsPostFavs();
     }
-    getIdsPostFavs();
   }, []);
 
 
