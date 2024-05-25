@@ -143,10 +143,8 @@ export default function Trade ({ user }: { user: User }) {
       hour
     }
     console.log(form)
-    // ELIMINAR EL RETURN PARA EJECUTAR LA SOLICITUD
-    return
     await axios
-      .post(`${FRONT_BASE_URL}trade/create`, form)
+      .post(`${FRONT_BASE_URL}post/trade/create`, form)
       .then((res: any) => {
         alert('Oferta creada con éxito')
         router.push('/posts')
