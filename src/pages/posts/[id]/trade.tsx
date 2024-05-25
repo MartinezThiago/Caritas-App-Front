@@ -144,7 +144,7 @@ export default function Trade ({ user }: { user: User }) {
     }
     console.log(form)
     await axios
-      .post(`${FRONT_BASE_URL}post/trade/create`, form)
+      .post(`${FRONT_BASE_URL}posts/trade/create`, form)
       .then((res: any) => {
         alert('Oferta creada con éxito')
         router.push('/posts')
