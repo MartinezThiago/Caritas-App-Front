@@ -82,6 +82,12 @@ export default function RootLayout({
           >
             Ofertas de intercambio
           </Link>
+          <Link
+            key='link-pending-trades-user-'
+            href='/user/pending-trades'
+          >
+            Intercambios pendientes
+          </Link>
           
           <div
             key='header-separator'
