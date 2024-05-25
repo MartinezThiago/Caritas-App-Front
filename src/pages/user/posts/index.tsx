@@ -90,11 +90,11 @@ export default function UserPostsInfo({ user }: { user: User }) {
           <div>
             {(posts.length > 0) ?
               <div>
-                <div className="flex flex-col mt-[20px]">
+                <div className="flex flex-col ">
                   <p className="text-xl font-bold text-blue-900  m-auto">
                     MIS PUBLICACIONES
                   </p>
-                  <div className="flex m-auto mt-[20px]">
+                  <div className="flex m-auto mt-[40px]">
                     <div className="flex">
                       <Link href={`/post/create`} className='bg-blue-100 w-[16rem] h-[20rem] me-[1rem] mb-[1rem] border-[2px] border-blue-900 rounded-tl-[15px] rounded-br-[15px] hover:scale-105 duration-300'>
                         <div className="flex h-[100%] w-[100%]">

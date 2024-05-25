@@ -116,14 +116,11 @@ export default function UserPostsFavs({ user }: { user: User }) {
           <div>
             {(posts.length > 0) ?
               <div>
-                <div className="flex flex-col mt-[20px]">
+                <div className="flex flex-col ">
                   <p className="text-xl font-bold text-blue-900  m-auto">
                     MIS FAVORITOS
                   </p>
-                  <div className="flex m-auto mt-[20px]">
-                    <div className="flex">
-
-                    </div>
+                  <div className="flex m-auto mt-[40px]">
                     {CardsProducts()}
                   </div>
                 </div>
