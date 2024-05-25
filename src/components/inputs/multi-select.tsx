@@ -11,14 +11,14 @@ function MultiSelect ({
   className,
   props
 }: {
-  id: string
-  register: UseFormRegister<any>
+  id?: string
+  register?: UseFormRegister<any>
   registerOptions?: RegisterOptions
   className?: string
   props?: any
 }): React.ReactNode {
   useEffect(() => {
-    register(id, registerOptions)
+    (register && id) && register(id, registerOptions)
   }, [])
 
   const handleChange = (options: Item[] | Item) => {
