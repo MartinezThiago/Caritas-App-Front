@@ -2,6 +2,7 @@ import ExtendedPostCard from "@/components/extended-post-card";
 import { FRONT_BASE_URL } from "@/constants";
 import RootLayout from "@/layouts/root-layout";
 import {
+  FullOfferTradeCard,
   GetSSPropsResult,
   PostData,
   PostDataAdapter,
@@ -31,36 +32,70 @@ export async function getServerSideProps({
 }>): Promise<GetSSPropsResult> {
   return requireNothing(getUser(req, res));
 }
-// const center1 = {
-//   id_cp: 1,
-//   id_publicacion: 1,
-//   nombre_centro: 'Centro Y',
-//   desde: '11:00',
-//   hasta: '12:00',
-//   diasDeIntercambio: ['Lunes']
-// }
-// const center2 = {
-//   id_cp: 1,
-//   id_publicacion: 1,
-//   nombre_centro: 'Centro Y',
-//   desde: '14:00',
-//   hasta: '15:00',
-//   diasDeIntercambio: ['Lunes', 'Martes']
-// }
-// const center3 = {
-//   id_cp: 1,
-//   id_publicacion: 1,
-//   nombre_centro: 'Centro Y',
-//   desde: '09:00',
-//   hasta: '10:00',
-//   diasDeIntercambio: ['Lunes']
-// }
+
 export default function UserTradeOffers({ user }: { user: User }) {
+  const [tradeOffers, setTradeOffers] = useState([])
+
+  useEffect(() => {
+    const getTradeOffers = async () => {
+      await axios
+        .get(`${FRONT_BASE_URL}user/trade-offers/`)
+        .then((res: any) => {
+          console.log(res.data);
+          
+          setTradeOffers(res.data)
+        })
+    }
+    getTradeOffers()
+  }, [])
+
+  const CardsTradeOffer = () => {
+    if (tradeOffers) {
+      const cards = tradeOffers!.map((e: FullOfferTradeCard) => {
+        return (
+          <TradeOfferFull
+            //INFORMACION DEL USUARIO QUE RECIBIO LA OFERTA Y SU PUBLICACION
+            idUserOwner={e.idUserOwner}
+            nameUserOwner={e.nameUserOwner}
+            surnameUserOwner={e.surnameUserOwner}
+            profilePicUserOwner={e.profilePicUserOwner}
+            idPostOwner={e.idPostOwner}
+            titlePostOwner={e.titlePostOwner}
+            desciptionPostOwner={e.desciptionPostOwner}
+            nameProductCategoriePostOwner={e.nameProductCategoriePostOwner}
+            nameProductStatePostOwner={e.nameProductStatePostOwner}
+            locationTradePostOwner={e.locationTradePostOwner}
+            imagePostOwner={e.imagePostOwner}
+            //INFORMACION DEL USUARIO QUE OFERTO Y SU PUBLICACION
+            idUserOffer={e.idUserOffer}
+            nameUserOffer={e.nameUserOffer}
+            surnameUserOffer={e.surnameUserOffer}
+            profilePicUserOffer={e.profilePicUserOffer}
+            idPostOffer={e.idPostOffer}
+            titlePostOffer={e.titlePostOffer}
+            desciptionPostOffer={e.desciptionPostOffer}
+            nameProductCategoriePostOffer={e.nameProductCategoriePostOffer}
+            nameProductStatePostOffer={e.nameProductStatePostOffer}
+            locationTradePostOffer={e.locationTradePostOffer}
+            imagePostOffer={e.imagePostOffer}
+            //INFORMACION QUE ELIGIO EL OFERTANTE Centro, hora y fecha
+            idCenterPostChoosedTrade={e.idCenterPostChoosedTrade}
+            hourCenterChoosedTrade={e.hourCenterChoosedTrade}
+            dateCenterChooseTrade={e.dateCenterChooseTrade}
+            nameCenterChoosedTrade={e.nameCenterChoosedTrade}
+            addressCenterChoosedTrade={e.addressCenterChoosedTrade}
+          />
+        )
+      })
+      return cards
+    }
+  }
+
   return (
     <RootLayout user={user}>
       <div className="flex w-[100vw]">
         <div className="m-auto">
-          <TradeOfferFull
+          {/* <TradeOfferFull
             //INFORMACION DEL USUARIO QUE RECIBIO LA OFERTA Y SU PUBLICACION
             idUserOwner={68}
             nameUserOwner="Thiago"
@@ -91,7 +126,8 @@ export default function UserTradeOffers({ user }: { user: User }) {
             dateCenterChooseTrade="27/06/2024"
             nameCenterChoosedTrade="Centro X"
             addressCenterChoosedTrade="120 y 50 n13"
-          />
+          /> */}
+          {CardsTradeOffer()}
         </div>
       </div>
     </RootLayout>

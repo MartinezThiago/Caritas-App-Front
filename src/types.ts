@@ -135,7 +135,6 @@ export interface TradeCardProductProps {
   nameProductState: string
   imagePost: string
   profilePic: string
-  centersChoosedInfoTrade:UnadaptedCenterPublicacion
   name:string
   surname:string
 }
