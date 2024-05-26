@@ -42,7 +42,7 @@ export default function UserTradeOffers({ user }: { user: User }) {
         .get(`${FRONT_BASE_URL}user/trade-offers/`)
         .then((res: any) => {
           console.log(res.data);
-          
+
           setTradeOffers(res.data)
         })
     }
@@ -52,6 +52,8 @@ export default function UserTradeOffers({ user }: { user: User }) {
   const CardsTradeOffer = () => {
     if (tradeOffers) {
       const cards = tradeOffers!.map((e: FullOfferTradeCard) => {
+        console.log(e);
+        
         return (
           <TradeOfferFull
             //INFORMACION DEL USUARIO QUE RECIBIO LA OFERTA Y SU PUBLICACION
@@ -61,7 +63,7 @@ export default function UserTradeOffers({ user }: { user: User }) {
             profilePicUserOwner={e.profilePicUserOwner}
             idPostOwner={e.idPostOwner}
             titlePostOwner={e.titlePostOwner}
-            desciptionPostOwner={e.desciptionPostOwner}
+            descriptionPostOwner={e.descriptionPostOwner}
             nameProductCategoriePostOwner={e.nameProductCategoriePostOwner}
             nameProductStatePostOwner={e.nameProductStatePostOwner}
             locationTradePostOwner={e.locationTradePostOwner}
@@ -73,17 +75,17 @@ export default function UserTradeOffers({ user }: { user: User }) {
             profilePicUserOffer={e.profilePicUserOffer}
             idPostOffer={e.idPostOffer}
             titlePostOffer={e.titlePostOffer}
-            desciptionPostOffer={e.desciptionPostOffer}
+            descriptionPostOffer={e.descriptionPostOffer}
             nameProductCategoriePostOffer={e.nameProductCategoriePostOffer}
             nameProductStatePostOffer={e.nameProductStatePostOffer}
             locationTradePostOffer={e.locationTradePostOffer}
             imagePostOffer={e.imagePostOffer}
             //INFORMACION QUE ELIGIO EL OFERTANTE Centro, hora y fecha
             idCenterPostChoosedTrade={e.idCenterPostChoosedTrade}
-            hourCenterChoosedTrade={e.hourCenterChoosedTrade}
-            dateCenterChooseTrade={e.dateCenterChooseTrade}
-            nameCenterChoosedTrade={e.nameCenterChoosedTrade}
-            addressCenterChoosedTrade={e.addressCenterChoosedTrade}
+            hourCenterPostChoosedTrade={e.hourCenterPostChoosedTrade}
+            dateCenterPostChoosedTrade={e.dateCenterPostChoosedTrade}
+            nameCenterPostChoosedTrade={e.nameCenterPostChoosedTrade}
+            addressCenterPostChoosedTrade={e.addressCenterPostChoosedTrade}
           />
         )
       })

@@ -137,6 +137,7 @@ export interface TradeCardProductProps {
   profilePic: string
   name:string
   surname:string
+  location:string
 }
 
 export interface FullOfferTradeCard {
@@ -147,7 +148,7 @@ export interface FullOfferTradeCard {
   profilePicUserOwner:string
   idPostOwner: number
   titlePostOwner: string
-  desciptionPostOwner: string
+  descriptionPostOwner: string
   nameProductCategoriePostOwner: string
   nameProductStatePostOwner: string
   locationTradePostOwner: string
@@ -160,7 +161,7 @@ export interface FullOfferTradeCard {
   profilePicUserOffer:string
   idPostOffer: number
   titlePostOffer: string
-  desciptionPostOffer: string
+  descriptionPostOffer: string
   nameProductCategoriePostOffer: string
   nameProductStatePostOffer: string
   locationTradePostOffer: string
@@ -168,10 +169,10 @@ export interface FullOfferTradeCard {
 
   //INFORMACION QUE ELIGIO EL OFERTANTE Centro, hora y fecha
   idCenterPostChoosedTrade:number
-  nameCenterChoosedTrade:string
-  addressCenterChoosedTrade:string
-  hourCenterChoosedTrade:string
-  dateCenterChooseTrade:string
+  nameCenterPostChoosedTrade:string
+  addressCenterPostChoosedTrade:string
+  hourCenterPostChoosedTrade:string
+  dateCenterPostChoosedTrade:string
 
 }
 
