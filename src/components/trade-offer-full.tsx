@@ -7,19 +7,22 @@ import Image from 'next/image'
 import CardProduct from "./post-card";
 import { FRONT_BASE_URL } from "@/constants";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 export default function TradeOfferFull(props: FullOfferTradeCard) {
-    console.log(props);
-
+    //console.log(props);
+    const router = useRouter()
     const _handleSubmitAccept = async () => {
         const formAccept = {
-            idPost: props.idPostOwner,
-            idOfferTrade: ''//ACA IRIA EL ID DE INTERCAMBIO
+            id_post: props.idPostOwner,
+            id_oferta: props.idOffer
         }
         await axios
             .post(`${FRONT_BASE_URL}user/trade-offers/accept`, formAccept)
-            .then(() => {
-                console.log('Aceptaste una oferta de intercambio');
+            .then(async () => {
+
+                await router.push('/user/pending-trades')
+                alert('Oferta aceptada')
             })
             .catch((error: { response: { data: { message: string } } }) => {
                 console.log(error);
@@ -31,13 +34,15 @@ export default function TradeOfferFull(props: FullOfferTradeCard) {
     };
     const _handleSubmitDecline = async () => {
         const formDecline = {
-            idPost: props.idPostOffer,
-            idOfferTrade: ''//ACA IRIA EL ID DE INTERCAMBIO
+            id_post: props.idPostOffer,
+            id_oferta: props.idOffer
         }
         await axios
             .post(`${FRONT_BASE_URL}user/trade-offers/decline`, formDecline)
-            .then(() => {
-                console.log('Rechazaste una oferta de intercambio');
+            .then(async () => {
+                await router.push('/')
+                await router.push('/user/trade-offers')
+                alert('Oferta rechazada')
             })
             .catch((error: { response: { data: { message: string } } }) => {
                 console.log(error);
@@ -49,9 +54,24 @@ export default function TradeOfferFull(props: FullOfferTradeCard) {
 
     };
     return (
-        <div>
+        <div className="">
             <div className="flex justify-center w-[100vw]">
-                <div className="flex w-[70vw]">
+                <div>
+                    <div className="h-[12rem] flex items-center justify-center">
+                        <div className="flex flex-col items-start">
+                            <p className="text-rose-700 text-xl font-bold mb-[4px] ">Centro elegido</p>
+                            <div className="flex flex-col text-black">
+                                <p className="my-[2px]"><span className="font-semibold ">Localidad: </span>{props.locationTradePostOwner}</p>
+                                <p className="my-[2px]"><span className="font-semibold ">Nombre: </span>{props.nameCenterPostChoosedTrade} </p>
+                                <p className="my-[2px]"><span className="font-semibold ">Direccion: </span>{props.addressCenterPostChoosedTrade}</p>
+                                <p className="my-[2px]"><span className="font-semibold ">Dia y Hora: </span>{props.dateCenterPostChoosedTrade} {props.hourCenterPostChoosedTrade}</p>
+                            </div>
+                        </div>
+                        <div className="w-[2px] bg-rose-700 h-[150px] mt-[10px] rounded-[100%] mx-[20px]"></div>
+
+                    </div>
+                </div>
+                <div className="flex w-[62vw]">
                     <TradeOfferProduct
                         desciption={props.descriptionPostOwner}
                         idPost={props.idPostOwner}
@@ -62,7 +82,7 @@ export default function TradeOfferFull(props: FullOfferTradeCard) {
                         name={props.nameUserOwner}
                         surname={props.surnameUserOwner}
                         title={props.titlePostOwner}
-                        key={props.idPostOwner}
+                        key={`${props.idPostOwner} ${props.idOffer} ${props.idPostOffer}`}
                         location={props.locationTradePostOwner}
                     />
                     <div className="flex flex-col justify-between items-center my-[20px] mx-[30px]">
@@ -96,23 +116,14 @@ export default function TradeOfferFull(props: FullOfferTradeCard) {
                         name={props.nameUserOffer}
                         surname={props.surnameUserOffer}
                         title={props.titlePostOffer}
-                        key={props.idPostOffer}
+                        key={`${props.idPostOffer} ${props.idOffer} ${props.idPostOwner}`}
                         location={props.locationTradePostOffer}
                     />
 
                 </div>
+
             </div>
-            <div>
-                <div className="flex flex-col items-center">
-                    
-                    <p className="text-rose-700 text-l font-bold">Centro elegido</p>
-                    <p>{props.locationTradePostOwner}</p>
-                    <p className="">{props.nameCenterPostChoosedTrade} </p>
-                    <p>{props.addressCenterPostChoosedTrade}</p>
-                    <p>{props.dateCenterPostChoosedTrade} {props.hourCenterPostChoosedTrade}</p>
-                    <div className="h-[1px] bg-rose-700 w-[300px] mt-[10px]"></div>
-                </div>
-            </div>
+            <div className="w-[70vw] h-[2px] bg-rose-700 m-auto my-[40px] rounded-[50%]"></div>
         </div>
     )
 }

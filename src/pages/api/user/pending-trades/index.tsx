@@ -23,10 +23,9 @@ export default async function handler(
             Authorization: `Bearer ${token}`
         },
     }
-    const formData = req.body
-
+    
     await axios
-        .post(`${BACK_BASE_URL}CaritasBack/rechazarOferta`,formData, config)
+        .post(`${BACK_BASE_URL}CaritasBack/obtenerIntercambiosEnEstadoPendiente`, config)
         .then((result: any) => {
             res.status(result.status).json(result.data)  
         })

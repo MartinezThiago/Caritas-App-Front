@@ -23,7 +23,6 @@ export default async function handler(
             Authorization: `Bearer ${token}`
         },
     }
-    console.log('SE LLEGO');
     
     await axios
         .get(`${BACK_BASE_URL}CaritasBack/getOfertasUser`, config)

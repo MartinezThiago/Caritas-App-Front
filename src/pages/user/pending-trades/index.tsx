@@ -32,6 +32,32 @@ export async function getServerSideProps({
   return requireNothing(getUser(req, res));
 }
 export default function UserPendingTrades({ user }: { user: User }) {
+ const [pendingTrades, setPendingTrades]=useState([]);
+
+  useEffect(() => {
+    const getPendingTrades = async () => {
+      await axios
+        .get(`${FRONT_BASE_URL}user/pending-trades`)
+        .then((res: any) => {
+          setPendingTrades(res.data);
+          console.log(res.data);
+
+        })
+        .catch((res: any) => {
+          try {
+            // res.status(res.status).json({ message: res.data.message })
+            setPendingTrades([])
+
+          } catch {
+            //res.status(500).json({ message: 'Ha ocurrido un error inesperado.' })
+            setPendingTrades([])
+          }
+        },
+        )
+    }
+    getPendingTrades()
+  }, [])
+
   return (
     <RootLayout user={user}>
       <div className="flex w-[100vw]">

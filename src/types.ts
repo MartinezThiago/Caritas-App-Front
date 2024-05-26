@@ -174,6 +174,7 @@ export interface FullOfferTradeCard {
   hourCenterPostChoosedTrade:string
   dateCenterPostChoosedTrade:string
 
+  idOffer:number
 }
 
 
