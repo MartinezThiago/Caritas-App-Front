@@ -10,6 +10,7 @@ export default async function handler (
   // ADAPTAR SI ES EL CASO
   const form = {
     id_publicacion_a_la_que_se_oferta: req.body.post,
+    id_usuario_duenio_publicacion_a_la_que_se_oferta: req.body['post-user-id'],
     id_publicacion_con_la_que_se_oferta: req.body.offer,
     id_usuario_que_oferta: req.body['bidding-user-id'],
     centro_elegido: req.body.center,

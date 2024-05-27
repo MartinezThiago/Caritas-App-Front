@@ -99,6 +99,7 @@ export default function Trade ({ user }: { user: User }) {
           id: router.query.id
         })
         .then((postRes: any) => {
+          console.log(postRes.data)
           setPostData(postRes.data)
           const centerOptions: Option[] = []
           let dayOptions: string[] = []
@@ -181,6 +182,7 @@ export default function Trade ({ user }: { user: User }) {
   const handleSubmit = async () => {
     const form = {
       post: router.query.id,
+      'post-user-id': postData!.id_usuario,
       offer: postSelected,
       'bidding-user-id': user.userId,
       center,
