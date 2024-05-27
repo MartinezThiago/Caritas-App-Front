@@ -2,6 +2,7 @@ import ExtendedPostCard from "@/components/extended-post-card";
 import { FRONT_BASE_URL } from "@/constants";
 import RootLayout from "@/layouts/root-layout";
 import {
+  FullOfferTradeCard,
   GetSSPropsResult,
   PostData,
   PostDataAdapter,
@@ -31,67 +32,104 @@ export async function getServerSideProps({
 }>): Promise<GetSSPropsResult> {
   return requireNothing(getUser(req, res));
 }
-// const center1 = {
-//   id_cp: 1,
-//   id_publicacion: 1,
-//   nombre_centro: 'Centro Y',
-//   desde: '11:00',
-//   hasta: '12:00',
-//   diasDeIntercambio: ['Lunes']
-// }
-// const center2 = {
-//   id_cp: 1,
-//   id_publicacion: 1,
-//   nombre_centro: 'Centro Y',
-//   desde: '14:00',
-//   hasta: '15:00',
-//   diasDeIntercambio: ['Lunes', 'Martes']
-// }
-// const center3 = {
-//   id_cp: 1,
-//   id_publicacion: 1,
-//   nombre_centro: 'Centro Y',
-//   desde: '09:00',
-//   hasta: '10:00',
-//   diasDeIntercambio: ['Lunes']
-// }
+
 export default function UserTradeOffers({ user }: { user: User }) {
-  return (
-    <RootLayout user={user}>
-      <div className="flex w-[100vw]">
-        <div className="m-auto">
+  const [tradeOffers, setTradeOffers] = useState([])
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    const getTradeOffers = async () => {
+      await axios
+        .get(`${FRONT_BASE_URL}user/trade-offers/`)
+        .then((res: any) => {
+          console.log(res.data);
+
+          setTradeOffers(res.data)
+        })
+    }
+    getTradeOffers()
+  }, [])
+
+  const CardsTradeOffer = () => {
+    if (tradeOffers) {
+      const cards = tradeOffers!.map((e: FullOfferTradeCard) => {
+        // console.log(e);
+        
+        return (
           <TradeOfferFull
             //INFORMACION DEL USUARIO QUE RECIBIO LA OFERTA Y SU PUBLICACION
-            idUserOwner={68}
-            nameUserOwner="Thiago"
-            surnameUserOwner="Martinez"
-            profilePicUserOwner={auxProfilePic.src}
-            idPostOwner={66}
-            titlePostOwner="Buzo"
-            desciptionPostOwner="Esto es un buzo xxl"
-            nameProductCategoriePostOwner="ropa"
-            nameProductStatePostOwner="usado"
-            locationTradePostOwner="Buenos Aires, La Plata"
-            imagePostOwner={auxPostPic.src}
+            idUserOwner={e.idUserOwner}
+            nameUserOwner={e.nameUserOwner}
+            surnameUserOwner={e.surnameUserOwner}
+            profilePicUserOwner={e.profilePicUserOwner}
+            idPostOwner={e.idPostOwner}
+            titlePostOwner={e.titlePostOwner}
+            descriptionPostOwner={e.descriptionPostOwner}
+            nameProductCategoriePostOwner={e.nameProductCategoriePostOwner}
+            nameProductStatePostOwner={e.nameProductStatePostOwner}
+            locationTradePostOwner={e.locationTradePostOwner}
+            imagePostOwner={e.imagePostOwner}
             //INFORMACION DEL USUARIO QUE OFERTO Y SU PUBLICACION
-            idUserOffer={69}
-            nameUserOffer="Nicolas"
-            surnameUserOffer="Mele"
-            profilePicUserOffer={auxProfilePic.src}
-            idPostOffer={68}
-            titlePostOffer="Zapatillas"
-            desciptionPostOffer="Zapatillas negras talle 39"
-            nameProductCategoriePostOffer="ropa"
-            nameProductStatePostOffer="nuevo"
-            locationTradePostOffer="Buenos Aires, La Plata"
-            imagePostOffer={auxPostPic.src}
+            idUserOffer={e.idUserOffer}
+            nameUserOffer={e.nameUserOffer}
+            surnameUserOffer={e.surnameUserOffer}
+            profilePicUserOffer={e.profilePicUserOffer}
+            idPostOffer={e.idPostOffer}
+            titlePostOffer={e.titlePostOffer}
+            descriptionPostOffer={e.descriptionPostOffer}
+            nameProductCategoriePostOffer={e.nameProductCategoriePostOffer}
+            nameProductStatePostOffer={e.nameProductStatePostOffer}
+            locationTradePostOffer={e.locationTradePostOffer}
+            imagePostOffer={e.imagePostOffer}
             //INFORMACION QUE ELIGIO EL OFERTANTE Centro, hora y fecha
-            idCenterPostChoosedTrade={54}
-            hourCenterChoosedTrade="17:00"
-            dateCenterChooseTrade="27/06/2024"
-            nameCenterChoosedTrade="Centro X"
-            addressCenterChoosedTrade="120 y 50 n13"
+            idCenterPostChoosedTrade={e.idCenterPostChoosedTrade}
+            hourCenterPostChoosedTrade={e.hourCenterPostChoosedTrade}
+            dateCenterPostChoosedTrade={e.dateCenterPostChoosedTrade}
+            nameCenterPostChoosedTrade={e.nameCenterPostChoosedTrade}
+            addressCenterPostChoosedTrade={e.addressCenterPostChoosedTrade}
+            idOffer={e.idOffer}
           />
+        )
+      })
+      return cards
+    }
+  }
+
+  useEffect(() => {
+    // Simula una carga de datos
+    setTimeout(() => {
+      setIsLoading(false); // Cambia isLoading a false después de 2 segundos
+    }, 200);
+  }, []);
+
+  return (
+    <RootLayout user={user}>
+      <div className="flex w-[100vw] mt-[40px]">
+        <div className="m-auto">
+        {isLoading ? (
+          <div className="flex mt-[50px]">
+            <div className="">
+              <Loading />
+            </div>
+          </div>
+        ) :
+          <div>
+            {(tradeOffers.length > 0) ?
+              <div>
+                <div className="flex flex-col ">
+                  {/* <p className="text-xl font-bold text-blue-900  m-auto">
+                    MIS FAVORITOS
+                  </p> */}
+                    {CardsTradeOffer()}
+
+                </div>
+              </div> : <div className="flex flex-col">
+                <p className="text-2xl font-bold text-gray-500 mt-[20px] m-auto">
+                  NO TIENES OFERTAS DE INTERCAMBIOS PENDIENTES
+                </p>
+                <div className="flex mt-[40px] m-auto">
+                </div>
+              </div>}
+          </div>}
         </div>
       </div>
     </RootLayout>

@@ -135,33 +135,33 @@ export interface TradeCardProductProps {
   nameProductState: string
   imagePost: string
   profilePic: string
-  centersChoosedInfoTrade:UnadaptedCenterPublicacion
   name:string
   surname:string
+  location:string
 }
 
 export interface FullOfferTradeCard {
   //INFORMACION DEL USUARIO QUE RECIBIO LA OFERTA Y SU PUBLICACION
-  idUserOwner:number
-  nameUserOwner:string
-  surnameUserOwner:string
-  profilePicUserOwner:string
+  idUserOwner: number
+  nameUserOwner: string
+  surnameUserOwner: string
+  profilePicUserOwner: string
   idPostOwner: number
   titlePostOwner: string
-  desciptionPostOwner: string
+  descriptionPostOwner: string
   nameProductCategoriePostOwner: string
   nameProductStatePostOwner: string
   locationTradePostOwner: string
   imagePostOwner: string
 
   //INFORMACION DEL USUARIO QUE OFERTO Y SU PUBLICACION
-  idUserOffer:number
-  nameUserOffer:string
-  surnameUserOffer:string
-  profilePicUserOffer:string
+  idUserOffer: number
+  nameUserOffer: string
+  surnameUserOffer: string
+  profilePicUserOffer: string
   idPostOffer: number
   titlePostOffer: string
-  desciptionPostOffer: string
+  descriptionPostOffer: string
   nameProductCategoriePostOffer: string
   nameProductStatePostOffer: string
   locationTradePostOffer: string
@@ -169,11 +169,12 @@ export interface FullOfferTradeCard {
 
   //INFORMACION QUE ELIGIO EL OFERTANTE Centro, hora y fecha
   idCenterPostChoosedTrade:number
-  nameCenterChoosedTrade:string
-  addressCenterChoosedTrade:string
-  hourCenterChoosedTrade:string
-  dateCenterChooseTrade:string
+  nameCenterPostChoosedTrade:string
+  addressCenterPostChoosedTrade:string
+  hourCenterPostChoosedTrade:string
+  dateCenterPostChoosedTrade:string
 
+  idOffer:number
 }
 
 
@@ -214,11 +215,11 @@ export interface CardProductProps {
  * @property {string} surnameUser - The last name of the user who created the post.
  * @property {[UnadaptedCenter]} centersChoosed- The post centers.
  * @property {[UnadaptedCenterPublicacion]} centersChoosedInfoTrade- The post centers.
- * @property {User} user - The current user. 
+ * @property {User} user - The current user.
  * @property {string} profilePicOwner - The profile pic of the owners post
  * @property {[CommentUnadapted]} [comments] - The post asks/questions.
  * @property {[img]} images - The post asks/questions.
- * 
+ *
  */
 export interface PostData {
   idPost: number
@@ -238,7 +239,7 @@ export interface PostData {
   comments?: [CommentUnadapted]
   images: [img]
   centersChoosed: [UnadaptedCenter]
-  centersChoosedInfoTrade:[UnadaptedCenterPublicacion]
+  centersChoosedInfoTrade: [UnadaptedCenterPublicacion]
 }
 
 export interface PostDataAdapter {
