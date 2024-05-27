@@ -9,7 +9,9 @@ export default async function handler (
 ): Promise<void> {
   // ADAPTAR SI ES EL CASO
   const form = {
-    productos_de_oferta: req.body.offer,
+    id_publicacion_a_la_que_se_oferta: req.body.post,
+    id_publicacion_con_la_que_se_oferta: req.body.offer,
+    id_usuario_que_oferta: req.body['bidding-user-id'],
     centro_elegido: req.body.center,
     dia_elegido: req.body.day,
     hora_elegida: req.body.hour
