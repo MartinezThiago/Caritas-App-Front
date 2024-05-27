@@ -135,9 +135,9 @@ export interface TradeCardProductProps {
   nameProductState: string
   imagePost: string
   profilePic: string
-  centersChoosedInfoTrade: UnadaptedCenterPublicacion
-  name: string
-  surname: string
+  name:string
+  surname:string
+  location:string
 }
 
 export interface FullOfferTradeCard {
@@ -148,7 +148,7 @@ export interface FullOfferTradeCard {
   profilePicUserOwner: string
   idPostOwner: number
   titlePostOwner: string
-  desciptionPostOwner: string
+  descriptionPostOwner: string
   nameProductCategoriePostOwner: string
   nameProductStatePostOwner: string
   locationTradePostOwner: string
@@ -161,18 +161,42 @@ export interface FullOfferTradeCard {
   profilePicUserOffer: string
   idPostOffer: number
   titlePostOffer: string
-  desciptionPostOffer: string
+  descriptionPostOffer: string
   nameProductCategoriePostOffer: string
   nameProductStatePostOffer: string
   locationTradePostOffer: string
   imagePostOffer: string
 
   //INFORMACION QUE ELIGIO EL OFERTANTE Centro, hora y fecha
-  idCenterPostChoosedTrade: number
-  nameCenterChoosedTrade: string
-  addressCenterChoosedTrade: string
-  hourCenterChoosedTrade: string
-  dateCenterChooseTrade: string
+  idCenterPostChoosedTrade:number
+  nameCenterPostChoosedTrade:string
+  addressCenterPostChoosedTrade:string
+  hourCenterPostChoosedTrade:string
+  dateCenterPostChoosedTrade:string
+
+  idOffer:number
+}
+
+
+/**
+ * The product card data.
+ * @property {number} id - The product id.
+ * @property {string} title - The product title.
+ * @property {string} desciption - The product description.
+ * @property {string} nameProductCategorie - The product categorie.
+ * @property {string} nameProductState - The product state.
+ * @property {string} locationTrade - The ubication of the trade
+ * @property {string} image - The first image of the post
+ */
+export interface CardProductProps {
+  id: number
+  title: string
+  desciption: string
+  nameProductCategorie: string
+  nameProductState: string
+  locationTrade: string
+  image: string
+  ownerPost: boolean
 }
 
 /**
