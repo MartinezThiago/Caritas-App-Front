@@ -78,8 +78,8 @@ export default function UserPostsInfo ({ user }: { user: User }) {
   return (
     <RootLayout user={user}>
 
-      <div className="flex justify-between mt-[40px]">
-        <div className="w-[15vw] h-[85vh] border-e-[0.5px] border-blue-900 "></div>
+      <div className="flex justify-between ">
+        <div className="w-[15vw] h-[85vh] border-e-[0.5px] border-blue-900 mt-[40px]"></div>
         {isLoading ? (
           <div className="flex mt-[50px]">
             <div className="">
@@ -91,10 +91,10 @@ export default function UserPostsInfo ({ user }: { user: User }) {
             {(posts.length > 0) ?
               <div>
                 <div className="flex flex-col ">
-                  <p className="text-xl font-bold text-blue-900  m-auto">
+                  <p className="text-xl font-semibold text-blue-900 mt-[20px]  m-auto">
                     MIS PUBLICACIONES
                   </p>
-                  <div className="flex m-auto mt-[40px]">
+                  <div className="flex m-auto mt-[20px]">
                     <div className="flex">
                       <Link href={`/post/create`} className='bg-blue-100 w-[16rem] h-[20rem] me-[1rem] mb-[1rem] border-[2px] border-blue-900 rounded-tl-[15px] rounded-br-[15px] hover:scale-105 duration-300'>
                         <div className="flex h-[100%] w-[100%]">
@@ -118,7 +118,7 @@ export default function UserPostsInfo ({ user }: { user: User }) {
                 </div>
               </div>}
           </div>}
-        <div className="w-[15vw] h-[85vh] border-s-[0.5px] border-blue-900"></div>
+        <div className="w-[15vw] h-[85vh] border-s-[0.5px] border-blue-900 mt-[40px]"></div>
       </div>
     </RootLayout>
   )
