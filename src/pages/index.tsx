@@ -58,6 +58,7 @@ export default function Home({ user }: { user: User }) {
     getProducts()
   }, [])
   useEffect(() => {
+    if (user.role == 'usuario_basico') {
     const getIdsPostFavs = async () => {
       await axios
         .get<any[]>(`${FRONT_BASE_URL}/user/favs/getIdFavs`)
@@ -71,6 +72,7 @@ export default function Home({ user }: { user: User }) {
         })
     }
     getIdsPostFavs();
+  }
   }, []);
 
   const CardsProducts = () => {

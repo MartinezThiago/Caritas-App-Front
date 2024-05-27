@@ -157,7 +157,9 @@ export default function UserInfo ({ user }: { user: User }) {
               <></>
             )}
           </div>
-          <div className='bg-rose-700 w-[0.5px] h-[100%] mx-[30px]'></div>
+
+          {user.role!='admin_centro'? <div className="bg-rose-700 w-[0.5px] h-[100%] mx-[30px]"></div>:<></>}
+
         </div>
       </div>
     </RootLayout>

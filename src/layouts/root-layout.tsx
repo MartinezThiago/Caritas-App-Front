@@ -4,6 +4,7 @@ import caritasLogo from 'public/caritas-logo.svg'
 import profilePicDefault from 'public/profile-pic-default.jpg'
 import { User } from '@/types'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 
 export default function RootLayout({
   user,
@@ -13,7 +14,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   const [profilePic, setProfilePic] = useState('');
-
+  const router = useRouter();
+  const currentPath = router.pathname;
+  const getLinkClass = (path:string, styles?:string) => {
+    return currentPath === path ? `font-bold scale-104 pb-[2px] ${styles}` : `${styles}`;
+  };
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const pic = localStorage.getItem('profilePic');
@@ -23,7 +28,7 @@ export default function RootLayout({
     }
   }, []);
   return <><header
-    className='font-semibold h-[3rem]'
+    className='font-normal h-[3rem]'
   >
     <Image
       alt='Logo Cáritas'
@@ -33,6 +38,7 @@ export default function RootLayout({
     <Link
       key='link-home'
       href='/'
+      className={getLinkClass('/')}
     >
       Inicio
     </Link>
@@ -51,13 +57,14 @@ export default function RootLayout({
         <Link
           key='link-signin'
           href='/sign/in'
+          className={getLinkClass('/sign/in')}
         >
           Iniciar Sesión
         </Link>
         <Link
           key='link-signup'
           href='/sign/up'
-          className='me-[10px]'
+          className={getLinkClass('/sign/up','me-[10px]')}
         >
           Registrarse
         </Link>
@@ -66,21 +73,30 @@ export default function RootLayout({
           <Link
             key='link-user-posts'
             href='/user/posts'
+            className={getLinkClass('/user/posts')}
           >
             Mis publicaciones
           </Link>
           <Link
             key='link-user-favs'
             href='/user/favs'
-            
+            className={getLinkClass('/user/favs')}
           >
             Favoritos
           </Link>
           <Link
             key='link-trade-user-offers'
             href='/user/trade-offers'
+            className={getLinkClass('/user/trade-offers')}
           >
             Ofertas de intercambio
+          </Link>
+          <Link
+            key='link-pending-trades-user-'
+            href='/user/pending-trades'
+            className={getLinkClass('/user/pending-trades')}
+          >
+            Intercambios pendientes
           </Link>
           
           <div
@@ -90,6 +106,7 @@ export default function RootLayout({
           <Link
             key='link-user'
             href='/user'
+            className={getLinkClass('/user')}
           >
             <div className='flex items-center'>
               <Image alt={`userProfilePic`} className={'me-[10px] w-[30px] rounded-full'} src={profilePic ? profilePic : profilePicDefault} width={0} height={0} />
@@ -117,6 +134,7 @@ export default function RootLayout({
           <Link
             key='link-user'
             href='/user'
+            className={getLinkClass('/user')}
           >
             <div className='flex items-center'>
               <Image alt={`userProfilePic`} className={'me-[10px] w-[30px] rounded-full'} src={profilePic ? profilePic : profilePicDefault} width={0} height={0} />
