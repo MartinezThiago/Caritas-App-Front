@@ -23,10 +23,11 @@ export default async function handler(
             Authorization: `Bearer ${token}`
         },
     }
+    console.log('se llego a obtener intercambios');
     
     await axios
-        .post(`${BACK_BASE_URL}CaritasBack/obtenerIntercambiosEnEstadoPendiente`, config)
-        .then((result: any) => {
+        .get(`${BACK_BASE_URL}CaritasBack/obtenerIntercambiosEnEstadoPendienteUserEspecifico`, config)
+        .then((result: any) => {            
             res.status(result.status).json(result.data)  
         })
         .catch((result: any) => {

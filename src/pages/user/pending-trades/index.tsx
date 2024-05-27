@@ -13,14 +13,13 @@ import { requireNothing } from "@/utils/permissions";
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import { useEffect, useState } from "react";
-import CardProduct from "@/components/post-card";
 import auxPostPic from "public/post-image-preview.jpg";
 import Link from "next/link";
 import plusPost from "public/plus-image.png";
 import Image from "next/image";
 import { Loading } from "@/components/loading";
-import { TradeOfferFull, TradeOfferProduct } from "@/components";
 import auxProfilePic from "public/profile-pic-default.jpg";
+import PendingTradeCard from "@/components/pending-trade-card";
 
 export async function getServerSideProps({
   req,
@@ -32,7 +31,7 @@ export async function getServerSideProps({
   return requireNothing(getUser(req, res));
 }
 export default function UserPendingTrades({ user }: { user: User }) {
- const [pendingTrades, setPendingTrades]=useState([]);
+  const [pendingTrades, setPendingTrades] = useState([]);
 
   useEffect(() => {
     const getPendingTrades = async () => {
@@ -40,7 +39,6 @@ export default function UserPendingTrades({ user }: { user: User }) {
         .get(`${FRONT_BASE_URL}user/pending-trades`)
         .then((res: any) => {
           setPendingTrades(res.data);
-          console.log(res.data);
 
         })
         .catch((res: any) => {
@@ -58,10 +56,50 @@ export default function UserPendingTrades({ user }: { user: User }) {
     getPendingTrades()
   }, [])
 
+  const CardsPendingTrades = () => {
+    if (pendingTrades) {
+      const cards = pendingTrades!.map((e: any) => {
+        console.log(e);
+
+        return (
+          <PendingTradeCard
+            idTrade={e.idIntercambio}
+            nameOwner={e.nombreUsuarioOwner}
+            surnameOwner={e.apellidoUsuarioOwner}
+            nameOffer={e.nombreUsuarioOffer}
+            surnameOffer={e.apellidoUsuarioOffer}
+            firstImagePostOwner={e.fotoPostOwner}
+            firstImagePostOffer={e.fotoPostOffer}
+            profilePicOwner={e.fotoPerfilUsuarioOwner}
+            profilePicOffer={e.fotoPerfilUsuarioOffer}
+            centerName={e.nombreCentro}
+            locationTrade={e.localidad}
+            centerAddress={e.direccion}
+            tradeDate={e.fechaIntercambio}
+            tradeHour={e.horario}
+            tradeState='pendiente'
+          />
+        )
+      })
+      return cards
+    }
+  }
+
   return (
     <RootLayout user={user}>
-      <div className="flex w-[100vw]">
-        <h1>INTERCAMBIOS PENDIENTES</h1>
+      <div className="flex ">
+        <div className="w-[15vw] h-[85vh] border-e-[0.5px] border-blue-900 mt-[40px]"></div>
+
+        <div className="flex flex-col  w-[75vw] items-center">
+          <p className="text-xl font-semibold text-blue-900  mt-[20px]">
+            INTERCAMBIOS PENDIENTES
+          </p>
+          <div className="">
+            {CardsPendingTrades()}
+            
+          </div>
+        </div>
+        <div className="w-[15vw] h-[85vh] border-s-[0.5px] border-blue-900 mt-[40px]"></div>
       </div>
     </RootLayout>
   );

@@ -80,32 +80,8 @@ export default function UserPostsFavs({ user }: { user: User }) {
   }, []);
   return (
     <RootLayout user={user}>
-      {/* <div className="flex justify-between w-[100vw] mt-[40px]">
-        <div className="w-[15vw] border-e-[0.5px] border-blue-900"></div>
-        <div className="flex flex-col mt-[20px]">
-          <p className="text-xl font-bold text-blue-900  m-auto">
-            MIS FAVORITOS
-          </p>
-            <div>
-              {isLoading ?
-                <div className="flex">
-                  <div className="m-auto">
-                    <Loading />
-                  </div>
-                </div> :
-                <div className="flex mt-[40px]">
-                  <div className="flex">
-
-                    {CardsProducts()}
-                  </div>
-                </div>}
-            </div>
-
-        </div>
-        <div className="w-[15vw] h-[85vh] border-s-[0.5px] border-blue-900"></div>
-      </div> */}
-      <div className="flex justify-between mt-[40px]">
-        <div className="w-[15vw] h-[85vh] border-e-[0.5px] border-blue-900 "></div>
+      <div className="flex justify-between ">
+        <div className="w-[15vw] h-[85vh] border-e-[0.5px] border-blue-900 mt-[40px]"></div>
         {isLoading ? (
           <div className="flex mt-[50px]">
             <div className="">
@@ -117,10 +93,10 @@ export default function UserPostsFavs({ user }: { user: User }) {
             {(posts.length > 0) ?
               <div>
                 <div className="flex flex-col ">
-                  <p className="text-xl font-bold text-blue-900  m-auto">
+                  <p className="text-xl font-semibold text-blue-900 mt-[20px] m-auto">
                     MIS FAVORITOS
                   </p>
-                  <div className="flex m-auto mt-[40px]">
+                  <div className="flex m-auto mt-[20px]">
                     {CardsProducts()}
                   </div>
                 </div>
@@ -132,7 +108,7 @@ export default function UserPostsFavs({ user }: { user: User }) {
                 </div>
               </div>}
           </div>}
-        <div className="w-[15vw] h-[85vh] border-s-[0.5px] border-blue-900"></div>
+        <div className="w-[15vw] h-[85vh] border-s-[0.5px] border-blue-900 mt-[40px]"></div>
       </div>
     </RootLayout>
   )

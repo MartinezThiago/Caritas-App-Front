@@ -53,7 +53,7 @@ export default function UserTradeOffers({ user }: { user: User }) {
     if (tradeOffers) {
       const cards = tradeOffers!.map((e: FullOfferTradeCard) => {
         // console.log(e);
-        
+
         return (
           <TradeOfferFull
             //INFORMACION DEL USUARIO QUE RECIBIO LA OFERTA Y SU PUBLICACION
@@ -103,33 +103,34 @@ export default function UserTradeOffers({ user }: { user: User }) {
 
   return (
     <RootLayout user={user}>
-      <div className="flex w-[100vw] mt-[40px]">
+      <div className="flex w-[100vw]">
         <div className="m-auto">
-        {isLoading ? (
-          <div className="flex mt-[50px]">
-            <div className="">
-              <Loading />
+          {isLoading ? (
+            <div className="flex mt-[50px]">
+              <div className="">
+                <Loading />
+              </div>
             </div>
-          </div>
-        ) :
-          <div>
-            {(tradeOffers.length > 0) ?
-              <div>
-                <div className="flex flex-col ">
-                  {/* <p className="text-xl font-bold text-blue-900  m-auto">
-                    MIS FAVORITOS
-                  </p> */}
+          ) :
+            <div>
+              {(tradeOffers.length > 0) ?
+                <div>
+                  <div className="flex flex-col">
+                    <p className="text-xl font-semibold text-blue-900  mt-[20px] m-auto">
+                      OFERTAS DE INTERCAMBIO
+                    </p>
+                    <div className=" mt-[20px]">
                     {CardsTradeOffer()}
-
-                </div>
-              </div> : <div className="flex flex-col">
-                <p className="text-2xl font-bold text-gray-500 mt-[20px] m-auto">
-                  NO TIENES OFERTAS DE INTERCAMBIOS PENDIENTES
-                </p>
-                <div className="flex mt-[40px] m-auto">
-                </div>
-              </div>}
-          </div>}
+                    </div>
+                  </div>
+                </div> : <div className="flex flex-col">
+                  <p className="text-2xl font-bold text-gray-500 mt-[20px] m-auto">
+                    NO TIENES OFERTAS DE INTERCAMBIOS PENDIENTES
+                  </p>
+                  <div className="flex mt-[40px] m-auto">
+                  </div>
+                </div>}
+            </div>}
         </div>
       </div>
     </RootLayout>
