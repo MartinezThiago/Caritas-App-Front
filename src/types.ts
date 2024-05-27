@@ -142,10 +142,10 @@ export interface TradeCardProductProps {
 
 export interface FullOfferTradeCard {
   //INFORMACION DEL USUARIO QUE RECIBIO LA OFERTA Y SU PUBLICACION
-  idUserOwner:number
-  nameUserOwner:string
-  surnameUserOwner:string
-  profilePicUserOwner:string
+  idUserOwner: number
+  nameUserOwner: string
+  surnameUserOwner: string
+  profilePicUserOwner: string
   idPostOwner: number
   titlePostOwner: string
   descriptionPostOwner: string
@@ -155,10 +155,10 @@ export interface FullOfferTradeCard {
   imagePostOwner: string
 
   //INFORMACION DEL USUARIO QUE OFERTO Y SU PUBLICACION
-  idUserOffer:number
-  nameUserOffer:string
-  surnameUserOffer:string
-  profilePicUserOffer:string
+  idUserOffer: number
+  nameUserOffer: string
+  surnameUserOffer: string
+  profilePicUserOffer: string
   idPostOffer: number
   titlePostOffer: string
   descriptionPostOffer: string
@@ -215,11 +215,11 @@ export interface CardProductProps {
  * @property {string} surnameUser - The last name of the user who created the post.
  * @property {[UnadaptedCenter]} centersChoosed- The post centers.
  * @property {[UnadaptedCenterPublicacion]} centersChoosedInfoTrade- The post centers.
- * @property {User} user - The current user. 
+ * @property {User} user - The current user.
  * @property {string} profilePicOwner - The profile pic of the owners post
  * @property {[CommentUnadapted]} [comments] - The post asks/questions.
  * @property {[img]} images - The post asks/questions.
- * 
+ *
  */
 export interface PostData {
   idPost: number
@@ -239,7 +239,7 @@ export interface PostData {
   comments?: [CommentUnadapted]
   images: [img]
   centersChoosed: [UnadaptedCenter]
-  centersChoosedInfoTrade:[UnadaptedCenterPublicacion]
+  centersChoosedInfoTrade: [UnadaptedCenterPublicacion]
 }
 
 export interface PostDataAdapter {

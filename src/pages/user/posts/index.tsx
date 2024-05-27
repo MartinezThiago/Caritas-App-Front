@@ -1,19 +1,20 @@
-import ExtendedPostCard from "@/components/extended-post-card";
-import { FRONT_BASE_URL } from "@/constants";
-import RootLayout from "@/layouts/root-layout";
-import { GetSSPropsResult, PostData, PostDataAdapter, UnadaptedCenter, User } from "@/types";
-import { getUser } from "@/utils";
-import { requireNothing } from "@/utils/permissions";
-import axios from "axios";
-import { NextApiRequest, NextApiResponse } from "next";
-import { useEffect, useState } from "react";
-import CardProduct from "@/components/post-card";
-import auxPic from 'public/post-image-preview.jpg'
-import Link from "next/link";
-import plusPost from 'public/plus-image.png'
+import ExtendedPostCard from '@/components/extended-post-card'
+import { Loading } from '@/components/loading'
+import CardProduct from '@/components/post-card'
+import { FRONT_BASE_URL } from '@/constants'
+import RootLayout from '@/layouts/root-layout'
+import { GetSSPropsResult, User } from '@/types'
+import { getUser } from '@/utils'
+import { requireNothing } from '@/utils/permissions'
+import axios from 'axios'
+import { NextApiRequest, NextApiResponse } from 'next'
 import Image from 'next/image'
-import { Loading } from "@/components/loading";
-export async function getServerSideProps({
+import Link from 'next/link'
+import plusPost from 'public/plus-image.png'
+import auxPic from 'public/post-image-preview.jpg'
+import { useEffect, useState } from 'react'
+
+export async function getServerSideProps ({
   req,
   res
 }: Readonly<{
@@ -23,27 +24,25 @@ export async function getServerSideProps({
   return requireNothing(getUser(req, res))
 }
 
-export default function UserPostsInfo({ user }: { user: User }) {
+export default function UserPostsInfo ({ user }: { user: User }) {
   const [posts, setPosts] = useState([])
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
     const getPosts = async () => {
       await axios
         .get(`${FRONT_BASE_URL}user/getposts`)
         .then((res: any) => {
-          setPosts(res.data);
+          setPosts(res.data)
         })
         .catch((res: any) => {
           try {
             // res.status(res.status).json({ message: res.data.message })
             setPosts([])
-
           } catch {
             //res.status(500).json({ message: 'Ha ocurrido un error inesperado.' })
             setPosts([])
           }
-        },
-        )
+        })
     }
     getPosts()
   }, [])
@@ -73,11 +72,12 @@ export default function UserPostsInfo({ user }: { user: User }) {
   useEffect(() => {
     // Simula una carga de datos
     setTimeout(() => {
-      setIsLoading(false); // Cambia isLoading a false después de 2 segundos
-    }, 200);
-  }, []);
+      setIsLoading(false) // Cambia isLoading a false después de 2 segundos
+    }, 200)
+  }, [])
   return (
     <RootLayout user={user}>
+
       <div className="flex justify-between mt-[40px]">
         <div className="w-[15vw] h-[85vh] border-e-[0.5px] border-blue-900 "></div>
         {isLoading ? (

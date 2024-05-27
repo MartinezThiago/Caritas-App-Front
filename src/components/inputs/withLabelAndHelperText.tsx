@@ -14,10 +14,10 @@ import type {
  * @arg {RegisterOptions} [registerOptions] - The options for the register function.
  */
 export interface Props {
-  id: string,
-  label: string | React.ReactNode,
+  id?: string,
+  label?: string | React.ReactNode,
   error?: FieldError
-  register: UseFormRegister<any>
+  register?: UseFormRegister<any>
   registerOptions?: RegisterOptions
 }
 
@@ -29,7 +29,7 @@ const withLabelAndHelperText = <T extends object>(
   Wrapped: React.FC<T>
 ): React.FC<T & Props> => ({
   id,
-  label,
+  label='',
   error,
   ...props
 }: Readonly<T & Props>) => <>
