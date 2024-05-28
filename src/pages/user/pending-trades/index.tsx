@@ -78,6 +78,9 @@ export default function UserPendingTrades({ user }: { user: User }) {
             tradeDate={e.fechaIntercambio}
             tradeHour={e.horario}
             tradeState='pendiente'
+            idPostOwner={e.idPostOwner}
+            idPostOffer={e.idPostOffer}
+            user={user}
           />
         )
       })

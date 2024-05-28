@@ -3,12 +3,14 @@ import SwapArrows from "public/arrows-swap.png"
 import auxProfilePic from 'public/profile-pic-default.jpg'
 import auxPostPic from 'public/post-image-preview.jpg'
 import arrowsSwap from 'public/arrows-swap.png'
-import { FullOfferTradeCard } from "@/types";
+import { FullOfferTradeCard, User } from "@/types";
 import Image from 'next/image'
 import CardProduct from "./post-card";
 import { FRONT_BASE_URL } from "@/constants";
 import axios from "axios";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import { ButtonEnum } from "./types";
 
 export default function PendingTradeCard({
     idTrade,
@@ -25,8 +27,10 @@ export default function PendingTradeCard({
     centerAddress,
     tradeDate,
     tradeHour,
-    tradeState
-
+    tradeState,
+    idPostOwner,
+    idPostOffer,
+    user
 }: {
     idTrade: number
     nameOwner: string
@@ -43,13 +47,46 @@ export default function PendingTradeCard({
     tradeDate: string
     tradeHour: string
     tradeState: string
+    idPostOwner: number
+    idPostOffer: number
+    user: User
 }) {
+    const _handleSubmitCancelTrade = async () => {
+        console.log('CANCELADO')
 
+        const formData = {
+            id_trade: idTrade,
+            id_cancelante: parseInt(user.userId.toString()),
+            id_post_owner: idPostOwner,
+            id_post_offer: idPostOffer
+        }
+        console.log(formData);
+
+        await axios
+            .post(`${FRONT_BASE_URL}user/pending-trades/cancel/`, formData)
+            .then(() => {
+
+            })
+            .catch((error: { response: { data: { message: string } } }) => {
+                console.log(error)
+            })
+    }
     return (
         <div className="w-[43vw] border-[1px]  border-blue-900  my-[20px]">
-            <div className=" flex justify-end">
-                <p className="text-rose-700 font-bold mx-[10px] my-[10px]"> CANCELAR INTERCAMBIO❌</p>
-            </div>
+            {tradeState == 'pendiente' ?
+                <div className=" flex justify-end">
+                    <button
+                        key='Save'
+                        className='border-s-[1px] border-b-[1px] rounded-bl-[8px] border-rose-700 text-rose-700 hover:bg-rose-700  hover:text-white'
+                        type={ButtonEnum.BUTTON}
+                        onClick={() => {
+                            _handleSubmitCancelTrade()
+                        }}
+                    >
+                        <p className=" font-bold mx-[10px] my-[10px] text-sm"> CANCELAR INTERCAMBIO</p>
+                    </button>
+                </div> : <></>
+            }
             <div className="flex px-[20px] pb-[20px] ">
                 <div className="h-[12rem] flex items-center justify-center">
                     <div className="flex flex-col items-start">
