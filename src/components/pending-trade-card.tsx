@@ -46,11 +46,16 @@ export default function PendingTradeCard({
     centerAddress: string
     tradeDate: string
     tradeHour: string
-    tradeState: string
+    tradeState: number
     idPostOwner: number
     idPostOffer: number
     user: User
 }) {
+    const router = useRouter();
+    const typeStateTrade = ['pendiente', 'rechazado', 'confirmado', 'cancelado'];
+
+    console.log(typeStateTrade[tradeState - 1]);
+
     const _handleSubmitCancelTrade = async () => {
         console.log('CANCELADO')
 
@@ -64,8 +69,10 @@ export default function PendingTradeCard({
 
         await axios
             .post(`${FRONT_BASE_URL}user/pending-trades/cancel/`, formData)
-            .then(() => {
-
+            .then(async () => {
+                await router.push('/')
+                await router.push('/user/pending-trades')
+                alert('Cancelacion exitosa de intercambio')
             })
             .catch((error: { response: { data: { message: string } } }) => {
                 console.log(error)
@@ -73,11 +80,11 @@ export default function PendingTradeCard({
     }
     return (
         <div className="w-[43vw] border-[1px]  border-blue-900  my-[20px]">
-            {tradeState == 'pendiente' ?
+            {typeStateTrade[tradeState - 1] == 'pendiente' ?
                 <div className=" flex justify-end">
                     <button
-                        key='Save'
-                        className='border-s-[1px] border-b-[1px] rounded-bl-[8px] border-rose-700 text-rose-700 hover:bg-rose-700  hover:text-white'
+                        key='cancel-trade'
+                        className='border-s-[1px] px-[10px] border-b-[1px] rounded-bl-[8px] border-rose-700 text-rose-700 hover:bg-rose-700  hover:text-white'
                         type={ButtonEnum.BUTTON}
                         onClick={() => {
                             _handleSubmitCancelTrade()
@@ -85,9 +92,27 @@ export default function PendingTradeCard({
                     >
                         <p className=" font-bold mx-[10px] my-[10px] text-sm"> CANCELAR INTERCAMBIO</p>
                     </button>
-                </div> : <></>
+                </div> :
+                typeStateTrade[tradeState - 1] == 'rechazado' ?
+                    <div className=" flex justify-end">
+                        <div className="border-s-[1px] px-[10px] border-b-[1px] rounded-bl-[8px] border-rose-700 bg-rose-700  text-white">
+                            <p className=" font-bold mx-[10px] my-[10px] text-sm"> INTERCAMBIO RECHAZADO</p>
+                        </div>
+                    </div> :
+                    typeStateTrade[tradeState - 1] == 'confirmado' ?
+                        <div className=" flex justify-end">
+                            <div className="border-s-[1px] px-[10px] border-b-[1px] rounded-bl-[8px] border-green-700 bg-green-700  text-white">
+                                <p className=" font-bold mx-[10px] my-[10px] text-sm"> INTERCAMBIO CONFIRMADO</p>
+                            </div>
+                        </div> :
+                        <div className=" flex justify-end">
+                            <div className="border-s-[1px] px-[10px] border-b-[1px] rounded-bl-[8px] border-rose-700 bg-rose-700  text-white">
+                                <p className=" font-bold mx-[10px] my-[10px] text-sm"> INTERCAMBIO CANCELADO</p>
+                            </div>
+                        </div>
             }
-            <div className="flex px-[20px] pb-[20px] ">
+
+            < div className="flex px-[20px] pb-[20px] ">
                 <div className="h-[12rem] flex items-center justify-center">
                     <div className="flex flex-col items-start">
                         <p className="text-rose-700 text-xl font-bold mb-[4px] ">Centro elegido</p>
@@ -126,6 +151,6 @@ export default function PendingTradeCard({
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }

@@ -77,7 +77,7 @@ export default function UserPendingTrades({ user }: { user: User }) {
             centerAddress={e.direccion}
             tradeDate={e.fechaIntercambio}
             tradeHour={e.horario}
-            tradeState='pendiente'
+            tradeState={e.idEstadoIntercambio}
             idPostOwner={e.idPostOwner}
             idPostOffer={e.idPostOffer}
             user={user}

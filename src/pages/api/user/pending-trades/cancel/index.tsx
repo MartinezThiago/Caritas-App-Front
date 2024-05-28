@@ -23,10 +23,11 @@ export default async function handler(
             Authorization: `Bearer ${token}`
         },
     }
-    console.log('se llego a cancelar intercambio');
     const formData=req.body
+    console.log(formData);
+    
     await axios
-        .post(`${BACK_BASE_URL}CaritasBack/`,formData, config)
+        .post(`${BACK_BASE_URL}CaritasBack/cancelarIntercambioPendiente`,formData, config)
         .then((result: any) => {            
             res.status(result.status).json(result.data)  
         })
