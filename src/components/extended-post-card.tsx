@@ -14,6 +14,8 @@ import Input from './inputs/input'
 import { Loading } from './loading'
 import { ButtonEnum } from './types'
 import Link from 'next/link'
+import save from 'public/guardar.png'
+import saved from 'public/guardado.png'
 
 interface FormData {
   question: string
@@ -26,7 +28,7 @@ interface questionBody {
   idPublicacion: number
 }
 
-function getActualDate () {
+function getActualDate() {
   const fechaActual = new Date()
   // Obtener año, mes y día por separado
   const year = fechaActual.getFullYear()
@@ -36,7 +38,7 @@ function getActualDate () {
   return `${year}-${month}-${day}`
 }
 
-export default function ExtendedPostCard (props: PostData) {
+export default function ExtendedPostCard(props: PostData) {
   const {
     register,
     handleSubmit,
@@ -49,6 +51,7 @@ export default function ExtendedPostCard (props: PostData) {
   const [isLoading, setIsLoading] = useState(true)
   const [postsFavsUser, setPostFavsUser] = useState<number[]>([])
   const [savedPost, setSavedPost] = useState(true)
+  const [isHovered, setIsHovered] = useState(false);
   useEffect(() => {
     // Simula una carga de datos
     setTimeout(() => {
@@ -248,7 +251,7 @@ export default function ExtendedPostCard (props: PostData) {
           </div>
           <div className='text-white'>
             {props.user.role === 'usuario_basico' ||
-            props.user.role === 'non-registered' ? (
+              props.user.role === 'non-registered' ? (
               <>
                 {props.user.role === 'usuario_basico' ? (
                   <>
@@ -257,7 +260,7 @@ export default function ExtendedPostCard (props: PostData) {
                         {/* ACTIVE SESSION SECTION */}
                         <button
                           key='Trade'
-                          className='rounded-lg w-[100%] outline outline-transparent bg-rose-700 font-semibold hover:bg-white  hover:text-rose-700 hover:outline-rose-700 hover:-outline-offset-1 duration-200'
+                          className='rounded-lg w-[100%] outline outline-transparent bg-rose-700 font-semibold hover:bg-white  hover:text-rose-700 hover:outline-rose-700 hover:-outline-offset-1 duration-200 rounded-s-[10px]'
                           type={ButtonEnum.BUTTON}
                           onClick={() => {
                             console.log(
@@ -269,31 +272,35 @@ export default function ExtendedPostCard (props: PostData) {
                             href={`/posts/${router.query.id}/trade`}
                             className='size-full py-2.5 px-14'
                           >
-                            Intercambiar
+                            Ofertar objeto
                           </Link>
                         </button>
                         {/* ESTA AFIRMACION SE TIENE QUE HACER SI LA PUBLICACION ESTA EN EL ARRAY DE GUARDADOS DEL USUARIO */}
                         {savedPost ? (
                           <button
                             key='Save'
-                            className='rounded-lg ms-6 py-2.5 px-6 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200 '
+                            className='rounded-lg ms-2 py-2.5 px-2.5 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200 rounded-e-[10px]'
                             type={ButtonEnum.BUTTON}
                             onClick={() => {
                               _handleSubmitSave(true)
                             }}
+                            onMouseEnter={() => setIsHovered(true)}
+                            onMouseLeave={() => setIsHovered(false)}
                           >
-                            Guardar
+                            <Image alt='' src={isHovered ? saved : save} width={30} />
                           </button>
                         ) : (
                           <button
-                            key='Save'
-                            className='rounded-lg ms-6 py-2.5 px-4 outline -outline-offset-2 outline-[3px] outline-rose-700 bg-white text-rose-700 font-semibold hover:bg-rose-700 hover:text-white hover:outline-white hover:-outline-offset-0 duration-200'
+                            key='Saved'
+                            className='rounded-lg ms-2 py-2.5 px-2.5 outline -outline-offset-2 outline-[3px] outline-rose-700 bg-white text-rose-700 font-semibold hover:bg-rose-700 hover:text-white hover:outline-white hover:-outline-offset-0 duration-200 rounded-e-[10px]'
                             type={ButtonEnum.BUTTON}
                             onClick={() => {
                               _handleSubmitUnSave(false)
                             }}
+                            onMouseEnter={() => setIsHovered(true)}
+                            onMouseLeave={() => setIsHovered(false)}
                           >
-                            Desguardar
+                            <Image alt='' src={isHovered ? save : saved} width={30} />
                           </button>
                         )}
                       </div>
@@ -323,47 +330,51 @@ export default function ExtendedPostCard (props: PostData) {
                     )}
                   </>
                 ) : (
-                  <>
+                  <div className='flex'>
                     {/* NO ACTIVE SESSION SECTION */}
-                    {/*<button
-                      key="Trade"
-                      className="rounded-lg py-2.5 px-14 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 w-[100%]"
+                    <button
+                      key='Trade'
+                      className='rounded-lg w-[100%] outline outline-transparent bg-rose-700 font-semibold hover:bg-white  hover:text-rose-700 hover:outline-rose-700 hover:-outline-offset-1 duration-200 rounded-s-[10px]'
                       type={ButtonEnum.BUTTON}
                       onClick={() => {
-                        router.push("/sign/in");
+                        router.push('/sign/in')
                       }}
                     >
-                      Intercambiar
+                      Ofertar objeto
                     </button>
-                     <button
-                      key="Save"
-                      className="rounded-lg ms-12 py-2.5 px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200"
+                    <button
+                      key='Save'
+                      className='rounded-lg ms-2 py-2.5 px-2.5 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200 rounded-e-[10px]'
                       type={ButtonEnum.BUTTON}
                       onClick={() => {
-                        router.push("/sign/in");
+                        router.push('/sign/in')
                       }}
+                      onMouseEnter={() => setIsHovered(true)}
+                      onMouseLeave={() => setIsHovered(false)}
                     >
-                      A
-                    </button> */}
-                  </>
+                      <Image alt='' src={isHovered ? saved : save} width={30} />
+                    </button>
+                  </div>
                 )}
               </>
             ) : (
-              <>
+              <div className='flex'>
                 {/* ADMIN SECTION */}
-                {/*<button
-                  key="Trade"
-                  className="rounded-lg py-2.5 px-14 font-semibold bg-gray-500 hover:bg-gray-600 hover:cursor-not-allowed w-[100%]"
+                <button
+                  key='Trade'
+                  className='rounded-lg w-[100%]  bg-gray-500 font-semibold hover:bg-gray-600 hover:cursor-not-allowed duration-200 rounded-s-[10px]'
+                  type={ButtonEnum.BUTTON}
                 >
-                  Intercambiar
+                  Ofertar objeto
                 </button>
-                 <button
-                  key="Save"
-                  className="rounded-lg ms-12 py-2.5 px-4 font-semibold bg-gray-500 hover:bg-gray-600 hover:cursor-not-allowed"
+                <button
+                  key='Save'
+                  className='rounded-lg ms-2 py-2.5 px-2.5  bg-gray-500 font-semibold hover:bg-gray-600 hover:cursor-not-allowed duration-200 rounded-e-[10px]'
+                  type={ButtonEnum.BUTTON}
                 >
-                  A
-                </button> */}
-              </>
+                  <Image alt='' src={save} width={30} />
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -379,7 +390,7 @@ export default function ExtendedPostCard (props: PostData) {
       <div className='w-[60%] m-auto text-black mt-8'>
         <article>
           {props.user.role === 'usuario_basico' &&
-          props.user.userId != props.idOwnerUser ? (
+            props.user.userId != props.idOwnerUser ? (
             <form noValidate onSubmit={handleSubmit(_handleSubmit)}>
               <div className='flex items-center'>
                 <div className='w-[60%]'>
