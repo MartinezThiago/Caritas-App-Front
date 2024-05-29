@@ -48,88 +48,44 @@ const DeclineTradeOptions = ({
           key='dni-option'
           id='1'
           type='radio'
-          value='No se presento documentacion'
+          value='Una de las personas no presentó el DNI'
           name='optionDecline'
           onChange={handleChange}
         />
-        <label htmlFor='1'>No se presento documentacion</label>
+        <label htmlFor='1'>Una de las personas no presentó el DNI</label>
       </div>
       <div className='flex items-center justify-center gap-2'>
         <input
           key='item-option'
           id='2'
           type='radio'
-          value='Uno de los productos no representaba la publicacion'
+          value='Uno de los productos no representaba la publicación'
           name='optionDecline'
           onChange={handleChange}
         />
-        <label htmlFor='2'>Uno de los productos no representaba la publicacion</label>
+        <label htmlFor='2'>Uno de los productos no representaba la publicación</label>
       </div>
       <div className='flex items-center justify-center gap-2'>
         <input
-          key='Limpieza-category'
+          key='broken-item-option'
           id='3'
           type='radio'
-          value='3'
+          value='Uno de los productos estaba dañado'
           name='optionDecline'
           onChange={handleChange}
         />
-        <label htmlFor='3'>Opcion 3</label>
+        <label htmlFor='3'>Uno de los productos estaba dañado</label>
       </div>
       <div className='flex items-center justify-center gap-2'>
         <input
-          key='Ropa-category'
+          key='non-attendance-option'
           id='4'
           type='radio'
-          value='4'
+          value='Una de las personas no se presentó'
           name='optionDecline'
           onChange={handleChange}
         />
-        <label htmlFor='4'>Opcion 4</label>
-      </div>
-      <div className='flex items-center justify-center gap-2'>
-        <input
-          key='Limpieza-category'
-          id='5'
-          type='radio'
-          value='5'
-          name='optionDecline'
-          onChange={handleChange}
-        />
-        <label htmlFor='5'>Opcion 5</label>
-      </div>
-      <div className='flex items-center justify-center gap-2'>
-        <input
-          key='Ropa-category'
-          id='6'
-          type='radio'
-          value='6'
-          name='optionDecline'
-          onChange={handleChange}
-        />
-        <label htmlFor='6'>Opcion 6</label>
-      </div>
-      <div className='flex items-center justify-center gap-2'>
-        <input
-          key='Ropa-category'
-          id='7'
-          type='radio'
-          value='7'
-          name='optionDecline'
-          onChange={handleChange}
-        />
-        <label htmlFor='7'>Opcion 7</label>
-      </div>
-      <div className='flex items-center justify-center gap-2'>
-        <input
-          key='Ropa-category'
-          id='8'
-          type='radio'
-          value='8'
-          name='optionDecline'
-          onChange={handleChange}
-        />
-        <label htmlFor='8'>Opcion 8</label>
+        <label htmlFor='4'>Una de las personas no se presentó</label>
       </div>
     </fieldset>
   )

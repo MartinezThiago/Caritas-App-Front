@@ -66,7 +66,7 @@ export default function AuditTradeCard({
     user: User
     dniOffer: string
     dniOwner: string
-    auditDescription:string
+    auditDescription: string
 }) {
     const {
         register,
@@ -81,7 +81,7 @@ export default function AuditTradeCard({
     const [loading, setLoaging] = useState(false)
     const [optionTrade, setOptionTrade] = useState('')
     const typeStateAuditTrade = ['pendiente', 'rechazado', 'confirmado', 'cancelado'];
-
+    const router = useRouter();
     const _handleDeclineTrade = async () => {
         resetField('productoDonado')
         setOptionTrade('RECHAZAR')
@@ -105,22 +105,36 @@ export default function AuditTradeCard({
         }
         resetField('productoDonado')
         resetField('motivoRechazo')
-
         const auxDonatedProduct = formData.productoDonado == undefined ? '' : formData.productoDonado
-        const formDataAdapted = {
-            action: optionTrade,
-            str: optionTrade == 'CONFIRMAR' ? auxDonatedProduct : formData.motivoRechazo
+        const formDat = {
+            id_intercambio: idTrade,
+            id_post_offer: idPostOffer,
+            id_post_owner: idPostOwner,
+            productoDonado: optionTrade == 'CONFIRMAR' ? auxDonatedProduct : formData.motivoRechazo
         }
-        console.log(formDataAdapted);
+        if (optionTrade == 'RECHAZAR') {
+            await axios
+                .post(`${FRONT_BASE_URL}volunteer/trade-center/decline/`, formDat)
+                .then(async (res: any) => {
+                    await router.push('/')
+                    await router.push('/volunteer/trade-center')
+                    alert('Intercambio rechazado')
+
+                })
+        } else if (optionTrade == 'CONFIRMAR') {
+            await axios
+                .post(`${FRONT_BASE_URL}volunteer/trade-center/accept/`, formDat)
+                .then(async (res: any) => {
+                    await router.push('/')
+                    await router.push('/volunteer/trade-center')
+                    alert('Intercambio confirmado')
+                })
+        }
     }
     //Funcion para agregar puntos al formato de un documento
     function formatString(input: string) {
-        // Insert a period after the first two characters
         let formatted = input.slice(0, 2) + '.' + input.slice(2);
-
-        // Regular expression to insert a period every three characters after the initial period
         formatted = formatted.replace(/(\d{3})(?=\d)/g, '$1.');
-
         return formatted;
     }
     return (
@@ -188,12 +202,12 @@ export default function AuditTradeCard({
                             <p className=" font-bold mx-[10px] my-[10px] "> RECHAZAR</p>
                         </button>
                     </div>
-                </div> : typeStateAuditTrade[tradeState - 1] == 'rechazado' ? 
-                <div className="h-[40px] w-[100%] border-b-[1px] border-x-[1px] border-blue-900 flex items-center">
-                    <p className="ms-[10px] text-sm"><span className="font-semibold text-base">Motivo del rechazo: </span> {auditDescription}</p>
-                </div> : 
-                <div className="h-[40px] w-[100%] border-b-[1px] border-x-[1px] border-blue-900 flex items-center">
-                    <p className="ms-[10px] text-sm"><span className="font-semibold text-base">{auditDescription != ''? 'Producto donado: ': 'No tuvo donacion'} </span> {auditDescription}</p>
+                </div> : typeStateAuditTrade[tradeState - 1] == 'rechazado' ?
+                    <div className="h-[40px] w-[100%] border-b-[1px] border-x-[1px] border-blue-900 flex items-center">
+                        <p className="ms-[10px] text-sm"><span className="font-semibold text-base">Motivo del rechazo: </span> {auditDescription}</p>
+                    </div> :
+                    <div className="h-[40px] w-[100%] border-b-[1px] border-x-[1px] border-blue-900 flex items-center">
+                        <p className="ms-[10px] text-sm"><span className="font-semibold text-base">{auditDescription != '' ? 'Producto donado: ' : 'No tuvo donacion'} </span> {auditDescription}</p>
                     </div>}
             </div>
             {optionTrade != '' ? <div className="w-[2px] bg-rose-700 h-[250px] rounded-[100%] mx-[30px] m-auto mt-[20px]"></div> : <></>}

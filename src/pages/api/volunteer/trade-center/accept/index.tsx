@@ -22,9 +22,10 @@ export default async function handler(
             Authorization: `Bearer ${token}`
         },
     }
-    
+    console.log('ACEPTADO', req.body);
+
     await axios
-        .get(`${BACK_BASE_URL}CaritasBack/obtenerIntercambiosEnCentroEspecifico?id_centro=${req.body.id_centro}`, config)
+        .post(`${BACK_BASE_URL}CaritasBack/aceptarIntercambio`, req.body, config)
         .then((result: any) => {
             res.status(result.status).json(result.data)
         })

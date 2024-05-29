@@ -72,12 +72,14 @@ export default function VolunteerTradeSection({ user }: { user: User }) {
     }, 200);
   }, []);
 
-
-
   useEffect(() => {
+    const formData={
+      id_centro:user.center
+    }
+
     const getTradesCentro = async () => {
       await axios
-        .get(`${FRONT_BASE_URL}volunteer/trade-center/`)
+        .post(`${FRONT_BASE_URL}volunteer/trade-center/`, formData)
         .then((res: any) => {
           console.log(res.data);
 
