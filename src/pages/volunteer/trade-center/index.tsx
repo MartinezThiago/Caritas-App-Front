@@ -20,6 +20,7 @@ import { Loading } from "@/components/loading";
 
 
 import AuditTradeCard from "@/components/audit-trade-card";
+import axios from "axios";
 
 export async function getServerSideProps({
   req,
@@ -31,8 +32,37 @@ export async function getServerSideProps({
   return requireNothing(getUser(req, res));
 }
 
-export default function VolunteerTradeSection({ user }: { user: User }) {
+type TradeCenterInterface = {
 
+  apellidoUsuarioOffer: string
+  apellidoUsuarioOwner: string
+  direccion: string
+  dniOffer: string
+  dniOwner: string
+  fechaIntercambio: string
+  fotoPerfilUsuarioOffer: string
+  fotoPerfilUsuarioOwner: string
+  fotoPostOffer: string
+  fotoPostOwner: string
+  horario: string
+  idCentro: number
+  idCentroElegido: number
+  idEstadoIntercambio: number
+  idEstadoPublicacion: number
+  idIntercambio: number
+  idPostOffer: number
+  idPostOwner: number
+  idUsuarioOffer: number
+  idUsuarioOwner: number
+  localidad: string
+  nombreCentro: string
+  nombreUsuarioOffer: string
+  nombreUsuarioOwner: string
+  productoDonado: string
+}
+
+export default function VolunteerTradeSection({ user }: { user: User }) {
+  const [tradeCenter, setTradeCenter] = useState<TradeCenterInterface[]>([])
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -42,6 +72,56 @@ export default function VolunteerTradeSection({ user }: { user: User }) {
     }, 200);
   }, []);
 
+
+
+  useEffect(() => {
+    const getTradesCentro = async () => {
+      await axios
+        .get(`${FRONT_BASE_URL}volunteer/trade-center/`)
+        .then((res: any) => {
+          console.log(res.data);
+
+          setTradeCenter(res.data)
+        })
+    }
+    getTradesCentro()
+  }, [])
+
+  const CardsTradeOffer = () => {
+    if (tradeCenter) {
+      const cards = tradeCenter!.map((e: TradeCenterInterface) => {
+        console.log(e);
+
+        return (
+          <AuditTradeCard
+            key={e.idIntercambio}
+            idTrade={e.idIntercambio}
+            nameOwner={e.nombreUsuarioOwner}
+            surnameOwner={e.apellidoUsuarioOwner}
+            nameOffer={e.nombreUsuarioOffer}
+            surnameOffer={e.apellidoUsuarioOffer}
+            firstImagePostOwner={e.fotoPostOwner}
+            firstImagePostOffer={e.fotoPostOffer}
+            profilePicOwner={e.fotoPerfilUsuarioOwner}
+            profilePicOffer={e.fotoPerfilUsuarioOffer}
+            centerName={e.nombreCentro}
+            locationTrade={e.localidad}
+            centerAddress={e.direccion}
+            tradeDate={e.fechaIntercambio}
+            tradeHour={e.horario}
+            tradeState={e.idEstadoIntercambio}
+            idPostOwner={e.idPostOwner}
+            idPostOffer={e.idPostOffer}
+            user={user}
+            dniOffer={e.dniOffer}
+            dniOwner={e.dniOwner}
+            auditDescription={e.productoDonado}
+          />
+        )
+      })
+      return cards
+    }
+  }
   return (
     <RootLayout user={user}>
       <div className="flex w-[100vw]">
@@ -72,25 +152,7 @@ export default function VolunteerTradeSection({ user }: { user: User }) {
             //       </div>
             //     </div>}
             // </div>
-            <AuditTradeCard
-              idTrade={0}
-              nameOwner={"Geronimo"}
-              surnameOwner={"Benavidez"}
-              nameOffer={'Thiago'}
-              surnameOffer={'Martinez'}
-              firstImagePostOwner={auxProfilePic.src}
-              firstImagePostOffer={auxProfilePic.src}
-              profilePicOwner={auxProfilePic.src}
-              profilePicOffer={auxProfilePic.src}
-              centerName={""}
-              locationTrade={""}
-              centerAddress={""}
-              tradeDate={"29-06-2024"}
-              tradeHour={"11:00"}
-              tradeState={""}
-              idPostOwner={0}
-              idPostOffer={0}
-              user={user} />
+            CardsTradeOffer()
           }
         </div>
       </div>

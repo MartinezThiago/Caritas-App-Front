@@ -41,7 +41,10 @@ export default function AuditTradeCard({
     tradeState,
     idPostOwner,
     idPostOffer,
-    user
+    user,
+    dniOffer,
+    dniOwner,
+    auditDescription
 }: {
     idTrade: number
     nameOwner: string
@@ -57,11 +60,13 @@ export default function AuditTradeCard({
     centerAddress: string
     tradeDate: string
     tradeHour: string
-    tradeState: string
+    tradeState: number
     idPostOwner: number
     idPostOffer: number
     user: User
-
+    dniOffer: string
+    dniOwner: string
+    auditDescription:string
 }) {
     const {
         register,
@@ -75,6 +80,7 @@ export default function AuditTradeCard({
 
     const [loading, setLoaging] = useState(false)
     const [optionTrade, setOptionTrade] = useState('')
+    const typeStateAuditTrade = ['pendiente', 'rechazado', 'confirmado', 'cancelado'];
 
     const _handleDeclineTrade = async () => {
         resetField('productoDonado')
@@ -84,28 +90,38 @@ export default function AuditTradeCard({
     const _handleConfirmTrade = async () => {
         resetField('motivoRechazo')
         setOptionTrade('CONFIRMAR')
-        
+
     }
-   
+
 
     /**
   * Calls the endpoint by sending it the form data
   * @arg {FormData} formData
   */
     const _handleSubmit = async (formData: FormData) => {
-        if((optionTrade=='RECHAZAR')&&(formData.motivoRechazo==undefined)){
+        if ((optionTrade == 'RECHAZAR') && (formData.motivoRechazo == undefined)) {
             alert('Tienes que seleccionar el motivo correspondiente')
             return
         }
         resetField('productoDonado')
         resetField('motivoRechazo')
-        
+
         const auxDonatedProduct = formData.productoDonado == undefined ? '' : formData.productoDonado
         const formDataAdapted = {
             action: optionTrade,
             str: optionTrade == 'CONFIRMAR' ? auxDonatedProduct : formData.motivoRechazo
         }
         console.log(formDataAdapted);
+    }
+    //Funcion para agregar puntos al formato de un documento
+    function formatString(input: string) {
+        // Insert a period after the first two characters
+        let formatted = input.slice(0, 2) + '.' + input.slice(2);
+
+        // Regular expression to insert a period every three characters after the initial period
+        formatted = formatted.replace(/(\d{3})(?=\d)/g, '$1.');
+
+        return formatted;
     }
     return (
         <div className="flex mt-[20px]">
@@ -125,7 +141,7 @@ export default function AuditTradeCard({
                                     <div className="ms-[10px]">
                                         <p>{nameOwner} {surnameOwner}</p>
                                         <p className="text-sm text-gray-700"><span className="font-semibold text-base">DNI: </span>
-                                            42.675.160</p>
+                                            {formatString(dniOwner)}</p>
                                     </div>
                                 </div>
                             </div>
@@ -141,7 +157,7 @@ export default function AuditTradeCard({
                                     <div className="ms-[10px]">
                                         <p>{nameOffer} {surnameOffer}</p>
                                         <p className="text-sm text-gray-700"><span className="font-semibold text-base">DNI: </span>
-                                            42.675.160</p>
+                                            {formatString(dniOffer)}</p>
                                     </div>
 
                                 </div>
@@ -149,7 +165,7 @@ export default function AuditTradeCard({
                         </div>
                     </div>
                 </div>
-                <div className="flex justify-end">
+                {typeStateAuditTrade[tradeState - 1] == 'pendiente' ? <div className="flex justify-end">
                     <div className="flex bg-white h-[40px]">
                         <button
                             key='confirm-trade'
@@ -172,7 +188,13 @@ export default function AuditTradeCard({
                             <p className=" font-bold mx-[10px] my-[10px] "> RECHAZAR</p>
                         </button>
                     </div>
-                </div>
+                </div> : typeStateAuditTrade[tradeState - 1] == 'rechazado' ? 
+                <div className="h-[40px] w-[100%] border-b-[1px] border-x-[1px] border-blue-900 flex items-center">
+                    <p className="ms-[10px] text-sm"><span className="font-semibold text-base">Motivo del rechazo: </span> {auditDescription}</p>
+                </div> : 
+                <div className="h-[40px] w-[100%] border-b-[1px] border-x-[1px] border-blue-900 flex items-center">
+                    <p className="ms-[10px] text-sm"><span className="font-semibold text-base">{auditDescription != ''? 'Producto donado: ': 'No tuvo donacion'} </span> {auditDescription}</p>
+                    </div>}
             </div>
             {optionTrade != '' ? <div className="w-[2px] bg-rose-700 h-[250px] rounded-[100%] mx-[30px] m-auto mt-[20px]"></div> : <></>}
             <div>
