@@ -15,7 +15,8 @@ export default function TradeOfferFull(props: FullOfferTradeCard) {
     const _handleSubmitAccept = async () => {
         const formAccept = {
             id_post: props.idPostOwner,
-            id_oferta: props.idOffer
+            id_oferta: props.idOffer,
+            id_centro: props.idRawCenterPostChoosed
         }
         await axios
             .post(`${FRONT_BASE_URL}user/trade-offers/accept`, formAccept)

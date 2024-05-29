@@ -52,7 +52,7 @@ export default function UserTradeOffers({ user }: { user: User }) {
   const CardsTradeOffer = () => {
     if (tradeOffers) {
       const cards = tradeOffers!.map((e: FullOfferTradeCard) => {
-        // console.log(e);
+        console.log(e);
 
         return (
           <TradeOfferFull
@@ -87,6 +87,7 @@ export default function UserTradeOffers({ user }: { user: User }) {
             nameCenterPostChoosedTrade={e.nameCenterPostChoosedTrade}
             addressCenterPostChoosedTrade={e.addressCenterPostChoosedTrade}
             idOffer={e.idOffer}
+            idRawCenterPostChoosed={e.idRawCenterPostChoosed}
           />
         )
       })
