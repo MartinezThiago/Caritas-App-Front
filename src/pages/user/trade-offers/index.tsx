@@ -104,8 +104,9 @@ export default function UserTradeOffers({ user }: { user: User }) {
 
   return (
     <RootLayout user={user}>
-      <div className="flex w-[100vw]">
-        <div className="m-auto">
+      <div className="flex w-[100vw] justify-between">
+      <div className="w-[15vw] h-[85vh] border-e-[0.5px] border-blue-900 mt-[40px]"></div>
+        <div className="">
           {isLoading ? (
             <div className="flex mt-[50px]">
               <div className="">
@@ -126,13 +127,14 @@ export default function UserTradeOffers({ user }: { user: User }) {
                   </div>
                 </div> : <div className="flex flex-col">
                   <p className="text-2xl font-bold text-gray-500 mt-[20px] m-auto">
-                    NO TIENES OFERTAS DE INTERCAMBIOS PENDIENTES
+                    NO HAZ HECHO/RECIBIDO OFERTAS AUN
                   </p>
                   <div className="flex mt-[40px] m-auto">
                   </div>
                 </div>}
             </div>}
         </div>
+        <div className="w-[15vw] h-[85vh] border-s-[0.5px] border-blue-900 mt-[40px]"></div>
       </div>
     </RootLayout>
   );

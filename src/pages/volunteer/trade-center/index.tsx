@@ -73,8 +73,8 @@ export default function VolunteerTradeSection({ user }: { user: User }) {
   }, []);
 
   useEffect(() => {
-    const formData={
-      id_centro:user.center
+    const formData = {
+      id_centro: user.center
     }
 
     const getTradesCentro = async () => {
@@ -126,8 +126,9 @@ export default function VolunteerTradeSection({ user }: { user: User }) {
   }
   return (
     <RootLayout user={user}>
-      <div className="flex w-[100vw]">
-        <div className="m-auto">
+      <div className="flex w-[100vw] justify-between">
+      <div className="w-[15vw] h-[85vh] border-e-[0.5px] border-blue-900 mt-[40px]"></div>
+        <div className="">
           {isLoading ? (
             <div className="flex mt-[50px]">
               <div className="">
@@ -135,28 +136,28 @@ export default function VolunteerTradeSection({ user }: { user: User }) {
               </div>
             </div>
           ) :
-            // <div>
-            //   {true ?
-            //     <div>
-            //       <div className="flex flex-col">
-            //         <p className="text-xl font-semibold text-blue-900  mt-[20px] m-auto">
-            //           INTERCAMBIOS
-            //         </p>
-            //         <div className=" mt-[20px]">
-
-            //         </div>
-            //       </div>
-            //     </div> : <div className="flex flex-col">
-            //       <p className="text-2xl font-bold text-gray-500 mt-[20px] m-auto">
-            //         NO TIENES OFERTAS DE INTERCAMBIOS PENDIENTES
-            //       </p>
-            //       <div className="flex mt-[40px] m-auto">
-            //       </div>
-            //     </div>}
-            // </div>
-            CardsTradeOffer()
-          }
+            <div>
+              {(tradeCenter.length > 0) ?
+                <div>
+                  <div className="flex flex-col">
+                    <p className="text-xl font-semibold text-blue-900  mt-[20px] m-auto">
+                      HISTORIAL DE INTERCAMBIOS EN EL CENTRO {user.center}
+                    </p>
+                    <div className=" mt-[20px]">
+                      {CardsTradeOffer()}
+                    </div>
+                  </div>
+                </div>
+                : <div className="flex flex-col">
+                  <p className="text-2xl font-bold text-gray-500 mt-[20px] m-auto">
+                    EL CENTRO NO TUVO INTERCAMBIOS
+                  </p>
+                  <div className="flex mt-[40px] m-auto">
+                  </div>
+                </div>}
+            </div>}
         </div>
+        <div className="w-[15vw] h-[85vh] border-s-[0.5px] border-blue-900 mt-[40px]"></div>
       </div>
     </RootLayout>
   );
