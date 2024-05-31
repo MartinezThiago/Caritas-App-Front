@@ -176,6 +176,7 @@ export interface FullOfferTradeCard {
   dateCenterPostChoosedTrade:string
 
   idOffer:number
+  offerState:number
 }
 
 

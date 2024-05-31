@@ -9,7 +9,7 @@ import { FRONT_BASE_URL } from "@/constants";
 import axios from "axios";
 import { useRouter } from "next/router";
 
-export default function TradeOfferFull(props: FullOfferTradeCard) {
+export default function TradeOfferFullReceived(props: FullOfferTradeCard) {
     //console.log(props);
     const router = useRouter()
     const _handleSubmitAccept = async () => {
