@@ -81,7 +81,7 @@ export default function VolunteerTradeSection({ user }: { user: User }) {
       await axios
         .post(`${FRONT_BASE_URL}volunteer/trade-center/`, formData)
         .then((res: any) => {
-          console.log(res.data);
+          //console.log(res.data);
 
           setTradeCenter(res.data)
         })
@@ -92,7 +92,7 @@ export default function VolunteerTradeSection({ user }: { user: User }) {
   const CardsTradeOffer = () => {
     if (tradeCenter) {
       const cards = tradeCenter!.map((e: TradeCenterInterface) => {
-        console.log(e);
+        // console.log(e);
 
         return (
           <AuditTradeCard
@@ -121,6 +121,8 @@ export default function VolunteerTradeSection({ user }: { user: User }) {
           />
         )
       })
+      // console.log(cards);
+      cards.sort((a, b) => a.props.tradeState - b.props.tradeState)
       return cards
     }
   }
@@ -141,7 +143,7 @@ export default function VolunteerTradeSection({ user }: { user: User }) {
                 <div>
                   <div className="flex flex-col">
                     <p className="text-xl font-semibold text-blue-900  mt-[20px] m-auto">
-                      HISTORIAL DE INTERCAMBIOS EN EL CENTRO {user.center}
+                      HISTORIAL DE INTERCAMBIOS EN EL CENTRO <span className="font-bold">{user.center}</span>
                     </p>
                     <div className=" mt-[20px]">
                       {CardsTradeOffer()}

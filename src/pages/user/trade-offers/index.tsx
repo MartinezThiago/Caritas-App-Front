@@ -43,7 +43,7 @@ export default function UserTradeOffers({ user }: { user: User }) {
       await axios
         .get(`${FRONT_BASE_URL}user/trade-offers/`)
         .then((res: any) => {
-          console.log(res.data);
+          //console.log(res.data);
 
           setTradeOffersReceived(res.data.ofertasRecibidas)
           setTradeOffersMade(res.data.ofertasRealizadas)
@@ -55,7 +55,7 @@ export default function UserTradeOffers({ user }: { user: User }) {
   const CardsTradeOfferReceived = () => {
     if (tradeOffersReceived) {
       const cards = tradeOffersReceived!.map((e: FullOfferTradeCard) => {
-        console.log(e);
+        //console.log(e);
         return (
           <TradeOfferFullReceived
             key={e.idOffer}
@@ -142,6 +142,7 @@ export default function UserTradeOffers({ user }: { user: User }) {
           />
         )
       })
+      cards.sort((a, b) => a.props.offerState - b.props.offerState)
       return cards
     }
   }

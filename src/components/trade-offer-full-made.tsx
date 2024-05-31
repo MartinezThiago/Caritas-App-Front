@@ -22,7 +22,7 @@ export default function TradeOfferFullMade(props: FullOfferTradeCard) {
         <div className="">
             <div className="flex justify-center w-[100vw]">
                 <div>
-                    <div className="h-[12rem] flex items-center justify-center">
+                    <div className="h-[12rem] w-[300px] flex items-center justify-center">
                         <div className="flex flex-col items-start">
                             <p className="text-rose-700 text-xl font-bold mb-[4px] ">Centro elegido</p>
                             <div className="flex flex-col text-black">
