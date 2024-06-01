@@ -65,6 +65,7 @@ export default function UserPendingTrades({ user }: { user: User }) {
         return (
           <PendingTradeCard
             idTrade={e.idIntercambio}
+            key={e.idIntercambio}
             nameOwner={e.nombreUsuarioOwner}
             surnameOwner={e.apellidoUsuarioOwner}
             nameOffer={e.nombreUsuarioOffer}
@@ -85,6 +86,7 @@ export default function UserPendingTrades({ user }: { user: User }) {
           />
         )
       })
+      cards.sort((a, b) => a.props.tradeState - b.props.tradeState)
       return cards
     }
   }
