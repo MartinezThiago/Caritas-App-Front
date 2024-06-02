@@ -12,6 +12,11 @@ import { useRouter } from "next/router";
 export default function TradeOfferFullReceived(props: FullOfferTradeCard) {
     //console.log(props);
     const router = useRouter()
+    const typeStateTrade = ['pendiente', 'rechazada', 'confirmada'];
+    const capitalizeFirstLetter = (str: string) => {
+        if (str.length === 0) return str;
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    };
     const _handleSubmitAccept = async () => {
         const formAccept = {
             id_post: props.idPostOwner,
@@ -86,8 +91,10 @@ export default function TradeOfferFullReceived(props: FullOfferTradeCard) {
                         key={`${props.idPostOwner} ${props.idOffer} ${props.idPostOffer}`}
                         location={props.locationTradePostOwner}
                     />
-                    <div className="flex flex-col justify-between items-center my-[20px] mx-[30px]">
-                        <button
+                    <div className="h-[100%]">
+                        {typeStateTrade[props.offerState - 1] == 'pendiente' ? 
+                        <div className="h-[80%] flex flex-col justify-between items-center my-[20px] mx-[30px]">
+                            <button
                             key='accept'
                             className='rounded-[10px] w-[180px] h-[35px] text-rose-700  bg-white outline outline-rose-700 font-bold text-lg hover:bg-rose-700 outline-[3px] hover:text-white  duration-200'
                             onClick={() => {
@@ -96,16 +103,30 @@ export default function TradeOfferFullReceived(props: FullOfferTradeCard) {
                         >
                             aceptar
                         </button>
-                        <Image alt="swap-arrows" width={0} height={0} className="w-[80px]" src={SwapArrows} />
-                        <button
-                            key='reject'
-                            className='rounded-[10px] w-[180px] h-[35px] text-blue-900  bg-white outline outline-blue-900 font-bold text-lg hover:bg-blue-900 outline-[3px] hover:text-white  duration-200'
-                            onClick={() => {
-                                _handleSubmitDecline()
-                            }}
-                        >
-                            rechazar
-                        </button>
+                            <Image alt="swap-arrows" width={0} height={0} className="w-[80px]" src={SwapArrows} />
+                            <button
+                                key='reject'
+                                className='rounded-[10px] w-[180px] h-[35px] text-blue-900  bg-white outline outline-blue-900 font-bold text-lg hover:bg-blue-900 outline-[3px] hover:text-white  duration-200'
+                                onClick={() => {
+                                    _handleSubmitDecline()
+                                }}
+                            >
+                                rechazar
+                            </button></div> :
+                            <div className="flex flex-col justify-between items-center my-[20px] mx-[30px] h-[55%]">
+                                <div className="">
+                                    {typeStateTrade[props.offerState - 1] == 'pendiente' ? <p className=" bg-gray-500 text-white py-[2px] px-[6px] rounded-[5px] font-semibold">{capitalizeFirstLetter(typeStateTrade[props.offerState - 1])}</p> : typeStateTrade[props.offerState - 1] == 'confirmada' ? <p className="bg-green-700 text-white py-[2px] px-[6px] rounded-[5px] font-semibold">{typeStateTrade[props.offerState - 1]}</p> :
+                                        <p className="bg-rose-700 text-white py-[2px] px-[6px] rounded-[5px] font-semibold">{capitalizeFirstLetter(typeStateTrade[props.offerState - 1])}</p>}
+                                </div>
+                                <Image
+                                    alt="swap-arrows"
+                                    width={0}
+                                    height={0}
+                                    className=" w-[200px]"
+                                    src={SwapArrows}
+                                />
+
+                            </div>}
                     </div>
                     <TradeOfferProduct
                         desciption={props.descriptionPostOffer}
