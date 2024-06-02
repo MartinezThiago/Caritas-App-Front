@@ -26,16 +26,16 @@ export default async function handler(
     const formData=req.body
     console.log(formData);
     
-    await axios
-        .post(`${BACK_BASE_URL}CaritasBack/cancelarIntercambioPendiente`,formData, config)
-        .then((result: any) => {            
-            res.status(result.status).json(result.data)  
-        })
-        .catch((result: any) => {
-            try {
-                res.status(result.status).json({ message: result.data.message })
-            } catch {
-                res.status(500).json({ message: 'Ha ocurrido un error inesperado.' })
-            }
-        })
+    // await axios
+    //     .post(`${BACK_BASE_URL}CaritasBack/cancelarIntercambioPendiente`,formData, config)
+    //     .then((result: any) => {            
+    //         res.status(result.status).json(result.data)  
+    //     })
+    //     .catch((result: any) => {
+    //         try {
+    //             res.status(result.status).json({ message: result.data.message })
+    //         } catch {
+    //             res.status(500).json({ message: 'Ha ocurrido un error inesperado.' })
+    //         }
+    //     })
 }
