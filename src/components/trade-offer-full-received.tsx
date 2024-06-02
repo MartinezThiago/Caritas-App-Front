@@ -62,7 +62,7 @@ export default function TradeOfferFullReceived(props: FullOfferTradeCard) {
                         <div className="flex flex-col items-start">
                             <p className="text-rose-700 text-xl font-bold mb-[4px] ">Centro elegido</p>
                             <div className="flex flex-col text-black">
-                                <p className="my-[2px]"><span className="font-semibold ">Localidad: </span>{props.locationTradePostOwner}</p>
+                                <p className="my-[2px]"><span className="font-semibold ">Localidad: </span>{props.locationTradeCenterChoosed}</p>
                                 <p className="my-[2px]"><span className="font-semibold ">Nombre: </span>{props.nameCenterPostChoosedTrade} </p>
                                 <p className="my-[2px]"><span className="font-semibold ">Direccion: </span>{props.addressCenterPostChoosedTrade}</p>
                                 <p className="my-[2px]"><span className="font-semibold ">Dia y Hora: </span>{props.dateCenterPostChoosedTrade} {props.hourCenterPostChoosedTrade}</p>

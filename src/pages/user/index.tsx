@@ -11,7 +11,7 @@ import router from 'next/router'
 import profilePicDefault from 'public/profile-pic-default.jpg'
 import { useEffect, useState } from 'react'
 
-export async function getServerSideProps ({
+export async function getServerSideProps({
   req,
   res
 }: Readonly<{
@@ -31,7 +31,7 @@ interface centerBody {
   dias: days[]
 }
 
-export default function UserInfo ({ user }: { user: User }) {
+export default function UserInfo({ user }: { user: User }) {
   // console.log(user);
   const [rol, setRol] = useState('')
   const [profilePic, setProfilePic] = useState('')
@@ -54,12 +54,15 @@ export default function UserInfo ({ user }: { user: User }) {
   }, [])
 
   useEffect(() => {
-    const getCenters = async () => {
-      await axios.get(`${FRONT_BASE_URL}centers-user/get`).then((res: any) => {
-        setCentersUser(res.data)
-      })
+    if (user.role == 'usuario_basico' || user.role == 'voluntario') {
+      const getCenters = async () => {
+        await axios.get(`${FRONT_BASE_URL}centers-user/get`).then((res: any) => {
+          user.role == 'voluntario' ? setCentersUser([res.data as never]) : setCentersUser(res.data)
+
+        })
+      }
+      getCenters()
     }
-    getCenters()
   }, [])
 
   const Centers = () => {
@@ -158,7 +161,7 @@ export default function UserInfo ({ user }: { user: User }) {
             )}
           </div>
 
-          {user.role!='admin_centro'? <div className="bg-rose-700 w-[0.5px] h-[100%] mx-[30px]"></div>:<></>}
+          {user.role != 'admin_centro' ? <div className="bg-rose-700 w-[0.5px] h-[100%] mx-[30px]"></div> : <></>}
 
         </div>
       </div>

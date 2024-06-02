@@ -177,6 +177,8 @@ export interface FullOfferTradeCard {
 
   idOffer:number
   offerState:number
+
+  locationTradeCenterChoosed:string
 }
 
 

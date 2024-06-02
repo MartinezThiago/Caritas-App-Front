@@ -43,7 +43,7 @@ export default function UserTradeOffers({ user }: { user: User }) {
       await axios
         .get(`${FRONT_BASE_URL}user/trade-offers/`)
         .then((res: any) => {
-          //console.log(res.data);
+          console.log(res.data);
 
           setTradeOffersReceived(res.data.ofertasRecibidas)
           setTradeOffersMade(res.data.ofertasRealizadas)
@@ -91,7 +91,8 @@ export default function UserTradeOffers({ user }: { user: User }) {
             addressCenterPostChoosedTrade={e.addressCenterPostChoosedTrade}
             idOffer={e.idOffer}
             idRawCenterPostChoosed={e.idRawCenterPostChoosed}
-            offerState={1}
+            offerState={e.offerState}
+            locationTradeCenterChoosed={e.locationTradeCenterChoosed}
           />
         )
       })
@@ -139,6 +140,7 @@ export default function UserTradeOffers({ user }: { user: User }) {
             idOffer={e.idOffer}
             idRawCenterPostChoosed={e.idRawCenterPostChoosed}
             offerState={e.offerState}
+            locationTradeCenterChoosed={e.locationTradeCenterChoosed}
           />
         )
       })
