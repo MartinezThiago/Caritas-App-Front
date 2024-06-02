@@ -83,6 +83,7 @@ export default function UserPendingTrades({ user }: { user: User }) {
             idPostOwner={e.idPostOwner}
             idPostOffer={e.idPostOffer}
             user={user}
+            reasonAction={e.productoDonado}
           />
         )
       })

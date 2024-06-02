@@ -205,10 +205,12 @@ export default function AuditTradeCard({
                 </div> : typeStateAuditTrade[tradeState - 1] == 'rechazado' ?
                     <div className="h-[40px] w-[100%] border-b-[1px] border-x-[1px] border-blue-900 flex items-center">
                         <p className="ms-[10px] text-sm"><span className="font-semibold text-base">Motivo del rechazo: </span> {auditDescription}</p>
-                    </div> :
-                    <div className="h-[40px] w-[100%] border-b-[1px] border-x-[1px] border-blue-900 flex items-center">
-                        <p className="ms-[10px] text-sm"><span className="font-semibold text-base">{auditDescription != '' ? 'Producto donado: ' : 'No tuvo donacion'} </span> {auditDescription}</p>
-                    </div>}
+                    </div> : typeStateAuditTrade[tradeState - 1] == 'confirmado' ?
+                        <div className="h-[40px] w-[100%] border-b-[1px] border-x-[1px] border-blue-900 flex items-center">
+                            <p className="ms-[10px] text-sm"><span className="font-semibold text-base">{auditDescription != '' ? 'Producto donado: ' : 'No tuvo donacion'} </span> {auditDescription}</p>
+                        </div> : <div className="h-[40px] w-[100%] border-b-[1px] border-x-[1px] border-blue-900 flex items-center">
+                            <p className="ms-[10px] text-sm"><span className="font-semibold text-base">Motivo de la cancelacion: </span> {auditDescription}</p>
+                        </div>}
             </div>
             {optionTrade != '' ? <div className="w-[2px] bg-rose-700 h-[250px] rounded-[100%] mx-[30px] m-auto mt-[20px]"></div> : <></>}
             <div>
