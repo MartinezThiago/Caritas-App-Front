@@ -47,6 +47,7 @@ export default function UserTradeOffers({ user }: { user: User }) {
 
           setTradeOffersReceived(res.data.ofertasRecibidas)
           setTradeOffersMade(res.data.ofertasRealizadas)
+          
         })
     }
     getTradeOffers()
@@ -96,6 +97,7 @@ export default function UserTradeOffers({ user }: { user: User }) {
           />
         )
       })
+      cards.sort((a, b) => a.props.offerState - b.props.offerState)
       return cards
     }
   }
