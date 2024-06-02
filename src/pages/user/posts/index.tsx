@@ -33,6 +33,8 @@ export default function UserPostsInfo ({ user }: { user: User }) {
         .get(`${FRONT_BASE_URL}user/getposts`)
         .then((res: any) => {
           setPosts(res.data)
+          console.log(res.data);
+          
         })
         .catch((res: any) => {
           try {
@@ -63,6 +65,8 @@ export default function UserPostsInfo ({ user }: { user: User }) {
               e.imagenes[0].base64_imagen ? e.imagenes[0].base64_imagen : auxPic
             }
             ownerPost={e.usuario_owner === parseInt(user.userId.toString())}
+            onMyPost={true}
+            statePost={e.estado_publicacion}
           />
         )
       })
