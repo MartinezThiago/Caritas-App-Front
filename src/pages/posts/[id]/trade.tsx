@@ -111,8 +111,8 @@ export default function Trade({ user }: { user: User }) {
                 center.nombre_centro
               } - ${
                 postRes.data.centros.filter(
-                  (center: any) =>
-                    center.nombre_centro === center.nombre_centro,
+                  (postResCenter: any) =>
+                    postResCenter.nombre_centro === center.nombre_centro,
                 )[0].direccion
               }`,
             })
