@@ -194,7 +194,7 @@ export default function Trade ({ user }: { user: User }) {
       .post(`${FRONT_BASE_URL}posts/trade/create`, form)
       .then((res: any) => {
         alert('Oferta creada con éxito')
-        router.push('/posts')
+        router.push('/')
       })
       .catch((res: any) => {
         alert('Error al crear la oferta')
