@@ -107,7 +107,7 @@ export default function Trade ({ user }: { user: User }) {
           postRes.data.centros_Publicacion.forEach((center: any) => {
             centerOptions.push({
               value: center.id_cp,
-              label: center.nombre_centro
+              label: `${postRes.data.ubicacion_trade} - ${center.nombre_centro}`
             })
             dayOptions = center.diasDeIntercambio
             hourOptions[center.id_cp] = makeTimeRange(
