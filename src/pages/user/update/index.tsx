@@ -202,7 +202,7 @@ export default function UpdateUserInfo({ user }: { user: User }) {
                   error={errors.birthdate}
                 />
                 <div>
-                  <p className='font-bold'>Centros elegidos previamente:</p>
+                  <p className='font-bold'>Localidad y centros elegidos previamente:</p>
                   <div className='ms-[10px] text-gray-600'>
                     {centerListUser()}
                   </div>
