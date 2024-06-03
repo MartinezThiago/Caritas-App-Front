@@ -104,15 +104,15 @@ export default function Trade ({ user }: { user: User }) {
           const centerOptions: Option[] = []
           let dayOptions: string[] = []
           const hourOptions: Record<string, Option[]> = {}
-          postRes.data.centros.forEach((center: any) => {
+          postRes.data.centros_Publicacion.forEach((center: any) => {
             centerOptions.push({
-              value: center.id_centro,
-              label: `${center.ubicacion} | ${center.direccion} | ${center.nombre_centro}`
+              value: center.id_cp,
+              label: center.nombre_centro
             })
-            dayOptions = center.dias.map((day: any) => day.descripcion)
-            hourOptions[center.id_centro] = makeTimeRange(
-              center.horario_apertura,
-              center.horario_cierre
+            dayOptions = center.diasDeIntercambio
+            hourOptions[center.id_cp] = makeTimeRange(
+              center.desde,
+              center.hasta
             ).map((time: string) => ({
               value: time,
               label: time
@@ -137,7 +137,7 @@ export default function Trade ({ user }: { user: User }) {
                   setPosts(undefined)
                 }
               })
-              .catch((postsRes: any) => {
+              .catch(() => {
                 setPosts(undefined)
               })
           }
