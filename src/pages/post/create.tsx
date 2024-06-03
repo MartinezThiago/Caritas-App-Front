@@ -118,7 +118,7 @@ export default function CreatePost ({ user }: { user: User }) {
               })
               locationsMuyAux.push({
                 value: `${e.ubicacion}`,
-                label: `${e.ubicacion}`
+                label: `${isSelected ? '✰ ' : ''}${e.ubicacion}`
               })
             })
           })
