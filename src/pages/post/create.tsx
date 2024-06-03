@@ -171,6 +171,9 @@ export default function CreatePost ({ user }: { user: User }) {
     setValue(id, trueValue)
     clearErrors(id)
     console.log('ESTO QUEDA EN centers', watch('centers'))
+    if (trueValue.length > 3) {
+      alert('Maximo 3 centros')
+    }
   }
 
   const setTimeValue = (id: any, value: any, timeType: any) => {
@@ -222,6 +225,13 @@ export default function CreatePost ({ user }: { user: User }) {
     if (formData.photos.length > 4) {
       alert('No se pueden subir más de 4 fotos por publicación')
       setLoaging(false)
+      return
+    }
+
+    console.log('ESTO QUEDA COMO formData EN EL SUBMIT', formData)
+
+    if (formData.centers.length > 3) {
+      alert('No se pueden seleccionar más de 3 centros')
       return
     }
 
@@ -372,12 +382,13 @@ export default function CreatePost ({ user }: { user: User }) {
             >
               <MultiSelect
                 id='centers'
-                label='Centros'
+                label='Centros (máximo 3)'
                 register={register}
                 error={errors.centers as FieldError}
                 registerOptions={{
                   required: !!watch('centers') || 'Campo requerido',
                   validate: (value: string[]) => {
+                    console.log('VALIDACION EN CENTROS', value)
                     if (value === null || value === undefined) {
                       return true
                     }

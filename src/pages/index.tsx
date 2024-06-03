@@ -1,19 +1,19 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-import axios from 'axios'
-import RootLayout from '../layouts/root-layout'
 import { CardProduct, Input } from '@/components'
+import { Loading } from '@/components/loading'
+import { FRONT_BASE_URL } from '@/constants'
 import { User } from '@/types'
 import { getUser } from '@/utils'
-import { useEffect, useState } from 'react'
-import { FRONT_BASE_URL } from '@/constants'
-import { useForm } from 'react-hook-form'
+import axios from 'axios'
+import type { NextApiRequest, NextApiResponse } from 'next'
 import { useRouter } from 'next/router'
 import auxPic from 'public/post-image-preview.jpg'
-import { Loading } from '@/components/loading'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import RootLayout from '../layouts/root-layout'
 
 export async function getServerSideProps({
   req,
-  res
+  res,
 }: Readonly<{
   req: NextApiRequest
   res: NextApiResponse
@@ -24,8 +24,8 @@ export async function getServerSideProps({
 }> {
   return {
     props: {
-      user: getUser(req, res)
-    }
+      user: getUser(req, res),
+    },
   }
 }
 
@@ -36,19 +36,24 @@ interface FormData {
 export default function Home({ user }: { user: User }) {
   const router = useRouter()
   const [cardsData, setCardsData] = useState<any[]>([])
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true)
   const [postsFavsUser, setPostFavsUser] = useState<number[]>([])
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
   } = useForm<FormData>()
   useEffect(() => {
     const getProducts = async () => {
       await axios
         .get<any[]>(`${FRONT_BASE_URL}posts/get`)
         .then((res: any) => {
-          setCardsData(res.data.filter((post: { usuario_owner: number }) => post.usuario_owner != user.userId))
+          setCardsData(
+            res.data.filter(
+              (post: { usuario_owner: number }) =>
+                post.usuario_owner != user.userId,
+            ),
+          )
           //setCardsData([])
         })
         .catch((err: any) => {
@@ -59,21 +64,20 @@ export default function Home({ user }: { user: User }) {
   }, [])
   useEffect(() => {
     if (user.role == 'usuario_basico') {
-    const getIdsPostFavs = async () => {
-      await axios
-        .get<any[]>(`${FRONT_BASE_URL}/user/favs/getIdFavs`)
-        .then((res: any) => {
-          console.log(res.data);
-          setPostFavsUser(res.data)
-
-        })
-        .catch((err: any) => {
-          setPostFavsUser([])
-        })
+      const getIdsPostFavs = async () => {
+        await axios
+          .get<any[]>(`${FRONT_BASE_URL}/user/favs/getIdFavs`)
+          .then((res: any) => {
+            console.log(res.data)
+            setPostFavsUser(res.data)
+          })
+          .catch((err: any) => {
+            setPostFavsUser([])
+          })
+      }
+      getIdsPostFavs()
     }
-    getIdsPostFavs();
-  }
-  }, []);
+  }, [])
 
   const CardsProducts = () => {
     if (cardsData) {
@@ -100,9 +104,9 @@ export default function Home({ user }: { user: User }) {
   useEffect(() => {
     // Simula una carga de datos
     setTimeout(() => {
-      setIsLoading(false); // Cambia isLoading a false después de 2 segundos
-    }, 200);
-  }, []);
+      setIsLoading(false) // Cambia isLoading a false después de 2 segundos
+    }, 200)
+  }, [])
   return (
     <RootLayout user={user}>
       <main className='flex'>
@@ -129,7 +133,6 @@ export default function Home({ user }: { user: User }) {
             </div>
           ) : (
             <div className='flex'>
-
               <button
                 key='Post'
                 className='m-auto mt-[15%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline font-semibold hover:outline-[3px] bg-gray-500 hover:bg-gray-600 hover:cursor-not-allowed '
@@ -146,8 +149,8 @@ export default function Home({ user }: { user: User }) {
               console.log(question)
             })}
           >
-            <div className='flex mt-[30px] justify-center w-[100%]'>
-              {/* <div className='w-[50%]'>
+            <div className='w-[100%] mt-[30px] flex justify-center items-center'>
+              <div className='max-w-[75%] max-h-[2.5rem]'>
                 <Input
                   id='question'
                   register={register}
@@ -157,54 +160,47 @@ export default function Home({ user }: { user: User }) {
                   error={errors.question}
                   placeholder='Buscar...'
                   label=''
-                  // className={{
-                  //   'input': 'rounded-full border-blue-900 border-2'
-                  // }}
                 />
               </div>
-              <button
-                key='Save'
-                className='rounded-full w-[40px] h-[40px] text-white ms-[10px] outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
-              >
-                B
-              </button> */}
             </div>
           </form>
         </div>
-        <div className="bg-blue-900 w-[1px] h-[100%]"></div>
+        <div className='bg-blue-900 w-[1px] h-[100%]'></div>
         {isLoading ? (
           <div className='w-[70vw]'>
-            <div className="flex mt-[50px]">
-              <div className="m-auto">
+            <div className='flex mt-[50px]'>
+              <div className='m-auto'>
                 <Loading />
               </div>
             </div>
           </div>
-        ) : cardsData.length > 0 ?
+        ) : cardsData.length > 0 ? (
           <div className='flex flex-col'>
             <div className='flex flex-wrap justify-center items-center mt-[4.4%] w-[70vw]'>
               {CardsProducts()}
             </div>
-            {
-              user.role == 'admin_centro' ?
-
-                <button
-                  key='hiddenPosts'
-                  className='m-auto mt-[3%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
-                  onClick={() => { setCardsData([]) }}
-                >
-                  Vaciar publicaciones
-                </button> : <>
-                </>
-            }
-
-          </div> :
-          <div className="flex w-[70vw]">
-            <p className="text-xl font-bold text-blue-900 mt-[50px] m-auto">
+            {user.role == 'admin_centro' ? (
+              <button
+                key='hiddenPosts'
+                className='m-auto mt-[3%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
+                onClick={() => {
+                  setCardsData([])
+                }}
+              >
+                Vaciar publicaciones
+              </button>
+            ) : (
+              <></>
+            )}
+          </div>
+        ) : (
+          <div className='flex w-[70vw]'>
+            <p className='text-xl font-bold text-blue-900 mt-[50px] m-auto'>
               NO HAY PUBLICACIONES ACTUALMENTE
             </p>
-          </div>}
+          </div>
+        )}
       </main>
-    </RootLayout >
+    </RootLayout>
   )
 }
