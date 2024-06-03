@@ -137,13 +137,25 @@ export default function AuditTradeCard({
         formatted = formatted.replace(/(\d{3})(?=\d)/g, '$1.');
         return formatted;
     }
+    function colorBackground(sty:string){
+        if(typeStateAuditTrade[tradeState - 1] == 'pendiente'){
+            return `bg-gray-500 ${sty}`
+        }else if(typeStateAuditTrade[tradeState - 1] == 'confirmado'){
+            return `bg-green-700 ${sty}`
+        }else{
+            return `bg-rose-700 ${sty}`
+        }
+    }
     return (
         <div className="flex mt-[20px]">
             <div className="w-[35vw] ">
-                <div className="bg-blue-900 w-[100%] h-[40px] flex justify-center items-center">
-                    <p className=" text-white "><span className="font-semibold ">Fecha: </span>{tradeDate} | <span className="font-semibold ">Hora: </span>{tradeHour}</p>
+                <div className="bg-blue-900 w-[100%] h-[40px] flex justify-between items-center">
+                    <p className=" text-white ms-[25px]"><span className="font-semibold ">Fecha: </span>{tradeDate} | <span className="font-semibold ">Hora: </span>{tradeHour}</p>
+                    <div className={colorBackground('h-[100%] w-[120px] flex justify-center items-center')}>
+                        <p className="text-white  font-bold text-sm">{typeStateAuditTrade[tradeState - 1].toUpperCase()}</p>
+                    </div>
                 </div>
-                <div className="flex px-[20px] pb-[20px] border-[1px] border-blue-900">
+                <div className="flex px-[20px] pb-[20px] border-[1px] border-s-blue-900 border-b-blue-900 border-e-blue-900">
                     <div className="w-[100%] flex justify-center">
                         <div className="flex items-center">
                             <div className="flex flex-col items-start">

@@ -121,13 +121,13 @@ export default function RootLayout({
             Cerrar Sesión
           </Link>
         </> : <>
-          <Link
+          {/* <Link
             key='link-statistics'
             href='/statistics'
             className={getLinkClass('/statistics')}
           >
             Estadísticas
-          </Link>
+          </Link> */}
           <Link
             key='link-trade-center'
             href='/volunteer/trade-center'
