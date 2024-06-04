@@ -17,7 +17,28 @@ export default function TradeOfferFullMade(props: FullOfferTradeCard) {
         if (str.length === 0) return str;
         return str.charAt(0).toUpperCase() + str.slice(1);
     };
+    const _handleSubmitCancel = async () => {
+        const formDecline = {
+            id_post: props.idPostOffer,
+            id_oferta: props.idOffer,
+            cancelar: true
+        }
+        await axios
+            .post(`${FRONT_BASE_URL}user/trade-offers/decline`, formDecline)
+            .then(async () => {
+                await router.push('/')
+                await router.push('/user/trade-offers')
+                alert('Oferta cancelada')
+            })
+            .catch((error: { response: { data: { message: string } } }) => {
+                console.log(error);
+                if (error) {
+                    alert(error.response.data.message);
+                }
+            });
 
+
+    };
     return (
         <div className="">
             <div className="flex justify-center w-[100vw]">
@@ -50,20 +71,43 @@ export default function TradeOfferFullMade(props: FullOfferTradeCard) {
                         key={`${props.idPostOwner} ${props.idOffer} ${props.idPostOffer}`}
                         location={props.locationTradePostOwner}
                     />
-                    <div className="flex flex-col justify-between items-center my-[20px] mx-[30px] h-[55%]">
-                        <div className="">
-                            {typeStateTrade[props.offerState - 1] == 'pendiente' ? <p className=" bg-gray-500 text-white py-[2px] px-[6px] rounded-[5px] font-semibold">{capitalizeFirstLetter(typeStateTrade[props.offerState - 1])}</p> : typeStateTrade[props.offerState - 1] == 'confirmada' ? <p className="bg-green-700 text-white py-[2px] px-[6px] rounded-[5px] font-semibold">{typeStateTrade[props.offerState - 1]}</p> :
-                                <p className="bg-rose-700 text-white py-[2px] px-[6px] rounded-[5px] font-semibold">{capitalizeFirstLetter(typeStateTrade[props.offerState - 1])}</p>}
-                        </div>
-                        <Image
-                            alt="swap-arrows"
-                            width={0}
-                            height={0}
-                            className=" w-[200px]"
-                            src={SwapArrows}
-                        />
+                    {typeStateTrade[props.offerState - 1] == 'pendiente' ?
+                        <div className="flex flex-col justify-between items-center my-[20px] mx-[30px] h-[80%]">
+                            <div className="">
+                                {typeStateTrade[props.offerState - 1] == 'pendiente' ? <p className=" bg-gray-500 text-white py-[2px] px-[6px] rounded-[5px] font-semibold">{capitalizeFirstLetter(typeStateTrade[props.offerState - 1])}</p> : <></>}
+                            </div>
+                            <Image
+                                alt="swap-arrows"
+                                width={0}
+                                height={0}
+                                className=" w-[80px]"
+                                src={SwapArrows}
+                            />
+                            {typeStateTrade[props.offerState - 1] == 'pendiente' ? <button
+                                key='accept'
+                                className='text-white rounded-[10px] w-[160px] ms-2 py-2.5 px-2.5 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200'
+                                onClick={() => {
+                                    _handleSubmitCancel()
+                                }}
+                            >
+                                Cancelar oferta
+                            </button> : <></>}
+                        </div> :
+                        <div className="flex flex-col justify-between items-center my-[20px] mx-[30px] h-[55%]">
+                            <div className="">
+                                {typeStateTrade[props.offerState - 1] == 'confirmada' ? <p className="bg-green-700 text-white py-[2px] px-[6px] rounded-[5px] font-semibold">{typeStateTrade[props.offerState - 1]}</p> :
+                                    <p className="bg-rose-700 text-white py-[2px] px-[6px] rounded-[5px] font-semibold">{capitalizeFirstLetter(typeStateTrade[props.offerState - 1])}</p>}
+                            </div>
+                            <Image
+                                alt="swap-arrows"
+                                width={0}
+                                height={0}
+                                className=" w-[200px]"
+                                src={SwapArrows}
+                            />
 
-                    </div>
+                        </div>}
+
                     <TradeOfferProduct
                         desciption={props.descriptionPostOffer}
                         idPost={props.idPostOffer}

@@ -24,9 +24,10 @@ export default async function handler(
         },
     }
     const formData = req.body
-
+    console.log(formData);
+    
     await axios
-        .post(`${BACK_BASE_URL}CaritasBack/rechazarOferta`,formData, config)
+        .post(`${BACK_BASE_URL}CaritasBack/rechazarCancelarOferta`,formData, config)
         .then((result: any) => {
             res.status(result.status).json(result.data)  
         })
