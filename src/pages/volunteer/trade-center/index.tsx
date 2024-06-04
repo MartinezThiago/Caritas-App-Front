@@ -63,73 +63,39 @@ type TradeCenterInterface = {
 
 export default function VolunteerTradeSection({ user }: { user: User }) {
   const [tradeCenter, setTradeCenter] = useState<TradeCenterInterface[]>([])
+  const [centerUser, setCentersUser] = useState('')
   const [isLoading, setIsLoading] = useState(true);
   const [stylesOption, setStylesOption] = useState(0)
   const statesTrades = ['PENDIENTES', 'RECHAZADOS', 'CONFIRMADOS', 'CANCELADOS']
   useEffect(() => {
-    // Simula una carga de datos
-    setTimeout(() => {
-      setIsLoading(false); // Cambia isLoading a false después de 2 segundos
-    }, 200);
-  }, []);
-
+    const getCenters = async () => {
+      await axios.get(`${FRONT_BASE_URL}centers-user/get`).then((res: any) => {
+        setCentersUser(res.data.nombre_centro)
+      })
+    }
+    getCenters()
+  }, [])
   useEffect(() => {
     const formData = {
       id_centro: user.center
     }
-
     const getTradesCentro = async () => {
       await axios
         .post(`${FRONT_BASE_URL}volunteer/trade-center/`, formData)
         .then((res: any) => {
-          //console.log(res.data);
-
           setTradeCenter(res.data)
         })
     }
     getTradesCentro()
   }, [])
 
-  // const CardsTradeOffer = () => {
-  //   if (tradeCenter) {
-  //     const cards = tradeCenter!.map((e: TradeCenterInterface) => {
-  //        //console.log(e);
-
-  //       return (
-  //         <AuditTradeCard
-  //           key={e.idIntercambio}
-  //           idTrade={e.idIntercambio}
-  //           nameOwner={e.nombreUsuarioOwner}
-  //           surnameOwner={e.apellidoUsuarioOwner}
-  //           nameOffer={e.nombreUsuarioOffer}
-  //           surnameOffer={e.apellidoUsuarioOffer}
-  //           firstImagePostOwner={e.fotoPostOwner}
-  //           firstImagePostOffer={e.fotoPostOffer}
-  //           profilePicOwner={e.fotoPerfilUsuarioOwner}
-  //           profilePicOffer={e.fotoPerfilUsuarioOffer}
-  //           centerName={e.nombreCentro}
-  //           locationTrade={e.localidad}
-  //           centerAddress={e.direccion}
-  //           tradeDate={e.fechaIntercambio}
-  //           tradeHour={e.horario}
-  //           tradeState={e.idEstadoIntercambio}
-  //           idPostOwner={e.idPostOwner}
-  //           idPostOffer={e.idPostOffer}
-  //           user={user}
-  //           dniOffer={e.dniOffer}
-  //           dniOwner={e.dniOwner}
-  //           auditDescription={e.productoDonado}
-  //         />
-  //       )
-  //     })
-  //     // console.log(cards);
-  //     cards.sort((a, b) => a.props.tradeState - b.props.tradeState)
-  //     console.log(cards);
-
-  //     return cards
-  //   }
-  // }
-
+  useEffect(() => {
+    // Simula una carga de datos
+    setTimeout(() => {
+      setIsLoading(false); // Cambia isLoading a false después de 2 segundos
+    }, 200);
+  }, []);
+ 
   const CardsTradeOfferAUX = () => {
     if (tradeCenter) {
       const cards = tradeCenter!.map((e: TradeCenterInterface) => {
@@ -161,7 +127,6 @@ export default function VolunteerTradeSection({ user }: { user: User }) {
           />
         )
       })
-      // console.log(cards);
       cards.sort((a, b) => a.props.tradeState - b.props.tradeState)
       return stylesOption == 0 ? cards : cards.filter(x => x.props.tradeState == stylesOption)
     }
@@ -183,7 +148,7 @@ export default function VolunteerTradeSection({ user }: { user: User }) {
                 <div>
                   <div className="flex flex-col">
                     <p className="text-xl font-semibold text-blue-900  mt-[20px] m-auto">
-                      HISTORIAL DE INTERCAMBIOS EN EL CENTRO <span className="font-bold">{user.center}</span>
+                      HISTORIAL DE INTERCAMBIOS EN EL CENTRO <span className="font-bold">{centerUser}</span>
                     </p>
                     <div className="mt-[20px]">
                       <button
@@ -279,9 +244,9 @@ export default function VolunteerTradeSection({ user }: { user: User }) {
                     </div>
                     <div className=" mt-[20px] mb-[100px] flex flex-col items-center">
                       {CardsTradeOfferAUX()!.length > 0 ? CardsTradeOfferAUX() :
-                          <p className="text-2xl font-bold text-gray-500 mt-[20px] m-auto">NO EXISTEN INTERCAMBIOS {statesTrades[stylesOption - 1]} PARA TU CENTRO
-                          </p>
-                        
+                        <p className="text-2xl font-bold text-gray-500 mt-[20px] m-auto">NO EXISTEN INTERCAMBIOS {statesTrades[stylesOption - 1]} PARA TU CENTRO
+                        </p>
+
                       }
 
                     </div>
