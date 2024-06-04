@@ -64,7 +64,8 @@ type TradeCenterInterface = {
 export default function VolunteerTradeSection({ user }: { user: User }) {
   const [tradeCenter, setTradeCenter] = useState<TradeCenterInterface[]>([])
   const [isLoading, setIsLoading] = useState(true);
-
+  const [stylesOption, setStylesOption] = useState(0)
+  const statesTrades = ['PENDIENTES', 'RECHAZADOS', 'CONFIRMADOS', 'CANCELADOS']
   useEffect(() => {
     // Simula una carga de datos
     setTimeout(() => {
@@ -89,11 +90,50 @@ export default function VolunteerTradeSection({ user }: { user: User }) {
     getTradesCentro()
   }, [])
 
-  const CardsTradeOffer = () => {
+  // const CardsTradeOffer = () => {
+  //   if (tradeCenter) {
+  //     const cards = tradeCenter!.map((e: TradeCenterInterface) => {
+  //        //console.log(e);
+
+  //       return (
+  //         <AuditTradeCard
+  //           key={e.idIntercambio}
+  //           idTrade={e.idIntercambio}
+  //           nameOwner={e.nombreUsuarioOwner}
+  //           surnameOwner={e.apellidoUsuarioOwner}
+  //           nameOffer={e.nombreUsuarioOffer}
+  //           surnameOffer={e.apellidoUsuarioOffer}
+  //           firstImagePostOwner={e.fotoPostOwner}
+  //           firstImagePostOffer={e.fotoPostOffer}
+  //           profilePicOwner={e.fotoPerfilUsuarioOwner}
+  //           profilePicOffer={e.fotoPerfilUsuarioOffer}
+  //           centerName={e.nombreCentro}
+  //           locationTrade={e.localidad}
+  //           centerAddress={e.direccion}
+  //           tradeDate={e.fechaIntercambio}
+  //           tradeHour={e.horario}
+  //           tradeState={e.idEstadoIntercambio}
+  //           idPostOwner={e.idPostOwner}
+  //           idPostOffer={e.idPostOffer}
+  //           user={user}
+  //           dniOffer={e.dniOffer}
+  //           dniOwner={e.dniOwner}
+  //           auditDescription={e.productoDonado}
+  //         />
+  //       )
+  //     })
+  //     // console.log(cards);
+  //     cards.sort((a, b) => a.props.tradeState - b.props.tradeState)
+  //     console.log(cards);
+
+  //     return cards
+  //   }
+  // }
+
+  const CardsTradeOfferAUX = () => {
     if (tradeCenter) {
       const cards = tradeCenter!.map((e: TradeCenterInterface) => {
-        // console.log(e);
-
+        //  console.log(e);
         return (
           <AuditTradeCard
             key={e.idIntercambio}
@@ -123,13 +163,13 @@ export default function VolunteerTradeSection({ user }: { user: User }) {
       })
       // console.log(cards);
       cards.sort((a, b) => a.props.tradeState - b.props.tradeState)
-      return cards
+      return stylesOption == 0 ? cards : cards.filter(x => x.props.tradeState == stylesOption)
     }
   }
   return (
     <RootLayout user={user}>
       <div className="flex w-[100vw] justify-between">
-      <div className="w-[15vw] h-[85vh] border-e-[0.5px] border-blue-900 mt-[40px]"></div>
+        <div className="w-[15vw] h-[85vh] border-e-[0.5px] border-blue-900 mt-[40px]"></div>
         <div className="">
           {isLoading ? (
             <div className="flex mt-[50px]">
@@ -145,8 +185,105 @@ export default function VolunteerTradeSection({ user }: { user: User }) {
                     <p className="text-xl font-semibold text-blue-900  mt-[20px] m-auto">
                       HISTORIAL DE INTERCAMBIOS EN EL CENTRO <span className="font-bold">{user.center}</span>
                     </p>
-                    <div className=" mt-[20px]">
-                      {CardsTradeOffer()}
+                    <div className="mt-[20px]">
+                      <button
+                        key='all'
+                        className=' mx-[10px] hover:text-rose-700 w-[120px] h-[35px] font-semibold  hover:font-semibold  hover:border-rose-700 hover:border-s-[2px] hover:border-e-[2px] text-lg duration-100'
+                        style={{
+                          fontWeight: stylesOption == 0 ? '700' : '600',
+                          color: stylesOption == 0 ? 'rgb(190 18 60)' : '',
+                          borderInlineStartWidth: stylesOption == 0 ? '2px' : '0px',
+                          borderInlineEndWidth: stylesOption == 0 ? '2px' : '0px',
+                          borderColor: stylesOption == 0 ? 'rgb(190 18 60)' : 'white',
+                          borderBottomLeftRadius: stylesOption == 0 ? '10px' : '0px',
+                          borderBottomRightRadius: stylesOption == 0 ? '10px' : '0px',
+                        }}
+                        onClick={() => {
+                          setStylesOption(0)
+                        }}
+                      >
+                        Todos
+                      </button>
+                      <button
+                        key='pending'
+                        className=' mx-[10px] hover:text-rose-700  w-[120px] h-[35px] font-semibold  hover:font-semibold  hover:border-rose-700 hover:border-s-[2px] hover:border-e-[2px] text-lg duration-100'
+                        style={{
+                          fontWeight: stylesOption == 1 ? '700' : '600',
+                          color: stylesOption == 1 ? 'rgb(190 18 60)' : '',
+                          borderInlineStartWidth: stylesOption == 1 ? '2px' : '0px',
+                          borderInlineEndWidth: stylesOption == 1 ? '2px' : '0px',
+                          borderColor: stylesOption == 1 ? 'rgb(190 18 60)' : 'white',
+                          borderTopLeftRadius: stylesOption == 1 ? '10px' : '0px',
+                          borderTopRightRadius: stylesOption == 1 ? '10px' : '0px',
+                        }}
+                        onClick={() => {
+                          setStylesOption(1)
+                        }}
+                      >
+                        Pendientes
+                      </button>
+                      <button
+                        key='accepted'
+                        className=' mx-[10px] hover:text-rose-700  w-[125px] h-[35px] font-semibold  hover:font-semibold  hover:border-rose-700 hover:border-s-[2px] hover:border-e-[2px] text-lg duration-100'
+                        style={{
+                          fontWeight: stylesOption == 3 ? '700' : '600',
+                          color: stylesOption == 3 ? 'rgb(190 18 60)' : '',
+                          borderInlineStartWidth: stylesOption == 3 ? '2px' : '0px',
+                          borderInlineEndWidth: stylesOption == 3 ? '2px' : '0px',
+                          borderColor: stylesOption == 3 ? 'rgb(190 18 60)' : 'white',
+                          borderBottomLeftRadius: stylesOption == 3 ? '10px' : '0px',
+                          borderBottomRightRadius: stylesOption == 3 ? '10px' : '0px',
+                        }}
+                        onClick={() => {
+                          setStylesOption(3)
+                        }}
+                      >
+                        Confirmados
+                      </button>
+                      <button
+                        key='rejected'
+                        className=' mx-[10px] hover:text-rose-700 w-[120px] h-[35px] font-semibold  hover:font-semibold  hover:border-rose-700 hover:border-s-[2px] hover:border-e-[2px] text-lg duration-100'
+                        style={{
+                          fontWeight: stylesOption == 2 ? '700' : '600',
+                          color: stylesOption == 2 ? 'rgb(190 18 60)' : '',
+                          borderInlineStartWidth: stylesOption == 2 ? '2px' : '0px',
+                          borderInlineEndWidth: stylesOption == 2 ? '2px' : '0px',
+                          borderColor: stylesOption == 2 ? 'rgb(190 18 60)' : 'white',
+                          borderTopLeftRadius: stylesOption == 2 ? '10px' : '0px',
+                          borderTopRightRadius: stylesOption == 2 ? '10px' : '0px',
+                        }}
+                        onClick={() => {
+                          setStylesOption(2)
+                        }}
+                      >
+                        Rechazados
+                      </button>
+                      <button
+                        key='canceled'
+                        className=' mx-[10px] hover:text-rose-700 w-[120px] h-[35px] font-semibold  hover:font-semibold  hover:border-rose-700 hover:border-s-[2px] hover:border-e-[2px] text-lg duration-100'
+                        style={{
+                          fontWeight: stylesOption == 4 ? '700' : '600',
+                          color: stylesOption == 4 ? 'rgb(190 18 60)' : '',
+                          borderInlineStartWidth: stylesOption == 4 ? '2px' : '0px',
+                          borderInlineEndWidth: stylesOption == 4 ? '2px' : '0px',
+                          borderColor: stylesOption == 4 ? 'rgb(190 18 60)' : 'white',
+                          borderBottomLeftRadius: stylesOption == 4 ? '10px' : '0px',
+                          borderBottomRightRadius: stylesOption == 4 ? '10px' : '0px',
+                        }}
+                        onClick={() => {
+                          setStylesOption(4)
+                        }}
+                      >
+                        Cancelados
+                      </button>
+                    </div>
+                    <div className=" mt-[20px] mb-[100px] flex flex-col items-center">
+                      {CardsTradeOfferAUX()!.length > 0 ? CardsTradeOfferAUX() :
+                          <p className="text-2xl font-bold text-gray-500 mt-[20px] m-auto">NO EXISTEN INTERCAMBIOS {statesTrades[stylesOption - 1]} PARA TU CENTRO
+                          </p>
+                        
+                      }
+
                     </div>
                   </div>
                 </div>
