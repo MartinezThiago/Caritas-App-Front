@@ -54,6 +54,7 @@ export default function ExtendedPostCard(props: PostData) {
   const [postsFavsUser, setPostFavsUser] = useState<number[]>([])
   const [savedPost, setSavedPost] = useState(true)
   const [isHovered, setIsHovered] = useState(false);
+  const [deleteBtnStatus, setDeleteBtnStatus] = useState(false);
   useEffect(() => {
     // Simula una carga de datos
     setTimeout(() => {
@@ -193,6 +194,8 @@ export default function ExtendedPostCard(props: PostData) {
       })
   }
 
+
+
   const Centers = () => {
     const center = props.centersChoosed.map((e, index) => {
       return (
@@ -273,8 +276,41 @@ export default function ExtendedPostCard(props: PostData) {
                     </div>
                   </div>
                 </div>
-                <div className='mt-[50px] flex justify-center'>
-                  {props.user.userId == props.idOwnerUser ? <button
+                <div className='mt-[50px] w-[100%]'>
+                  {props.user.userId == props.idOwnerUser ? deleteBtnStatus == false ?
+                    <div className='w-[100%] flex justify-center'>
+                      <button
+                        key='delete-post'
+                        className='text-white font-semibold w-[90%] border-[3px] border-rose-700 bg-rose-700 hover:bg-white  hover:text-rose-700 duration-200'
+                        onClick={() => {
+                          setDeleteBtnStatus(true)
+                        }}
+                      >
+                        <p className="  mx-[10px] my-[10px] ">Eliminar publicacion</p>
+                      </button>
+                    </div> :
+                    <div className='flex w-[100%]'>
+                      <button
+                        key='delete-post'
+                        className='text-white mx-[30px] font-semibold w-[50%] border-[3px] border-rose-700 bg-rose-700 hover:bg-white  hover:text-rose-700  duration-200'
+                        onClick={() => {
+                          _handleDeletePost()
+                        }}
+                      >
+                        <p className="px-[10px] py-[10px]">Confirmar</p>
+                      </button>
+                      <button
+                        key='delete-post'
+                        className='hover:text-white font-semibold w-[50%] border-[3px] border-rose-700 hover:bg-rose-700 bg-white  text-rose-700 duration-200'
+
+                        onClick={() => {
+                          setDeleteBtnStatus(false)
+                        }}
+                      >
+                        <p className="  px-[10px] py-[10px] ">Cancelar</p>
+                      </button>
+                    </div> : <></>}
+                  {/* {props.user.userId == props.idOwnerUser ? <button
                     key='delete-post'
                     className='text-white font-semibold w-[80%] outline outline-transparent bg-rose-700 hover:bg-white  hover:text-rose-700 hover:outline-rose-700 hover:-outline-offset-1 duration-200'
 
@@ -283,7 +319,7 @@ export default function ExtendedPostCard(props: PostData) {
                     }}
                   >
                     <p className="  mx-[10px] my-[10px] ">Eliminar publicacion</p>
-                  </button> : <></>}
+                  </button> : <></>} */}
                 </div>
               </div>
             </div>
