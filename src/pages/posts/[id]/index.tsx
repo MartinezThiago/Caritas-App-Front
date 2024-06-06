@@ -33,7 +33,8 @@ export default function PostInfo ({ user }: { user: User }) {
         `${FRONT_BASE_URL}post/get`,
         { id: router.query.id }
       )
-
+      console.log(postData);
+      
       setPostData(postData)
     }
     getProducts()
@@ -52,7 +53,7 @@ export default function PostInfo ({ user }: { user: User }) {
         nameStateProduct={postData.nombre_estado_producto}
         locationTrade={postData.ubicacion_trade}
         question={0}
-        postState={0}
+        postState={postData.estado_publicacion}
         postDate={postData.fecha_publicacion}
         idOwnerUser={postData.id_usuario}
         nameUser={postData.nombre_usuario}

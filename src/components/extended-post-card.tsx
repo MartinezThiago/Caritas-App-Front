@@ -45,6 +45,8 @@ export default function ExtendedPostCard(props: PostData) {
     formState: { errors },
     resetField
   } = useForm<FormData>()
+  console.log(props);
+
   const router = useRouter()
   const [lastComments, setLastComments] = useState<[]>()
   const [commentsUpdate, setCommentsUpdate] = useState(false)
@@ -167,6 +169,30 @@ export default function ExtendedPostCard(props: PostData) {
       })
   }
 
+  const _handleDeletePost = async () => {
+    if (props.postState == 2) {
+      alert('Cancela la oferta pendiente de este producto antes de eliminar la publicacion')
+      return
+    }
+    if (props.postState == 4) {
+      alert('Cancela el intercambio pendiente de este producto antes de eliminar la publicacion')
+      return
+    }
+    const formData = {
+      id_publicacion: props.idPost
+    }
+    console.log(formData)
+    await axios
+      .post(`${FRONT_BASE_URL}post/delete`, formData)
+      .then(async () => {
+        await router.push(`/`)
+        alert('Publicacion eliminada correctamente')
+      })
+      .catch((error: { response: { data: { message: string } } }) => {
+        console.log(error)
+      })
+  }
+
   const Centers = () => {
     const center = props.centersChoosed.map((e, index) => {
       return (
@@ -208,7 +234,8 @@ export default function ExtendedPostCard(props: PostData) {
         <div className='text-black flex flex-col justify-between w-[35%]'>
           <div>
             <h1 className='font-bold'>{props.title}</h1>
-            <div className='ms-5 mt-1'>
+
+            <div className='ms-5 mt-1 flex flex-col justify-between h-[100%]'>
               <div className='h-20'>
                 <p className='font-bold'>Descripcion</p>
                 <p className='ms-3.5 mt-1.5'>{props.description}</p>
@@ -245,6 +272,18 @@ export default function ExtendedPostCard(props: PostData) {
                       </p>
                     </div>
                   </div>
+                </div>
+                <div className='mt-[50px] flex justify-center'>
+                  {props.user.userId == props.idOwnerUser ? <button
+                    key='delete-post'
+                    className='text-white font-semibold w-[80%] outline outline-transparent bg-rose-700 hover:bg-white  hover:text-rose-700 hover:outline-rose-700 hover:-outline-offset-1 duration-200'
+
+                    onClick={() => {
+                      _handleDeletePost()
+                    }}
+                  >
+                    <p className="  mx-[10px] my-[10px] ">Eliminar publicacion</p>
+                  </button> : <></>}
                 </div>
               </div>
             </div>
