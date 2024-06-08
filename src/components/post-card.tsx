@@ -57,7 +57,7 @@ export default function CardProduct({
       <div className='h-[145px] flex items-center justify-center'>
         <Image
           alt={`post-image-${id}`}
-          className={'h-auto w-[130px]'}
+          className={'h-auto w-[35%]'}
           src={image}
           width={0}
           height={0}
