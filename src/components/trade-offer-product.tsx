@@ -9,7 +9,7 @@ export default function TradeOfferProduct(props: TradeCardProductProps) {
     <Link href={`/posts/${props.idPost}`} className='w-[100%] h-[12rem] border-[2px] rounded-xl border-blue-900 hover:scale-105 duration-300'>
       <div className='flex h-[100%]'>
         <div className='flex w-[70%] justify-center items-center'>
-          <Image className='w-[150px] h-[150px] rounded-tl-xl rounded-bl-xl' width='0' height='0' alt={`post-image-${props.idPost}`} src={props.imagePost} />
+          <Image className='w-[50%] rounded-tl-xl rounded-bl-xl' width='0' height='0' alt={`post-image-${props.idPost}`} src={props.imagePost} />
         </div>
         <div className=' w-[100%] h-[100%]'>
           <div className='h-[100%] w-[100%] flex '>

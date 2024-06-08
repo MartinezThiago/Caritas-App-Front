@@ -159,8 +159,8 @@ export default function AuditTradeCard({
                     <div className="w-[100%] flex justify-center">
                         <div className="flex items-center">
                             <div className="flex flex-col items-start">
-                                <div className="w-[180px] h-[180px]">
-                                    <Image alt='image-post-owner' src={firstImagePostOwner} width={0} height={0} className="w-full h-full rounded-[10px] p-[20px]" />
+                                <div className="w-[180px] h-[180px] flex justify-center items-center">
+                                    <Image alt='image-post-owner' src={firstImagePostOwner} width={0} height={0} className="w-[90%] h-[90%] rounded-[10px] p-[20px]" />
                                 </div>
                                 <div className="flex items-center mt-[10px]">
                                     <Image alt="profile-pic-owner" src={profilePicOwner} width={0} height={0} className="w-[40px] rounded-full" />
@@ -175,8 +175,8 @@ export default function AuditTradeCard({
                                 <Image alt="trade-image" src={arrowsSwap} width={0} height={0} className="w-[80px] mx-[40px] mb-[40px]" />
                             </div>
                             <div className="flex flex-col items-start ">
-                                <div className="w-[180px] h-[180px]">
-                                    <Image alt='image-post-offer' src={firstImagePostOffer} width={0} height={0} className="w-full h-full rounded-[10px] p-[20px]" />
+                                <div className="w-[180px] h-[180px] flex justify-center items-center">
+                                    <Image alt='image-post-offer' src={firstImagePostOffer} width={0} height={0} className="w-[90%] h-[90%] rounded-[10px] p-[20px]" />
                                 </div>
                                 <div className="flex items-center mt-[10px]">
                                     <Image alt="profile-pic-offer" src={profilePicOffer} width={0} height={0} className="w-[40px] rounded-full " />
