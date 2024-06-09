@@ -59,7 +59,7 @@ export default function UserPendingTrades({ user }: { user: User }) {
   const CardsPendingTrades = () => {
     if (pendingTrades) {
       const cards = pendingTrades!.map((e: any) => {
-        console.log(e);
+
 
         return (
           <PendingTradeCard

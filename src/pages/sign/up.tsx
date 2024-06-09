@@ -102,7 +102,7 @@ export default function Signup({ user }: { user: User }) {
    */
   const _handleSubmit = (formData: FormData) => {
     setLoaging(true)
-    console.log(formData);
+
     processFiles(formData.photo as FileList).then(async (result: string[]) => {
       formData.photo = result
       await axios

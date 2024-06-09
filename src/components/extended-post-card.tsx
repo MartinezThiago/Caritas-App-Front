@@ -63,7 +63,7 @@ export default function ExtendedPostCard (props: PostData) {
         await axios
           .get<any[]>(`${FRONT_BASE_URL}/user/favs/getIdFavs`)
           .then((res: any) => {
-            console.log(res.data);
+
             setPostFavsUser(res.data)
             setSavedPost(!res.data.includes(props.idPost))
 
@@ -97,7 +97,7 @@ export default function ExtendedPostCard (props: PostData) {
         resetField('question')
       })
       .catch((error: { response: { data: { message: string } } }) => {
-        console.log(error)
+
         if (error) {
           alert(error.response.data.message)
         }
@@ -139,7 +139,7 @@ export default function ExtendedPostCard (props: PostData) {
       action: action,
       id_publicacion: props.idPost
     }
-    console.log(formData)
+
     await axios
       .post(`${FRONT_BASE_URL}user/favs/postFav`, formData)
       .then(async () => {
@@ -147,7 +147,7 @@ export default function ExtendedPostCard (props: PostData) {
         router.push(`/posts/${props.idPost}`)
       })
       .catch((error: { response: { data: { message: string } } }) => {
-        console.log(error)
+
       })
   }
   const _handleSubmitUnSave = async (action: boolean) => {
@@ -155,7 +155,7 @@ export default function ExtendedPostCard (props: PostData) {
       action: action,
       id_publicacion: props.idPost
     }
-    console.log(formData)
+
     await axios
       .post(`${FRONT_BASE_URL}user/favs/postFav`, formData)
       .then(async () => {
@@ -259,11 +259,7 @@ export default function ExtendedPostCard (props: PostData) {
                           key='Trade'
                           className='rounded-lg w-[100%] outline outline-transparent bg-rose-700 font-semibold hover:bg-white  hover:text-rose-700 hover:outline-rose-700 hover:-outline-offset-1 duration-200'
                           type={ButtonEnum.BUTTON}
-                          onClick={() => {
-                            console.log(
-                              'USUARIO BASICO: BOTON INTERCAMBIAR FUNCIONA'
-                            )
-                          }}
+                          onClick={() => {}}
                         >
                           <Link
                             href={`/posts/${router.query.id}/trade`}

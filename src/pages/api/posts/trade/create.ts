@@ -17,7 +17,7 @@ export default async function handler (
     dia_elegido: req.body.day,
     hora_elegida: req.body.hour
   }
-  console.log(form)
+
   const token = getCookie('access', { req, res })
   const config = { headers: { Authorization: `Bearer ${token}` } }
   // METER URL CORRECTA

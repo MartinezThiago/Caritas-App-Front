@@ -1,7 +1,7 @@
 import FullComment from "./full-comment";
 
 export default function AllComments(props: any) {
-    // console.log(props.comments);
+
     
     const comment = props.comments.comentarios.map((e: any) => {
         return (<FullComment

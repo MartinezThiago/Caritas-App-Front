@@ -32,7 +32,7 @@ interface centerBody {
 }
 
 export default function UserInfo ({ user }: { user: User }) {
-  // console.log(user);
+
   const [rol, setRol] = useState('')
   const [profilePic, setProfilePic] = useState('')
   const [centersUser, setCentersUser] = useState([])
@@ -46,7 +46,7 @@ export default function UserInfo ({ user }: { user: User }) {
     if (user.role == 'usuario_basico') {
       setRol('Basico')
     } else if (user.role == 'admin_centro') {
-      console.log('admin')
+
       setRol('Administrador')
     } else {
       setRol('Voluntario')

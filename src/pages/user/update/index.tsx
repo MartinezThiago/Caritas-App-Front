@@ -189,7 +189,7 @@ export default function UpdateUserInfo({ user }: { user: User }) {
                   register={register}
                   registerOptions={{
                     validate: value => {
-                      console.log(value);
+
                       if ((value === null) || (value === undefined) || (value === "")) {
                         return true
                       }

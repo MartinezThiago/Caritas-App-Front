@@ -1,10 +1,7 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-
-import axios from 'axios'
-
 import { BACK_BASE_URL } from '@/constants'
+import axios from 'axios'
 import { getCookie } from 'cookies-next'
-import { getUser } from '@/utils'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 /**
  * Async handler function that sends the signin form data to the external server.
@@ -12,27 +9,26 @@ import { getUser } from '@/utils'
  * @arg {NextApiRequest} req
  * @arg {NextApiResponse} res
  */
-export default async function handler(
-    req: NextApiRequest,
-    res: NextApiResponse
+export default async function handler (
+  req: NextApiRequest,
+  res: NextApiResponse
 ): Promise<void> {
-
-    const token = getCookie('access', { req, res })
-    const config = {
-        headers: {
-            Authorization: `Bearer ${token}`
-        },
+  const token = getCookie('access', { req, res })
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
     }
-    await axios
-        .get(`${BACK_BASE_URL}CaritasBack/getFavsIdsUser`, config)
-        .then((result: any) => {
-            res.status(result.status).json(result.data)  
-        })
-        .catch((result: any) => {
-            try {
-                res.status(result.status).json({ message: result.data.message })
-            } catch {
-                res.status(500).json({ message: 'Ha ocurrido un error inesperado.' })
-            }
-        })
+  }
+  await axios
+    .get(`${BACK_BASE_URL}CaritasBack/getFavsIdsUser`, config)
+    .then((result: any) => {
+      res.status(result.status).json(result.data)
+    })
+    .catch((result: any) => {
+      try {
+        res.status(result.status).json({ message: result.data.message })
+      } catch {
+        res.status(500).json({ message: 'Ha ocurrido un error inesperado.' })
+      }
+    })
 }

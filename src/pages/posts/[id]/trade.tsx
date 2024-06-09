@@ -10,9 +10,9 @@ import { useRouter } from 'next/router'
 import auxPic from 'public/post-image-preview.jpg'
 import { useEffect, useState } from 'react'
 
-export async function getServerSideProps({
+export async function getServerSideProps ({
   req,
-  res,
+  res
 }: Readonly<{
   req: NextApiRequest
   res: NextApiResponse
@@ -41,7 +41,7 @@ const Field = ({
   handleClick,
   datepicker = false,
   datePickerValue,
-  datepickerText = '',
+  datepickerText = ''
 }: {
   text: string
   options?: Array<{ value: string; label: string }>
@@ -71,7 +71,7 @@ const Field = ({
               options,
               setValue: (_: string, value: string) => {
                 handleClick(value)
-              },
+              }
             }}
           />
         )}
@@ -80,7 +80,7 @@ const Field = ({
   )
 }
 
-export default function Trade({ user }: { user: User }) {
+export default function Trade ({ user }: { user: User }) {
   const router = useRouter()
   const [postData, setPostData] = useState<PostDataAdapter | undefined>()
   const [posts, setPosts] = useState<[] | undefined>()
@@ -96,10 +96,9 @@ export default function Trade({ user }: { user: User }) {
     const getData = async () => {
       await axios
         .post<PostDataAdapter>(`${FRONT_BASE_URL}post/get`, {
-          id: router.query.id,
+          id: router.query.id
         })
         .then((postRes: any) => {
-          console.log(postRes.data)
           setPostData(postRes.data)
           const centerOptions: Option[] = []
           let dayOptions: string[] = []
@@ -112,17 +111,17 @@ export default function Trade({ user }: { user: User }) {
               } - ${
                 postRes.data.centros.filter(
                   (postResCenter: any) =>
-                    postResCenter.nombre_centro === center.nombre_centro,
+                    postResCenter.nombre_centro === center.nombre_centro
                 )[0].direccion
-              }`,
+              }`
             })
             dayOptions = center.diasDeIntercambio
             hourOptions[center.id_cp] = makeTimeRange(
               center.desde,
-              center.hasta,
+              center.hasta
             ).map((time: string) => ({
               value: time,
-              label: time,
+              label: time
             }))
           })
           setCenters(centerOptions)
@@ -137,7 +136,8 @@ export default function Trade({ user }: { user: User }) {
                   const filteredPosts = postsRes.data.filter(
                     (post: any) =>
                       post.categoria_producto ===
-                      postRes.data.categoria_producto,
+                        postRes.data.categoria_producto &&
+                      post.estado_publicacion == 1
                   )
                   setPosts(filteredPosts.length > 0 ? filteredPosts : undefined)
                 } catch {
@@ -194,9 +194,9 @@ export default function Trade({ user }: { user: User }) {
       'bidding-user-id': user.userId,
       center,
       day,
-      hour,
+      hour
     }
-    console.log(form)
+
     await axios
       .post(`${FRONT_BASE_URL}posts/trade/create`, form)
       .then((res: any) => {
@@ -278,7 +278,7 @@ export default function Trade({ user }: { user: User }) {
                     datepicker
                     datePickerValue={day}
                     datepickerText={`Solo se encuentra los días ${days.join(
-                      ', ',
+                      ', '
                     )}`}
                   />
                 ) : null}

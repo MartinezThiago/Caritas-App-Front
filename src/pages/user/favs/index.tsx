@@ -32,7 +32,7 @@ export default function UserPostsFavs({ user }: { user: User }) {
         .get(`${FRONT_BASE_URL}user/favs/getPostFavs`)
         .then((res: any) => {
           setPosts(res.data);
-          console.log(res.data);
+
 
         })
         .catch((res: any) => {

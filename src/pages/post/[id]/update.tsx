@@ -103,7 +103,7 @@ export default function CreatePost({ user }: { user: User }) {
   }, [id, router])
 
   const handleLocationChange = (e: any) => {
-    console.log(errors)
+
     setValue('location', e.target.value)
     setCenters(c[e.target.value])
   }

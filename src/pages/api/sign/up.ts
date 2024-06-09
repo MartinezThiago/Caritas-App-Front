@@ -15,7 +15,7 @@ export default async function handler(
   res: NextApiResponse
 ): Promise<void> {
   const formData = req.body
-  console.log(formData);
+
 
   const adaptedFormData = {
     nombre: formData.name,
@@ -27,7 +27,7 @@ export default async function handler(
     foto: formData.photo.length === 0 ? defaultPhoto : formData.photo[0],
     centros_elegidos: formData.centers
   }
-  console.log(adaptedFormData);
+
 
   await axios
     .post(`${BACK_BASE_URL}CaritasBack/registrarUsuario`, adaptedFormData)

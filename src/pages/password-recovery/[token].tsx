@@ -68,7 +68,7 @@ const Send: NextPage<any> = props => {
       clave:values.newPassword,
       confirmarClave:values.newPasswordConfirmation
     }
-    console.log(formData);
+
     
     await axios
       .post(`${FRONT_BASE_URL}recovery-password`, formData)

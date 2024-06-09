@@ -23,7 +23,7 @@ export default async function handler(
             Authorization: `Bearer ${token}`
         },
     }
-    console.log('se llego a obtener intercambios');
+
     
     await axios
         .get(`${BACK_BASE_URL}CaritasBack/obtenerIntercambiosEnEstadoPendienteUserEspecifico`, config)

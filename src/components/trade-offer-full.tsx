@@ -10,7 +10,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 
 export default function TradeOfferFull(props: FullOfferTradeCard) {
-    //console.log(props);
+
     const router = useRouter()
     const _handleSubmitAccept = async () => {
         const formAccept = {
@@ -25,7 +25,7 @@ export default function TradeOfferFull(props: FullOfferTradeCard) {
                 alert('Oferta aceptada')
             })
             .catch((error: { response: { data: { message: string } } }) => {
-                console.log(error);
+
                 if (error) {
                     alert(error.response.data.message);
                 }
@@ -45,7 +45,7 @@ export default function TradeOfferFull(props: FullOfferTradeCard) {
                 alert('Oferta rechazada')
             })
             .catch((error: { response: { data: { message: string } } }) => {
-                console.log(error);
+
                 if (error) {
                     alert(error.response.data.message);
                 }

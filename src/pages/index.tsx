@@ -1,112 +1,228 @@
-import { CardProduct, Input } from '@/components'
-import { Loading } from '@/components/loading'
-import { FRONT_BASE_URL } from '@/constants'
+import { CardProduct, MultiSelect } from '@/components'
 import { User } from '@/types'
 import { getUser } from '@/utils'
 import axios from 'axios'
+import { getCookie } from 'cookies-next'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { useRouter } from 'next/router'
 import auxPic from 'public/post-image-preview.jpg'
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
 import RootLayout from '../layouts/root-layout'
 
-export async function getServerSideProps({
+interface Option {
+  value: string
+  label: string
+}
+
+export async function getServerSideProps ({
   req,
-  res,
+  res
 }: Readonly<{
   req: NextApiRequest
   res: NextApiResponse
 }>): Promise<{
   props: {
     user: User
+    data: any[]
+    favs: number[]
+    locations: Array<Option>
+    centers: Array<Option>
   }
 }> {
-  return {
-    props: {
-      user: getUser(req, res),
-    },
-  }
-}
+  const user = getUser(req, res)
+  let data: any[] = []
+  let favs: number[] = []
+  let locations: Array<Option> = []
+  let centers: Array<Option> = []
+  const token = getCookie('access', { req, res })
 
-interface FormData {
-  question: string
-}
+  // Productos
+  await axios
+    .get('http://localhost:5000/CaritasBack/getPublicaciones')
+    .then((result: any) => (data = result.data))
+    .catch(() => (data = []))
 
-export default function Home({ user }: { user: User }) {
-  const router = useRouter()
-  const [cardsData, setCardsData] = useState<any[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [postsFavsUser, setPostFavsUser] = useState<number[]>([])
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>()
-  useEffect(() => {
-    const getProducts = async () => {
-      await axios
-        .get<any[]>(`${FRONT_BASE_URL}posts/get`)
-        .then((res: any) => {
-          setCardsData(
-            res.data.filter(
-              (post: { usuario_owner: number }) =>
-                post.usuario_owner != user.userId,
-            ),
-          )
-          //setCardsData([])
-        })
-        .catch((err: any) => {
-          setCardsData([])
-        })
-    }
-    getProducts()
-  }, [])
-  useEffect(() => {
-    if (user.role == 'usuario_basico') {
-      const getIdsPostFavs = async () => {
-        await axios
-          .get<any[]>(`${FRONT_BASE_URL}/user/favs/getIdFavs`)
-          .then((res: any) => {
-            console.log(res.data)
-            setPostFavsUser(res.data)
-          })
-          .catch((err: any) => {
-            setPostFavsUser([])
-          })
-      }
-      getIdsPostFavs()
-    }
-  }, [])
-
-  const CardsProducts = () => {
-    if (cardsData) {
-      const cards = cardsData!.map((e: any) => {
-        return (
-          <CardProduct
-            key={e.id}
-            id={e.id}
-            title={e.titulo}
-            desciption={e.descripcion}
-            nameProductCategorie={e.nombre_categoria_producto}
-            nameProductState={e.nombre_estado_producto}
-            locationTrade={e.ubicacion_trade}
-            image={
-              e.imagenes[0].base64_imagen ? e.imagenes[0].base64_imagen : auxPic
-            }
-            ownerPost={postsFavsUser.includes(e.id)}
-          />
-        )
+  // Favoritos
+  if (user.role == 'usuario_basico') {
+    await axios
+      .get('http://localhost:5000/CaritasBack/getFavsIdsUser', {
+        headers: { Authorization: `Bearer ${token}` }
       })
-      return cards
+      .then((result: any) => (favs = result.data))
+      .catch(() => (favs = []))
+  } else favs = []
+
+  // Localidades
+  const uniqueLocations = Array.from(
+    new Set(data.map(card => card.ubicacion_trade))
+  )
+  locations = uniqueLocations.map(location => ({
+    value: location,
+    label: location
+  }))
+
+  // Centros
+  const uniqueCenters = Array.from(
+    new Set(
+      data
+        .map(card =>
+          card.centros.map(
+            (center: any) =>
+              `${center.id_centro}|${center.nombre_centro}|${center.direccion}|${center.ubicacion}`
+          )
+        )
+        .flat(Infinity)
+    )
+  )
+  centers = uniqueCenters.map(center => {
+    const splitted = center.split('|')
+    return {
+      value: `${splitted[0]}`,
+      label: `${splitted[1]} | ${splitted[2]} | ${splitted[3]}`
+    }
+  })
+
+  // Localidades y centros
+
+  return { props: { user, data, favs, locations, centers } }
+}
+
+export default function Home ({
+  user,
+  data,
+  favs,
+  locations,
+  centers
+}: {
+  user: User
+  data: any[]
+  favs: number[]
+  locations: Array<Option>
+  centers: Array<Option>
+}) {
+  const router = useRouter()
+  const postsFavsUser = favs
+  const [filterSearchTag, setFilterSearchTag] = useState<string>('')
+  const [filterCategoryTags, setFilterCategoryTags] = useState<string[]>([])
+  const [filterConditionTags, setFilterConditionTags] = useState<string[]>([])
+  const [filterCenterTag, setFilterCenterTag] = useState<string[]>([])
+  const [hiddeCards, setHiddeCards] = useState<boolean>(false)
+
+  const cardsData = data.filter(card => {
+    const filterPerCategory = filterCategoryTags.length > 0
+    const filterPerCondition = filterConditionTags.length > 0
+    const filterPerCenter = filterCenterTag.length > 0
+    const filterPerSearch =
+      String(card.titulo)
+        .toLocaleLowerCase()
+        .includes(filterSearchTag.toLocaleLowerCase()) ||
+      String(card.descripcion)
+        .toLocaleLowerCase()
+        .includes(filterSearchTag.toLocaleLowerCase()) ||
+      String(card.nombre_categoria_producto)
+        .toLocaleLowerCase()
+        .includes(filterSearchTag.toLocaleLowerCase())
+
+    // SI NINGUNO
+    if (!filterPerCategory && !filterPerCondition && !filterPerCenter) {
+      return filterPerSearch
+      // SI SOLO CATEGORIA
+    } else if (filterPerCategory && !filterPerCondition && !filterPerCenter) {
+      return (
+        filterCategoryTags.some(
+          filterTag => card.categoria_producto == filterTag
+        ) && filterPerSearch
+      )
+      // SI SOLO ESTADO
+    } else if (!filterPerCategory && filterPerCondition && !filterPerCenter) {
+      return (
+        filterConditionTags.some(
+          filterTag => card.estado_publicacion == filterTag
+        ) && filterPerSearch
+      )
+      // SI SOLO CENTRO
+    } else if (!filterPerCategory && !filterPerCondition && filterPerCenter) {
+      return (
+        filterCenterTag.some(filterTag =>
+          card.centros.some((center: any) => center.id_centro == filterTag)
+        ) && filterPerSearch
+      )
+      // SI CATEGORIA Y ESTADO
+    } else if (filterPerCategory && filterPerCondition && !filterPerCenter) {
+      return (
+        filterCategoryTags.some(
+          filterTag => card.categoria_producto == filterTag
+        ) &&
+        filterConditionTags.some(
+          filterTag => card.estado_publicacion == filterTag
+        ) &&
+        filterPerSearch
+      )
+      // SI CATEGORIA Y CENTRO
+    } else if (filterPerCategory && !filterPerCondition && filterPerCenter) {
+      return (
+        filterCategoryTags.some(
+          filterTag => card.categoria_producto == filterTag
+        ) &&
+        filterCenterTag.some(filterTag =>
+          card.centros.some((center: any) => center.id_centro == filterTag)
+        ) &&
+        filterPerSearch
+      )
+      // SI ESTADO Y CENTRO
+    } else if (!filterPerCategory && filterPerCondition && filterPerCenter) {
+      return (
+        filterConditionTags.some(
+          filterTag => card.estado_publicacion == filterTag
+        ) &&
+        filterCenterTag.some(filterTag =>
+          card.centros.some((center: any) => center.id_centro == filterTag)
+        ) &&
+        filterPerSearch
+      )
+      // SI LOS 3
+    } else if (filterPerCategory && filterPerCondition && filterPerCenter) {
+      return (
+        filterCategoryTags.some(
+          filterTag => card.categoria_producto == filterTag
+        ) &&
+        filterConditionTags.some(
+          filterTag => card.estado_publicacion == filterTag
+        ) &&
+        filterCenterTag.some(filterTag =>
+          card.centros.some((center: any) => center.id_centro == filterTag)
+        ) &&
+        filterPerSearch
+      )
+    }
+  })
+
+  const handleCategoryFilterChange = (e: any) => {
+    if (e.target.checked) {
+      setFilterCategoryTags([...filterCategoryTags, e.target.value])
+    } else {
+      setFilterCategoryTags(
+        filterCategoryTags.filter(filterTag => filterTag !== e.target.value)
+      )
     }
   }
-  useEffect(() => {
-    // Simula una carga de datos
-    setTimeout(() => {
-      setIsLoading(false) // Cambia isLoading a false después de 2 segundos
-    }, 200)
-  }, [])
+
+  const handleStateFilterChange = (e: any) => {
+    if (e.target.checked) {
+      setFilterConditionTags([...filterConditionTags, e.target.value])
+    } else {
+      setFilterConditionTags(
+        filterConditionTags.filter(filterTag => filterTag !== e.target.value)
+      )
+    }
+  }
+
+  const handleResetFilters = () => {
+    setFilterSearchTag('')
+    setFilterCategoryTags([])
+    setFilterConditionTags([])
+  }
+
   return (
     <RootLayout user={user}>
       <main className='flex'>
@@ -141,50 +257,138 @@ export default function Home({ user }: { user: User }) {
               </button>
             </div>
           )}
-          <form
-            noValidate
-            onSubmit={handleSubmit(({ question }: FormData) => {
-              {
-              }
-              console.log(question)
-            })}
-          >
-            <div className='w-[100%] mt-[30px] flex justify-center items-center'>
-              <div className='max-w-[75%] max-h-[2.5rem]'>
-                <Input
-                  id='question'
-                  register={register}
-                  type='search'
-                  key='question'
-                  registerOptions={{ required: 'Escriba una busqueda' }}
-                  error={errors.question}
-                  placeholder='Buscar...'
-                  label=''
-                />
+          <div className='w-[100%] flex justify-center items-center'>
+            <div className='max-w-[75%] flex flex-col gap-4'>
+              <div className='w-full text-center'>
+                <button
+                  className='m-auto mt-[15%] text-white rounded-lg py-[10px] px-4 outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
+                  onClick={handleResetFilters}
+                >
+                  Eliminar Filtros
+                </button>
               </div>
-            </div>
-          </form>
-        </div>
-        <div className='bg-blue-900 w-[1px] h-[100%]'></div>
-        {isLoading ? (
-          <div className='w-[70vw]'>
-            <div className='flex mt-[50px]'>
-              <div className='m-auto'>
-                <Loading />
-              </div>
+              <input
+                type='search'
+                id='search'
+                placeholder='Buscar...'
+                value={filterSearchTag}
+                onChange={(e: any) => setFilterSearchTag(e.target.value ?? '')}
+                className='border px-4 py-2'
+              />
+              <fieldset className='flex flex-col border'>
+                <legend>Buscar por categoría</legend>
+                <div className='flex gap-2'>
+                  <input
+                    type='checkbox'
+                    id='ropa'
+                    value={4}
+                    checked={filterCategoryTags.includes('4')}
+                    onClick={handleCategoryFilterChange}
+                  />
+                  <label htmlFor='ropa'>Ropa</label>
+                </div>
+                <div className='flex gap-2'>
+                  <input
+                    type='checkbox'
+                    id='utiles-escolares'
+                    value={1}
+                    checked={filterCategoryTags.includes('1')}
+                    onClick={handleCategoryFilterChange}
+                  />
+                  <label htmlFor='utiles-escolares'>Útiles Escolares</label>
+                </div>
+                <div className='flex gap-2'>
+                  <input
+                    type='checkbox'
+                    id='alimentos'
+                    value={2}
+                    checked={filterCategoryTags.includes('2')}
+                    onClick={handleCategoryFilterChange}
+                  />
+                  <label htmlFor='alimentos'>Alimentos</label>
+                </div>
+                <div className='flex gap-2'>
+                  <input
+                    type='checkbox'
+                    id='limpieza'
+                    value={3}
+                    checked={filterCategoryTags.includes('3')}
+                    onClick={handleCategoryFilterChange}
+                  />
+                  <label htmlFor='limpieza'>Limpieza</label>
+                </div>
+              </fieldset>
+              <fieldset className='flex flex-col border'>
+                <legend>Buscar por estado</legend>
+                <div className='flex gap-2'>
+                  <input
+                    type='checkbox'
+                    name='condition'
+                    id='nuevo'
+                    value={1}
+                    checked={filterConditionTags.includes('1')}
+                    onClick={handleStateFilterChange}
+                  />
+                  <label htmlFor='nuevo'>Nuevo</label>
+                </div>
+                <div className='flex gap-2'>
+                  <input
+                    type='checkbox'
+                    name='condition'
+                    id='usado'
+                    value={2}
+                    checked={filterConditionTags.includes('2')}
+                    onClick={handleStateFilterChange}
+                  />
+                  <label htmlFor='usado'>Usado</label>
+                </div>
+              </fieldset>
+              <fieldset className='flex flex-col border'>
+                <legend>Buscar por localidad y centro</legend>
+                <div className='w-full max-w-[14.125rem] -mb-[1.35rem]'>
+                  <MultiSelect
+                    id='location-center'
+                    label=''
+                    props={{
+                      isMulti: true,
+                      options: centers,
+                      setValue: (_: any, value: any) =>
+                        setFilterCenterTag(value)
+                    }}
+                  />
+                </div>
+              </fieldset>
             </div>
           </div>
-        ) : cardsData.length > 0 ? (
+        </div>
+        <div className='bg-blue-900 w-[1px] h-[100%]'></div>
+        {cardsData.length > 0 && !hiddeCards ? (
           <div className='flex flex-col'>
             <div className='flex flex-wrap justify-center items-center mt-[4.4%] w-[70vw]'>
-              {CardsProducts()}
+              {cardsData.map((e: any) => (
+                <CardProduct
+                  key={e.id}
+                  id={e.id}
+                  title={e.titulo}
+                  desciption={e.descripcion}
+                  nameProductCategorie={e.nombre_categoria_producto}
+                  nameProductState={e.nombre_estado_producto}
+                  locationTrade={e.ubicacion_trade}
+                  image={
+                    e.imagenes[0].base64_imagen
+                      ? e.imagenes[0].base64_imagen
+                      : auxPic
+                  }
+                  ownerPost={postsFavsUser.includes(e.id)}
+                />
+              ))}
             </div>
             {user.role == 'admin_centro' ? (
               <button
                 key='hiddenPosts'
                 className='m-auto mt-[3%] text-white rounded-lg py-[10px] px-14 outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
                 onClick={() => {
-                  setCardsData([])
+                  setHiddeCards(true)
                 }}
               >
                 Vaciar publicaciones

@@ -37,7 +37,7 @@ export default function AnswerPost({
                 await router.push(`/posts/${idQuery}`)
             })
             .catch((error: { response: { data: { message: string } } }) => {
-                console.log(error);
+
                 if (error) {
                     alert(error.response.data.message)
 

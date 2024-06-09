@@ -106,7 +106,7 @@ export default function CreatePost ({ user }: { user: User }) {
           .then((res2: any) => {
             res.data.map((e: CenterData) => {
               // si es el centro elegido metele la estrellita
-              console.log(res2.data)
+
               const isSelected = res2.data.find(
                 (c: any) => c.id_centro === e.id_centro
               )
@@ -123,7 +123,7 @@ export default function CreatePost ({ user }: { user: User }) {
             })
           })
           .catch(() => {
-            console.log('ERROR AL BUSCAR LOS CENTROS SELECCIONADOS DEL USUARIO')
+
           })
       })
 
@@ -170,7 +170,7 @@ export default function CreatePost ({ user }: { user: User }) {
     })
     setValue(id, trueValue)
     clearErrors(id)
-    console.log('ESTO QUEDA EN centers', watch('centers'))
+
     if (trueValue.length > 3) {
       alert('Maximo 3 centros')
     }
@@ -182,7 +182,7 @@ export default function CreatePost ({ user }: { user: User }) {
     time![id] = value
     setValue(timeType, time)
     clearErrors(timeType)
-    console.log('ESTO QUEDA EN ', timeType, watch(timeType))
+
   }
 
   const clearCentersOnLocationChange = () => {
@@ -195,12 +195,6 @@ export default function CreatePost ({ user }: { user: User }) {
    */
   const _handleSubmit = async (formData: FormData) => {
     setLoaging(true)
-
-    console.log(
-      'ESTE ES EL FORMDATA FINAL ANTES DE ENVIARSE AL ENDPOINT DE NEXTJS',
-      formData
-    )
-    console.log('ESTO QUEDA EN STATUS', watch('status'))
 
     if (((watch('status')!=='Nuevo')&&(watch('status')!=='Usado'))) {
       alert('El estado del producto debe ser Nuevo o Usado')
@@ -228,7 +222,7 @@ export default function CreatePost ({ user }: { user: User }) {
       return
     }
 
-    console.log('ESTO QUEDA COMO formData EN EL SUBMIT', formData)
+
 
     if (formData.centers.length > 3) {
       alert('No se pueden seleccionar más de 3 centros')
@@ -388,7 +382,7 @@ export default function CreatePost ({ user }: { user: User }) {
                 registerOptions={{
                   required: !!watch('centers') || 'Campo requerido',
                   validate: (value: string[]) => {
-                    console.log('VALIDACION EN CENTROS', value)
+
                     if (value === null || value === undefined) {
                       return true
                     }
@@ -458,13 +452,6 @@ export default function CreatePost ({ user }: { user: User }) {
                             validate: () => {
                               const from = Number(watch('from')[index])
                               const to = Number(watch('to')[index])
-                              console.log(
-                                'ESTO QUEDA COMO FROM Y TO EN FROM',
-                                from,
-                                typeof from,
-                                to,
-                                typeof to
-                              )
                               if (to < from) {
                                 return 'La hora de inicio no puede ser mayor a la hora de fin'
                               }
@@ -494,13 +481,6 @@ export default function CreatePost ({ user }: { user: User }) {
                             validate: () => {
                               const from = Number(watch('from')[index])
                               const to = Number(watch('to')[index])
-                              console.log(
-                                'ESTO QUEDA COMO FROM Y TO EN TO',
-                                from,
-                                typeof from,
-                                to,
-                                typeof to
-                              )
                               if (from > to) {
                                 alert(
                                   'La hora de fin no puede ser menor a la hora de inicio'

@@ -17,15 +17,15 @@ export default async function handler(
   res: NextApiResponse
 ): Promise<void> {
   const formData={correo:req.body.email}
-  console.log('LLEGA HASTA ACA FORGOT PASSWORD');
+
   
-  console.log(formData);
-  console.log(`${BACK_BASE_URL}CaritasBack/recuperarClave`);
+
+
   
   await axios
     .post(`${BACK_BASE_URL}CaritasBack/recuperarClave?correo=${formData.correo}`)
     .then((result: any) => {
-      console.log(result.status, result.data);
+
       
       res.status(result.status).json({})
     })

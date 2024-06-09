@@ -41,7 +41,7 @@ export default function UserTradeOffers({ user }: { user: User }) {
       await axios
         .get(`${FRONT_BASE_URL}user/trade-offers/`)
         .then((res: any) => {
-          console.log(res.data);
+
 
           setTradeOffers(res.data)
         })
@@ -52,7 +52,7 @@ export default function UserTradeOffers({ user }: { user: User }) {
   const CardsTradeOffer = () => {
     if (tradeOffers) {
       const cards = tradeOffers!.map((e: FullOfferTradeCard) => {
-        // console.log(e);
+
 
         return (
           <TradeOfferFull

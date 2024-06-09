@@ -38,7 +38,7 @@ export default async function handler(
     foto: formData.photo[0] ? formData.photo[0] : "",
     centros_elegidos: formData.centers?formData.centers:[]
   }
-  console.log(formDataAdapted);
+
 
   await axios
     .post(`${BACK_BASE_URL}CaritasBack/cambiarDatosPersonales`, formDataAdapted, config)

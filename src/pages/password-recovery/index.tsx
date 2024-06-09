@@ -56,7 +56,7 @@ const PasswordRecovery: NextPage<{ user: User }> = ({ user }) => {
 
   async function onSubmit (values: z.infer<typeof formSchema>) {
     setLoaging(true)
-    console.log(values)
+
     await axios
       .post(`${FRONT_BASE_URL}forgot-password`, values)
       .then(() => {

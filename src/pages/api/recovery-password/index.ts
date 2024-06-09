@@ -16,7 +16,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
-  console.log(req.body);
+
   const formData=req.body
   await axios
     .post(`${BACK_BASE_URL}CaritasBack/actualizarClave?token=${formData.token}&clave=${formData.clave}&confirmarClave=${formData.confirmarClave}`)
