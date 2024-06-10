@@ -238,7 +238,7 @@ export default function ExtendedPostCard(props: PostData) {
           <div>
             <h1 className='font-bold'>{props.title}</h1>
 
-            <div className='ms-5 mt-1 flex flex-col justify-between h-[100%]'>
+            <div className='ms-5 mt-1 flex flex-col h-[100%]'>
               <div className='h-20'>
                 <p className='font-bold'>Descripcion</p>
                 <p className='ms-3.5 mt-1.5'>{props.description}</p>

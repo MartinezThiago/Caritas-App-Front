@@ -102,7 +102,7 @@ export default function PendingTradeCard({
 
     }
     return (
-        <div className="w-[43vw] border-[1px]  border-blue-900  my-[20px]">
+        <div className="w-[55vw] border-[1px]  border-blue-900  my-[20px]">
             {typeStateTrade[tradeState - 1] == 'pendiente' ?
                 <div className=" flex justify-end">
                     {!cancelPendingTrade ? <button
@@ -165,7 +165,7 @@ export default function PendingTradeCard({
                         </div>
                     </div>
                     <div>
-                        <Image alt="trade-image" src={arrowsSwap} width={0} height={0} className="w-[80px] mx-[40px] mb-[40px]" />
+                        <Image alt="trade-image" src={arrowsSwap} width={0} height={0} className="w-[80px] mx-[20px] mb-[40px]" />
                     </div>
                     <div className="flex flex-col items-start ">
                         <div className="w-[180px] h-[180px]">
