@@ -1,7 +1,11 @@
 import { BACK_BASE_URL } from '@/constants'
 import axios from 'axios'
 import type { NextApiRequest, NextApiResponse } from 'next'
-
+export const config = {
+  api: {
+    responseLimit: '8mb',
+  },
+}
 /**
  * Async handler function that sends the signin form data to the external server.
  * Filters the response and retrieves the appropriate status code and message

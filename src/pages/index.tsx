@@ -8,13 +8,14 @@ import { useRouter } from 'next/router'
 import auxPic from 'public/post-image-preview.jpg'
 import { useEffect, useState } from 'react'
 import RootLayout from '../layouts/root-layout'
+import { FRONT_BASE_URL } from '@/constants'
 
 interface Option {
   value: string
   label: string
 }
 
-export async function getServerSideProps ({
+export async function getServerSideProps({
   req,
   res
 }: Readonly<{
@@ -38,18 +39,24 @@ export async function getServerSideProps ({
 
   // Productos
   await axios
-    .get('http://localhost:5000/CaritasBack/getPublicaciones')
-    .then((result: any) => (data = result.data))
+    .get(`${FRONT_BASE_URL}posts/get`)
+    .then((result: any) => (data = result.data.filter((post: { usuario_owner: number }) => post.usuario_owner != user.userId)))
     .catch(() => (data = []))
 
   // Favoritos
   if (user.role == 'usuario_basico') {
+    console.log('ASDASDASD');
+
     await axios
-      .get('http://localhost:5000/CaritasBack/getFavsIdsUser', {
-        headers: { Authorization: `Bearer ${token}` }
+      .get(`${FRONT_BASE_URL}user/favs/getIdFavs`)
+      .then((result: any) => {
+        console.log('THEN del getIdFavs')
+        favs = result.data
       })
-      .then((result: any) => (favs = result.data))
-      .catch(() => (favs = []))
+      .catch(() => {
+        console.log('CATCH del getIdFavs')
+        favs = []
+      })
   } else favs = []
 
   // Localidades
@@ -87,7 +94,7 @@ export async function getServerSideProps ({
   return { props: { user, data, favs, locations, centers } }
 }
 
-export default function Home ({
+export default function Home({
   user,
   data,
   favs,
@@ -102,6 +109,27 @@ export default function Home ({
 }) {
   const router = useRouter()
   const postsFavsUser = favs
+  // console.log(favs);
+  // console.log(postsFavsUser);
+  const [postsFavsUserAux, setPostFavsUserAux] = useState<number[]>([])
+  useEffect(() => {
+    if (user.role == 'usuario_basico') {
+      const getIdsPostFavs = async () => {
+        await axios
+          .get<any[]>(`${FRONT_BASE_URL}/user/favs/getIdFavs`)
+          .then((res: any) => {
+            console.log(res.data);
+            setPostFavsUserAux(res.data)
+
+          })
+          .catch((err: any) => {
+            setPostFavsUserAux([])
+          })
+      }
+      getIdsPostFavs();
+    }
+  }, []);
+
   const [filterSearchTag, setFilterSearchTag] = useState<string>('')
   const [filterCategoryTags, setFilterCategoryTags] = useState<string[]>([])
   const [filterConditionTags, setFilterConditionTags] = useState<string[]>([])
@@ -379,7 +407,7 @@ export default function Home ({
                       ? e.imagenes[0].base64_imagen
                       : auxPic
                   }
-                  ownerPost={postsFavsUser.includes(e.id)}
+                  ownerPost={postsFavsUserAux.includes(e.id)}
                 />
               ))}
             </div>
