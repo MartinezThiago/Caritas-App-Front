@@ -214,7 +214,8 @@ export default function Trade ({ user }: { user: User }) {
         <div className='w-full flex flex-col'>
           {posts ? (
             <>
-              <h1 className='w-full text-center'>
+              <div className='flex justify-center'><p className='text-rose-700 text-[15px] mt-[20px]'><span className=' font-bold'>ACLARACION:</span> Para realizar un intercambio exitosamente es necesario presentarse con el dni del dueño del producto a intercambiar.</p></div>
+              <h1 className='w-full text-center mt-[10px]'>
                 1) Seleccione el producto a ofertar/intercambiar
               </h1>
               <div className='w-full p-4 flex justify-center items-center overflow-x-auto'>

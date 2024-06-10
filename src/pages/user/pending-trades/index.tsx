@@ -155,6 +155,7 @@ export default function UserPendingTrades({ user }: { user: User }) {
                   <p className="text-xl font-semibold text-blue-900  mt-[20px]">
                     INTERCAMBIOS PENDIENTES
                   </p>
+                  <p className='text-rose-700 text-[15px] mt-[20px]'><span className=' font-bold'>ACLARACION:</span> Para realizar un intercambio exitosamente es necesario presentarse con el dni del dueño del producto a intercambiar.</p>
                   <div className="mt-[20px]">
                     <button
                       key='all'
