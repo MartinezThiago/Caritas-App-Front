@@ -28,11 +28,10 @@ interface Option {
 const validateDay = (day: string, days: string[]): boolean => {
   const dayOfWeek = dayjs(day).day()
   const isDayOfWeekAvailable = days.includes(daysByDay[dayOfWeek])
-  if (isDayOfWeekAvailable) {
-    return true
-  } else {
-    return false
-  }
+  const today = dayjs().format('YYYY-MM-DD')
+  const isNotToday = day !== today
+  const isWithin30Days = dayjs(day).isBefore(dayjs().add(30, 'day'))
+  return isDayOfWeekAvailable && isNotToday && isWithin30Days
 }
 
 const Field = ({
