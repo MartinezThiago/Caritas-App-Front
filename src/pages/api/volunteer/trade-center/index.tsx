@@ -16,20 +16,17 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ): Promise<void> {
-
     const token = getCookie('access', { req, res })
     const config = {
         headers: {
             Authorization: `Bearer ${token}`
         },
     }
-    const formData = req.body
-    console.log(formData);
     
     await axios
-        .post(`${BACK_BASE_URL}CaritasBack/rechazarCancelarOferta`,formData, config)
+        .get(`${BACK_BASE_URL}CaritasBack/obtenerIntercambiosEnCentroEspecifico?id_centro=${req.body.id_centro}`, config)
         .then((result: any) => {
-            res.status(result.status).json(result.data)  
+            res.status(result.status).json(result.data)
         })
         .catch((result: any) => {
             try {

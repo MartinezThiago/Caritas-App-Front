@@ -3,12 +3,20 @@ import SwapArrows from "public/arrows-swap.png"
 import auxProfilePic from 'public/profile-pic-default.jpg'
 import auxPostPic from 'public/post-image-preview.jpg'
 import arrowsSwap from 'public/arrows-swap.png'
-import { FullOfferTradeCard } from "@/types";
+import { FullOfferTradeCard, User } from "@/types";
 import Image from 'next/image'
 import CardProduct from "./post-card";
 import { FRONT_BASE_URL } from "@/constants";
 import axios from "axios";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import { ButtonEnum } from "./types";
+import { useState } from "react";
+import { CancelPendingTrade } from ".";
+import { useForm } from "react-hook-form";
+interface FormData {
+    motivoCancelacion: string
+}
 
 export default function PendingTradeCard({
     idTrade,
@@ -25,8 +33,11 @@ export default function PendingTradeCard({
     centerAddress,
     tradeDate,
     tradeHour,
-    tradeState
-
+    tradeState,
+    idPostOwner,
+    idPostOffer,
+    user,
+    reasonAction
 }: {
     idTrade: number
     nameOwner: string
@@ -42,15 +53,93 @@ export default function PendingTradeCard({
     centerAddress: string
     tradeDate: string
     tradeHour: string
-    tradeState: string
+    tradeState: number
+    idPostOwner: number
+    idPostOffer: number
+    user: User
+    reasonAction?: string
 }) {
+    const router = useRouter();
+    const typeStateTrade = ['pendiente', 'rechazado', 'confirmado', 'cancelado'];
+    const [cancelPendingTrade, setCancelPendingTrade] = useState(false)
+    //console.log(typeStateTrade[tradeState - 1]);
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        setValue,
+        watch,
+        clearErrors,
+        resetField
+    } = useForm<FormData>()
 
+    const _handleSubmit = async (formData: FormData) => {
+        const formDataAux = {
+            id_trade: idTrade,
+            id_cancelante: parseInt(user.userId.toString()),
+            id_post_owner: idPostOwner,
+            id_post_offer: idPostOffer,
+            motivo_cancelacion: formData.motivoCancelacion
+        }
+        console.log(formDataAux);
+        await axios
+            .post(`${FRONT_BASE_URL}user/pending-trades/cancel/`, formDataAux)
+            .then(async () => {
+                await router.push('/')
+                await router.push('/user/pending-trades')
+                alert('Cancelacion exitosa de intercambio')
+            })
+            .catch((error: { response: { data: { message: string } } }) => {
+                console.log(error)
+            })
+    }
+    const _handleSubmitCancelCancelTrade = async () => {
+        setCancelPendingTrade(false)
+
+    }
+    const _handleSubmitCancelTrade = async () => {
+        setCancelPendingTrade(true)
+
+    }
     return (
         <div className="w-[43vw] border-[1px]  border-blue-900  my-[20px]">
-            <div className=" flex justify-end">
-                <p className="text-rose-700 font-bold mx-[10px] my-[10px]"> CANCELAR INTERCAMBIO❌</p>
-            </div>
-            <div className="flex px-[20px] pb-[20px] ">
+            {typeStateTrade[tradeState - 1] == 'pendiente' ?
+                <div className=" flex justify-end">
+                    {!cancelPendingTrade ? <button
+                        key='cancel-trade'
+                        className='border-s-[1px] px-[10px] border-b-[1px] rounded-bl-[8px] border-rose-700 text-rose-700 hover:bg-rose-700  hover:text-white'
+                        type={ButtonEnum.BUTTON}
+                        onClick={() => {
+                            _handleSubmitCancelTrade()
+                        }}
+                    >
+                        <p className=" font-bold mx-[10px] my-[10px] text-sm"> CANCELAR INTERCAMBIO</p>
+
+                    </button>
+
+
+                        : <></>}
+                </div> :
+                typeStateTrade[tradeState - 1] == 'rechazado' ?
+                    <div className=" flex justify-end">
+                        <div className="border-s-[1px] px-[10px] border-b-[1px] rounded-bl-[8px] border-rose-700 bg-rose-700  text-white">
+                            <p className=" font-bold mx-[10px] my-[10px] text-sm"> INTERCAMBIO RECHAZADO</p>
+                        </div>
+                    </div> :
+                    typeStateTrade[tradeState - 1] == 'confirmado' ?
+                        <div className=" flex justify-end">
+                            <div className="border-s-[1px] px-[10px] border-b-[1px] rounded-bl-[8px] border-green-700 bg-green-700  text-white">
+                                <p className=" font-bold mx-[10px] my-[10px] text-sm"> INTERCAMBIO CONFIRMADO</p>
+                            </div>
+                        </div> :
+                        <div className=" flex justify-end">
+                            <div className="border-s-[1px] px-[10px] border-b-[1px] rounded-bl-[8px] border-rose-700 bg-rose-700  text-white">
+                                <p className=" font-bold mx-[10px] my-[10px] text-sm"> INTERCAMBIO CANCELADO</p>
+                            </div>
+                        </div>
+            }
+
+            < div className="flex px-[20px] pb-[20px] ">
                 <div className="h-[12rem] flex items-center justify-center">
                     <div className="flex flex-col items-start">
                         <p className="text-rose-700 text-xl font-bold mb-[4px] ">Centro elegido</p>
@@ -89,6 +178,66 @@ export default function PendingTradeCard({
                     </div>
                 </div>
             </div>
-        </div>
+            {cancelPendingTrade ?
+                <form
+                    key='cancel-pending-trade-form'
+                    noValidate
+                    onSubmit={handleSubmit(_handleSubmit)}
+                    className=' flex flex-col items-center justify-center h-[100%]'
+                >
+                    <div className="w-[80%]">
+                        <CancelPendingTrade
+                            id='motivoCancelacion'
+                            label='Motivo de la cancelacion'
+                            error={errors.motivoCancelacion}
+                            register={register}
+                            // registerOptions={{ required: 'Campo requerido' }}
+                            setValue={(value: string) => {
+                                setValue('motivoCancelacion', value)
+                            }}
+                            clearError={() => clearErrors('motivoCancelacion')}
+                        />
+                    </div>
+                    <div>
+                        <button
+                            key='cancel-trade-form-submit-button'
+                            type={ButtonEnum.SUBMIT}
+
+                            className='mx-[10px] py-2 px-6 w-[150px] mb-[40px] outline-transparent outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 text-white active:text-white active:bg-rose-700'
+                        >
+                            Enviar
+                        </button>
+                        <button
+                            key='cancel-cancel-trade'
+                            type={ButtonEnum.BUTTON}
+                            onClick={() => {
+                                _handleSubmitCancelCancelTrade()
+                            }}
+
+                            className='mx-[10px] py-2 px-6 w-[150px] mb-[40px] outline-transparent outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 text-white active:text-white active:bg-rose-700'
+                        >
+                            Cancelar
+                        </button>
+                    </div>
+
+                </form >
+                :
+                <></>
+            }
+            {
+                typeStateTrade[tradeState - 1] != 'pendiente' ?
+                    <div className="h-[40px] border-t-[1px] border-blue-900 flex items-center ">
+                        {typeStateTrade[tradeState - 1] == 'rechazado' ?
+                            <p className="ms-[10px]"><span className="font-bold ">Motivo del rechazo: </span>{reasonAction}</p> :
+                            typeStateTrade[tradeState - 1] == 'cancelado' ?
+                                <p className="ms-[10px]"><span className="font-bold">Motivo de la cancelacion: </span>{reasonAction}</p> :
+                                typeStateTrade[tradeState - 1] == 'confirmado' ?
+                                    <p className="ms-[10px]"><span className="font-bold">{reasonAction != ''?'Producto donado: ':'No hubo donacion'} </span>{reasonAction}</p>
+                                    :
+                                    <></>}
+                    </div> :
+                    <></>
+            }
+        </div >
     )
 }

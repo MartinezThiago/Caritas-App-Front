@@ -23,12 +23,12 @@ export default async function handler(
             Authorization: `Bearer ${token}`
         },
     }
-    const formData = req.body
+    const formData=req.body
     console.log(formData);
     
     await axios
-        .post(`${BACK_BASE_URL}CaritasBack/rechazarCancelarOferta`,formData, config)
-        .then((result: any) => {
+        .post(`${BACK_BASE_URL}CaritasBack/cancelarIntercambioPendiente`,formData, config)
+        .then((result: any) => {            
             res.status(result.status).json(result.data)  
         })
         .catch((result: any) => {

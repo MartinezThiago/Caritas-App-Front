@@ -169,12 +169,16 @@ export interface FullOfferTradeCard {
 
   //INFORMACION QUE ELIGIO EL OFERTANTE Centro, hora y fecha
   idCenterPostChoosedTrade:number
+  idRawCenterPostChoosed:number
   nameCenterPostChoosedTrade:string
   addressCenterPostChoosedTrade:string
   hourCenterPostChoosedTrade:string
   dateCenterPostChoosedTrade:string
 
   idOffer:number
+  offerState:number
+
+  locationTradeCenterChoosed:string
 }
 
 

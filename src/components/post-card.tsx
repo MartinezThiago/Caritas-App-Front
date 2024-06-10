@@ -23,9 +23,11 @@ export interface CardProductProps {
   link?: string
   handleClick?: (id: string) => void
   enableLink?: boolean
+  onMyPost?: boolean
+  statePost?: number
 }
 
-export default function CardProduct ({
+export default function CardProduct({
   id,
   title,
   desciption,
@@ -36,10 +38,12 @@ export default function CardProduct ({
   ownerPost,
   link,
   handleClick,
+  onMyPost,
+  statePost,
   enableLink = true
 }: CardProductProps) {
   const Slot = enableLink ? Link : 'div'
-
+  
   const onClick = () => {
     handleClick && handleClick(String(id))
   }
@@ -53,7 +57,7 @@ export default function CardProduct ({
       <div className='h-[145px] flex items-center justify-center'>
         <Image
           alt={`post-image-${id}`}
-          className={'h-auto w-[130px]'}
+          className={'h-auto w-[35%]'}
           src={image}
           width={0}
           height={0}
@@ -68,6 +72,11 @@ export default function CardProduct ({
           <div>
             {ownerPost ? (
               <p className='font-bold text-sm text-rose-700'>Guardado</p>
+            ) : (
+              <></>
+            )}
+            {onMyPost ? (
+              statePost == 1 ? <p className='font-bold text-sm text-blue-900'>Publicado</p> : statePost == 2 ? <p className='font-bold text-sm text-gray-500'>Ofertado</p> : statePost == 4 ?<p className='font-bold text-sm text-green-700'>En proceso de intercambio</p>:statePost == 3 ?<p className='font-bold text-sm text-rose-700'>Baneada</p>:<></>
             ) : (
               <></>
             )}

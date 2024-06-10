@@ -16,7 +16,7 @@ export default function RootLayout({
   const [profilePic, setProfilePic] = useState('');
   const router = useRouter();
   const currentPath = router.pathname;
-  const getLinkClass = (path:string, styles?:string) => {
+  const getLinkClass = (path: string, styles?: string) => {
     return currentPath === path ? `font-bold scale-104 pb-[2px] ${styles}` : `${styles}`;
   };
   useEffect(() => {
@@ -64,7 +64,7 @@ export default function RootLayout({
         <Link
           key='link-signup'
           href='/sign/up'
-          className={getLinkClass('/sign/up','me-[10px]')}
+          className={getLinkClass('/sign/up', 'me-[10px]')}
         >
           Registrarse
         </Link>
@@ -98,7 +98,7 @@ export default function RootLayout({
           >
             Intercambios pendientes
           </Link>
-          
+
           <div
             key='header-separator'
             className='flex-grow'
@@ -124,9 +124,17 @@ export default function RootLayout({
           {/* <Link
             key='link-statistics'
             href='/statistics'
+            className={getLinkClass('/statistics')}
           >
             Estadísticas
           </Link> */}
+          <Link
+            key='link-trade-center'
+            href='/volunteer/trade-center'
+            className={getLinkClass('/volunteer/trade-center')}
+          >
+            Intercambios
+          </Link>
           <div
             key='header-separator'
             className='flex-grow'
