@@ -77,7 +77,7 @@ export default function AuditTradeCard({
         clearErrors,
         resetField
     } = useForm<FormData>()
-
+    const [confirmReject, setConfirmReject] = useState(false)
     const [loading, setLoaging] = useState(false)
     const [optionTrade, setOptionTrade] = useState('')
     const typeStateAuditTrade = ['pendiente', 'rechazado', 'confirmado', 'cancelado'];
@@ -137,12 +137,12 @@ export default function AuditTradeCard({
         formatted = formatted.replace(/(\d{3})(?=\d)/g, '$1.');
         return formatted;
     }
-    function colorBackground(sty:string){
-        if(typeStateAuditTrade[tradeState - 1] == 'pendiente'){
+    function colorBackground(sty: string) {
+        if (typeStateAuditTrade[tradeState - 1] == 'pendiente') {
             return `bg-gray-500 ${sty}`
-        }else if(typeStateAuditTrade[tradeState - 1] == 'confirmado'){
+        } else if (typeStateAuditTrade[tradeState - 1] == 'confirmado') {
             return `bg-green-700 ${sty}`
-        }else{
+        } else {
             return `bg-rose-700 ${sty}`
         }
     }
@@ -275,14 +275,26 @@ export default function AuditTradeCard({
                                     clearError={() => clearErrors('motivoRechazo')}
                                 />
                             </div>
-                            <button
+                            {confirmReject == false ? <div className="">
+                                <button
+                                    key='confirm-reject-trade'
+                                    className='py-2 px-6 w-[200px] mb-[40px] outline-transparent outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 text-white active:text-white active:bg-rose-700'
+                                    type={ButtonEnum.BUTTON}
+                                    onClick={() => {
+                                        setConfirmReject(true)
+                                    }}
+                                >
+                                    Confirmar rechazo
+                                </button>
+                            </div> : <></>}
+                            {confirmReject ? <button
                                 key='signin-form-submit-button'
                                 type={ButtonEnum.SUBMIT}
 
                                 className='py-2 px-6 w-[150px] mb-[40px] outline-transparent outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 text-white active:text-white active:bg-rose-700'
                             >
                                 Enviar
-                            </button>
+                            </button> : <></>}
                         </div> : <></>}
 
                 </form>
