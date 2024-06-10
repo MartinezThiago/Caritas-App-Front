@@ -1,4 +1,5 @@
 import { CardProduct, MultiSelect } from '@/components'
+import { FRONT_BASE_URL } from '@/constants'
 import { User } from '@/types'
 import { getUser } from '@/utils'
 import axios from 'axios'
@@ -8,14 +9,13 @@ import { useRouter } from 'next/router'
 import auxPic from 'public/post-image-preview.jpg'
 import { useEffect, useState } from 'react'
 import RootLayout from '../layouts/root-layout'
-import { FRONT_BASE_URL } from '@/constants'
 
 interface Option {
   value: string
   label: string
 }
 
-export async function getServerSideProps({
+export async function getServerSideProps ({
   req,
   res
 }: Readonly<{
@@ -25,14 +25,11 @@ export async function getServerSideProps({
   props: {
     user: User
     data: any[]
-    favs: number[]
-    locations: Array<Option>
     centers: Array<Option>
   }
 }> {
   const user = getUser(req, res)
   let data: any[] = []
-  let favs: number[] = []
   let locations: Array<Option> = []
   let centers: Array<Option> = []
   const token = getCookie('access', { req, res })
@@ -40,35 +37,15 @@ export async function getServerSideProps({
   // Productos
   await axios
     .get(`${FRONT_BASE_URL}posts/get`)
-    .then((result: any) => (data = result.data.filter((post: { usuario_owner: number }) => post.usuario_owner != user.userId)))
+    .then(
+      (result: any) =>
+        (data = result.data.filter(
+          (post: { usuario_owner: number }) => post.usuario_owner != user.userId
+        ))
+    )
     .catch(() => (data = []))
 
-  // Favoritos
-  if (user.role == 'usuario_basico') {
-    console.log('ASDASDASD');
-
-    await axios
-      .get(`${FRONT_BASE_URL}user/favs/getIdFavs`)
-      .then((result: any) => {
-        console.log('THEN del getIdFavs')
-        favs = result.data
-      })
-      .catch(() => {
-        console.log('CATCH del getIdFavs')
-        favs = []
-      })
-  } else favs = []
-
-  // Localidades
-  const uniqueLocations = Array.from(
-    new Set(data.map(card => card.ubicacion_trade))
-  )
-  locations = uniqueLocations.map(location => ({
-    value: location,
-    label: location
-  }))
-
-  // Centros
+  // Localidades y centros
   const uniqueCenters = Array.from(
     new Set(
       data
@@ -89,47 +66,20 @@ export async function getServerSideProps({
     }
   })
 
-  // Localidades y centros
-
-  return { props: { user, data, favs, locations, centers } }
+  return { props: { user, data, centers } }
 }
 
-export default function Home({
+export default function Home ({
   user,
   data,
-  favs,
-  locations,
   centers
 }: {
   user: User
   data: any[]
-  favs: number[]
-  locations: Array<Option>
   centers: Array<Option>
 }) {
   const router = useRouter()
-  const postsFavsUser = favs
-  // console.log(favs);
-  // console.log(postsFavsUser);
   const [postsFavsUserAux, setPostFavsUserAux] = useState<number[]>([])
-  useEffect(() => {
-    if (user.role == 'usuario_basico') {
-      const getIdsPostFavs = async () => {
-        await axios
-          .get<any[]>(`${FRONT_BASE_URL}/user/favs/getIdFavs`)
-          .then((res: any) => {
-            console.log(res.data);
-            setPostFavsUserAux(res.data)
-
-          })
-          .catch((err: any) => {
-            setPostFavsUserAux([])
-          })
-      }
-      getIdsPostFavs();
-    }
-  }, []);
-
   const [filterSearchTag, setFilterSearchTag] = useState<string>('')
   const [filterCategoryTags, setFilterCategoryTags] = useState<string[]>([])
   const [filterConditionTags, setFilterConditionTags] = useState<string[]>([])
@@ -163,9 +113,10 @@ export default function Home({
       )
       // SI SOLO ESTADO
     } else if (!filterPerCategory && filterPerCondition && !filterPerCenter) {
+      console.log('ESTADO', card.estado_producto, filterConditionTags)
       return (
         filterConditionTags.some(
-          filterTag => card.estado_publicacion == filterTag
+          filterTag => card.estado_producto == filterTag
         ) && filterPerSearch
       )
       // SI SOLO CENTRO
@@ -182,7 +133,7 @@ export default function Home({
           filterTag => card.categoria_producto == filterTag
         ) &&
         filterConditionTags.some(
-          filterTag => card.estado_publicacion == filterTag
+          filterTag => card.estado_producto == filterTag
         ) &&
         filterPerSearch
       )
@@ -201,7 +152,7 @@ export default function Home({
     } else if (!filterPerCategory && filterPerCondition && filterPerCenter) {
       return (
         filterConditionTags.some(
-          filterTag => card.estado_publicacion == filterTag
+          filterTag => card.estado_producto == filterTag
         ) &&
         filterCenterTag.some(filterTag =>
           card.centros.some((center: any) => center.id_centro == filterTag)
@@ -215,7 +166,7 @@ export default function Home({
           filterTag => card.categoria_producto == filterTag
         ) &&
         filterConditionTags.some(
-          filterTag => card.estado_publicacion == filterTag
+          filterTag => card.estado_producto == filterTag
         ) &&
         filterCenterTag.some(filterTag =>
           card.centros.some((center: any) => center.id_centro == filterTag)
@@ -224,6 +175,19 @@ export default function Home({
       )
     }
   })
+
+  useEffect(() => {
+    console.log('CARTA EJEMPLO', data[0])
+    if (user.role == 'usuario_basico') {
+      const getIdsPostFavs = async () => {
+        await axios
+          .get<any[]>(`${FRONT_BASE_URL}/user/favs/getIdFavs`)
+          .then((res: any) => setPostFavsUserAux(res.data))
+          .catch((err: any) => setPostFavsUserAux([]))
+      }
+      getIdsPostFavs()
+    }
+  }, [])
 
   const handleCategoryFilterChange = (e: any) => {
     if (e.target.checked) {
