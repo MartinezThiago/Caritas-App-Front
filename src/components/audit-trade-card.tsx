@@ -78,6 +78,7 @@ export default function AuditTradeCard({
         resetField
     } = useForm<FormData>()
     const [confirmReject, setConfirmReject] = useState(false)
+    const [isChecked, setIsChecked] = useState(false);
     const [loading, setLoaging] = useState(false)
     const [optionTrade, setOptionTrade] = useState('')
     const typeStateAuditTrade = ['pendiente', 'rechazado', 'confirmado', 'cancelado'];
@@ -92,7 +93,9 @@ export default function AuditTradeCard({
         setOptionTrade('CONFIRMAR')
 
     }
-
+    const handleCheckboxChange = (event: any) => {
+        setIsChecked(event.target.checked);
+    };
 
     /**
   * Calls the endpoint by sending it the form data
@@ -101,6 +104,7 @@ export default function AuditTradeCard({
     const _handleSubmit = async (formData: FormData) => {
         if ((optionTrade == 'RECHAZAR') && (formData.motivoRechazo == undefined)) {
             alert('Tienes que seleccionar el motivo correspondiente')
+            setIsChecked(false)
             return
         }
         resetField('productoDonado')
@@ -275,26 +279,31 @@ export default function AuditTradeCard({
                                     clearError={() => clearErrors('motivoRechazo')}
                                 />
                             </div>
-                            {confirmReject == false ? <div className="">
-                                <button
-                                    key='confirm-reject-trade'
-                                    className='py-2 px-6 w-[200px] mb-[40px] outline-transparent outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 text-white active:text-white active:bg-rose-700'
-                                    type={ButtonEnum.BUTTON}
-                                    onClick={() => {
-                                        setConfirmReject(true)
-                                    }}
-                                >
-                                    Confirmar rechazo
-                                </button>
-                            </div> : <></>}
-                            {confirmReject ? <button
+                            <div className="">
+                                <label className="">
+                                    <input
+                                        type="checkbox"
+                                        checked={isChecked}
+                                        onChange={handleCheckboxChange}
+                                        className="hover:cursor-pointer"
+                                    />
+                                    <span className="font-semibold text-lg"> Confirmar rechazo?</span>
+                                </label>
+                            </div>
+                            {isChecked ? <button
                                 key='signin-form-submit-button'
                                 type={ButtonEnum.SUBMIT}
 
                                 className='py-2 px-6 w-[150px] mb-[40px] outline-transparent outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 text-white active:text-white active:bg-rose-700'
                             >
                                 Enviar
-                            </button> : <></>}
+                            </button> : <button
+                                key='signin-form-submit-button'
+
+                                className='py-2 px-6 w-[150px] mb-[40px] outline-transparent outline bg-gray-500 hover:bg-gray-600 hover:cursor-not-allowed font-semibold hover:outline-[3px] duration-200 text-white '
+                            >
+                                Enviar
+                            </button>}
                         </div> : <></>}
 
                 </form>
