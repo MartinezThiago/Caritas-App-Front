@@ -135,6 +135,13 @@ export default function RootLayout({
           >
             Listado de usuarios
           </Link>
+          <Link
+            key='link-center-list'
+            href='/center-list'
+            className={getLinkClass('/center-list')}
+          >
+            Listado de centros
+          </Link>
           <div
             key='header-separator'
             className='flex-grow'
