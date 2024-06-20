@@ -41,6 +41,7 @@ export default function UsersSistemList({ user }: { user: User }) {
   const [userRaw, setUserRaw] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [rolChecked, setRolChecked] = useState('Todos')
+  const rolesOrder = ['administrador', 'voluntario', 'basico'];
   function parseText(rol: string) {
     if (rol === 'usuario_basico') {
       return 'basico'
@@ -55,7 +56,7 @@ export default function UsersSistemList({ user }: { user: User }) {
       await axios
         .get<any[]>(`${FRONT_BASE_URL}/users-list`)
         .then(async (res: any) => {
-          setUserRaw(res.data)          
+          setUserRaw(res.data)
         })
         .catch((err: any) => {
           setUserRaw([])
@@ -73,12 +74,12 @@ export default function UsersSistemList({ user }: { user: User }) {
       return `border-s-gray-400 ${styles}`;
     }
   };
-  const UserList = () => {
+  const UserList = (rolUser: string) => {
     if (userRaw) {
       const userL = userRaw!.map((e: any) => {
         return (
           <tr key={e.email} className='border-b-[1px]'>
-            <td className={getBorderColor(e.rol, 'border-s-[3px] border-gray-300 p-[8px] flex justify-center')}>
+            <td className={getBorderColor(e.rol, 'border-s-[4px] border-gray-300 p-[8px] flex justify-center')}>
               <img src={e.foto} alt="Foto" className='w-[45px] h-[45px] rounded-[50%]' />
             </td>
             <td className='p-[8px]'>{e.nombre} <span className='font-semibold text-black'>{user.email === e.mail ? '(Tú)' : ''}</span></td>
@@ -89,12 +90,17 @@ export default function UsersSistemList({ user }: { user: User }) {
             <td className='p-[8px]'>{e.fecha_registro}</td>
             <td className='p-[8px]'>{e.centro === -1 ? '-' : e.centro}</td>
             <td className='p-[8px]'>{parseText(e.rol)}</td>
-            <td className='border-e-[1px] border-gray-300 p-[8px]'> Borrar / Modificar</td>
+            <td className='border-e-[1px] border-gray-300 p-[8px]'> {e.rol === 'voluntario' ? 'Borrar / Modificar' : ''}</td>
           </tr>
         )
       })
-      
-      return userL
+      console.log(userL);
+
+      //userL.sort((a, b) => a.props.children[8].props.children - b.props.children[8].props.children)
+      userL.sort((a, b) => {
+        return rolesOrder.indexOf(a.props.children[8].props.children)-rolesOrder.indexOf(b.props.children[8].props.children)
+      })
+      return rolUser == 'Todos' ? userL : userL.filter(x => x.props.children[8].props.children == rolUser)
     }
   }
 
@@ -104,11 +110,9 @@ export default function UsersSistemList({ user }: { user: User }) {
       setIsLoading(false) // Cambia isLoading a false después de 2 segundos
     }, 400)
   }, [])
-  const handleChange = (event:any) => {
+  const handleChange = (event: any) => {
     setRolChecked(event.target.value);
-    console.log(event.target.value);
-    
-};
+  };
   return (
     <RootLayout user={user}>
       {isLoading ? (
@@ -118,24 +122,16 @@ export default function UsersSistemList({ user }: { user: User }) {
           </div>
         </div>
       ) : userRaw.length === 0 ? <p className="text-2xl font-bold text-gray-500 mt-[20px] m-auto">No hay usuarios en el sistema</p> :
-        <div className=''>
-          <div className='w-full flex flex-col justify-center items-start'>
-            {/* <Select
-              id='roles-select'
-              label='Rol'
-              register={register}
-              handleChange={handleStatusChange}
-              options={userRoles.map(status => ({
-                value: status,
-                label: status
-              }))}
-            /> */}
-            <select id="role-select" value={rolChecked} onChange={handleChange}>
-              <option value="all">Todos</option>
-              <option value="usuario_basico">Básico</option>
-              <option value="voluntario">Voluntario</option>
-              <option value="admin_centro">Administrador</option>
-            </select>
+        <div className='mt-[40px]'>
+          <div className='w-[85vw] flex m-auto'>
+            <div className=''>
+              <select id="role-select" value={rolChecked} onChange={handleChange} className='ps-[10px] hover:cursor-pointer w-[200px] h-[40px] font-semibold text-black'>
+                <option value="all">Todos</option>
+                <option value="usuario_basico">Básico</option>
+                <option value="voluntario">Voluntario</option>
+                <option value="admin_centro">Administrador</option>
+              </select>
+            </div>
           </div>
           <div className='flex justify-center mt-[40px]'>
 
@@ -155,7 +151,7 @@ export default function UsersSistemList({ user }: { user: User }) {
                 </tr>
               </thead>
               <tbody className='text-center'>
-                {UserList()}
+                {rolChecked == 'voluntario' ? UserList('voluntario') : rolChecked == 'admin_centro' ? UserList('administrador') : rolChecked == 'usuario_basico' ? UserList('basico') : UserList('Todos')}
               </tbody>
             </table>
           </div>
