@@ -44,6 +44,14 @@ export default function CardProduct({
 }: CardProductProps) {
   const Slot = enableLink ? Link : 'div'
   
+  function truncateText(text:string,maxLength:number){
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + '...';
+  } else {
+      return text;
+  }
+  }
+
   const onClick = () => {
     handleClick && handleClick(String(id))
   }
@@ -67,7 +75,7 @@ export default function CardProduct({
         <div className='mt-2.5 ms-2.5 h-full flex flex-col justify-between'>
           <div>
             <p className={'text-2xl font-bold'}>{title}</p>
-            <p className='ms-2.5 mt-0.5'>{desciption}</p>
+            <p className='ms-2.5 mt-0.5'>{truncateText(desciption,25)}</p>
           </div>
           <div>
             {ownerPost ? (
@@ -80,7 +88,7 @@ export default function CardProduct({
             ) : (
               <></>
             )}
-            <p className='font-semibold mb-1.5'>{locationTrade}</p>
+            <p className='font-semibold mb-1.5'>{truncateText(locationTrade,25)}</p>
           </div>
         </div>
         <div
