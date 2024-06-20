@@ -120,20 +120,20 @@ export default function RootLayout({
           >
             Cerrar Sesión
           </Link>
-        </> : <>
-          {/* <Link
+        </> : user.role === 'admin_centro' ? <>
+          <Link
             key='link-statistics'
             href='/statistics'
             className={getLinkClass('/statistics')}
           >
             Estadísticas
-          </Link> */}
+          </Link>
           <Link
-            key='link-trade-center'
-            href='/volunteer/trade-center'
-            className={getLinkClass('/volunteer/trade-center')}
+            key='link-user-list'
+            href='/users-list'
+            className={getLinkClass('/users-list')}
           >
-            Intercambios
+            Listado de usuarios
           </Link>
           <div
             key='header-separator'
@@ -156,7 +156,36 @@ export default function RootLayout({
           >
             Cerrar Sesión
           </Link>
-        </>
+        </> : <><Link
+          key='link-trade-center'
+          href='/volunteer/trade-center'
+          className={getLinkClass('/volunteer/trade-center')}
+        >
+          Intercambios
+        </Link>
+          <div
+            key='header-separator'
+            className='flex-grow'
+          />
+          <Link
+            key='link-user'
+            href='/user'
+            className={getLinkClass('/user')}
+          >
+            <div className='flex items-center'>
+              <Image alt={`userProfilePic`} className={'me-[10px] w-[30px] rounded-full'} src={profilePic ? profilePic : profilePicDefault} width={0} height={0} />
+              {user.name}
+            </div>
+          </Link>
+          <Link
+            key='link-signout'
+            href='/sign/out/sign-in'
+            className='me-[10px]'
+          >
+            Cerrar Sesión
+          </Link></>
+
+
     }
   </header>
     {children}
