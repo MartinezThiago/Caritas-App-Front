@@ -167,11 +167,11 @@ export default function UsersSistemList({ user }: { user: User }) {
               <thead>
                 <tr className='text-gray-600'>
                   <th className='border-b-[1px] border-s-[1px] border-gray-300 p-[8px]'>Nombre</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>Ubicacion</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>Direccion</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>Desde ➜ Hasta</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>Dias</th>
-                  <th className='border-b-[1px] border-e-[1px] border-gray-300 p-[8px]'>Action</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Ubicacion</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Direccion</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Desde ➜ Hasta</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Dias</th>
+                  <th className='border-b-[1px] border-x-[1px] border-e-[1px] border-gray-300 p-[8px]'>Action</th>
                 </tr>
               </thead>
               <tbody className='text-center text-black'>

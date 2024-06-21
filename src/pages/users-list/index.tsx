@@ -179,14 +179,14 @@ export default function UsersSistemList({ user }: { user: User }) {
               <thead>
                 <tr className='text-gray-600 '>
                   <th className='border-b-[1px] border-s-[1px] border-gray-300 p-[8px]'>Foto</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>Nombre</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>Apellido</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>DNI</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>E-mail</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>Fecha de nacimiento</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>Registrado desde</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>Center</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>Rol</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Nombre</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Apellido</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>DNI</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>E-mail</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Fecha de nacimiento</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Registrado desde</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Center</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Rol</th>
                   <th className='border-b-[1px] border-e-[1px] border-gray-300 p-[8px]'>Action</th>
                 </tr>
               </thead>
