@@ -1,5 +1,6 @@
 import Select from '@/components/inputs/select'
 import { Loading } from '@/components/loading'
+import { ButtonEnum } from '@/components/types'
 import { FRONT_BASE_URL } from '@/constants'
 import RootLayout from '@/layouts/root-layout'
 import {
@@ -77,6 +78,8 @@ export default function UsersSistemList({ user }: { user: User }) {
   const UserList = (rolUser: string) => {
     if (userRaw) {
       const userL = userRaw!.map((e: any) => {
+        console.log(e);
+        
         return (
           <tr key={e.email} className='border-b-[1px]'>
             <td className={getBorderColor(e.rol, 'border-s-[4px] border-gray-300 p-[8px] flex justify-center')}>
@@ -90,7 +93,31 @@ export default function UsersSistemList({ user }: { user: User }) {
             <td className='p-[8px]'>{e.fecha_registro}</td>
             <td className='p-[8px]'>{e.centro === -1 ? '-' : e.centro}</td>
             <td className='p-[8px]'>{parseText(e.rol)}</td>
-            <td className='border-e-[1px] border-gray-300 p-[8px]'> {e.rol === 'voluntario' ? 'Borrar / Modificar' : ''}</td>
+            <td className='border-e-[1px] border-gray-300 p-[8px]'> {e.rol === 'voluntario' ?
+              <div>
+                <button
+                  key='confirm-trade'
+                  className='w-[100px] mx-[10px] py-[5px] bg-rose-700 rounded-bl-[10px] text-white hover:font-semibold hover:bg-white hover:text-rose-700 hover:border-[2px] hover:border-rose-700'
+                  type={ButtonEnum.BUTTON}
+                  onClick={() => {
+                    _handleBorrarVoluntario(e.id)
+
+                  }}
+                >
+                  Borrar
+                </button>
+                <button
+                  key='confirm-trade'
+                  className='w-[100px] py-[5px] bg-blue-900 rounded-br-[10px] text-white hover:font-semibold hover:bg-white hover:text-blue-900 hover:border-[2px] hover:border-blue-900'
+                  type={ButtonEnum.BUTTON}
+                  onClick={() => {
+                    _handleModificarVoluntario(e.id)
+
+                  }}
+                >
+                  Modificar
+                </button>
+              </div> : '-'}</td>
           </tr>
         )
       })
@@ -98,7 +125,7 @@ export default function UsersSistemList({ user }: { user: User }) {
 
       //userL.sort((a, b) => a.props.children[8].props.children - b.props.children[8].props.children)
       userL.sort((a, b) => {
-        return rolesOrder.indexOf(a.props.children[8].props.children)-rolesOrder.indexOf(b.props.children[8].props.children)
+        return rolesOrder.indexOf(a.props.children[8].props.children) - rolesOrder.indexOf(b.props.children[8].props.children)
       })
       return rolUser == 'Todos' ? userL : userL.filter(x => x.props.children[8].props.children == rolUser)
     }
@@ -113,6 +140,12 @@ export default function UsersSistemList({ user }: { user: User }) {
   const handleChange = (event: any) => {
     setRolChecked(event.target.value);
   };
+  const _handleBorrarVoluntario = async (e: number) => {
+    console.log('Voluntario a borrar: ' + e);
+  }
+  const _handleModificarVoluntario = async (e: number) => {
+    console.log('Voluntario a modificar: ' + e);
+  }
   return (
     <RootLayout user={user}>
       {isLoading ? (

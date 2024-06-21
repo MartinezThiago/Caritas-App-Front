@@ -1,5 +1,6 @@
 import Select from '@/components/inputs/select'
 import { Loading } from '@/components/loading'
+import { ButtonEnum } from '@/components/types'
 import { FRONT_BASE_URL } from '@/constants'
 import RootLayout from '@/layouts/root-layout'
 import {
@@ -89,11 +90,33 @@ export default function UsersSistemList({ user }: { user: User }) {
             <td className='p-[8px]'>{e.direccion}</td>
             <td className='p-[8px]'>{`${e.horario_apertura} ➜ ${e.horario_cierre}`}</td>
             <td className='p-[8px] font-medium text-gray-600 text-start'>{getFirstLettersDays(e.dias)}</td>
-            <td className='border-e-[1px] border-gray-300 p-[8px]'> Borrar / Modificar</td>
+            <td className='border-e-[1px] border-gray-300 p-[8px]'>
+              <button
+                key='confirm-trade'
+                className='w-[100px] mx-[10px] py-[5px] bg-rose-700 rounded-bl-[10px] text-white hover:font-semibold hover:bg-white hover:text-rose-700 hover:border-[2px] hover:border-rose-700'
+                type={ButtonEnum.BUTTON}
+                onClick={() => {
+                  _handleBorrarCentro(e.id_centro)
+
+                }}
+              >
+                Borrar
+              </button>
+              <button
+                key='confirm-trade'
+                className='w-[100px] py-[5px] bg-blue-900 rounded-br-[10px] text-white hover:font-semibold hover:bg-white hover:text-blue-900 hover:border-[2px] hover:border-blue-900'
+                type={ButtonEnum.BUTTON}
+                onClick={() => {
+                  _handleModificarCentro(e.id_centro)
+
+                }}
+              >
+                Modificar
+              </button>
+            </td>
           </tr>
         )
       })
-
       return locationChecked == 'Todos' ? centerL : centerL.filter(x => x.props.children[1].props.children == locationChecked)
     }
   }
@@ -107,6 +130,12 @@ export default function UsersSistemList({ user }: { user: User }) {
   const handleChange = (event: any) => {
     setLocationChecked(event.target.value);
   };
+  const _handleBorrarCentro = async (e: number) => {
+    console.log('Centro a borrar: ' + e);
+  }
+  const _handleModificarCentro = async (e: number) => {
+    console.log('Centro a modificar: ' + e);
+  }
   return (
     <RootLayout user={user}>
       {isLoading ? (
