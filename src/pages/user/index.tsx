@@ -78,6 +78,8 @@ export default function UserInfo({ user }: { user: User }) {
           closingTime={e.horario_cierre}
           workDays={e.dias}
           onPost={false}
+          //CAMBIAR
+          deletedCenter={true}
         />
       )
     })

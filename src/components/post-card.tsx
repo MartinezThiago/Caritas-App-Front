@@ -94,7 +94,7 @@ export default function CardProduct({
                 </p>
               ) : statePost == 3 ? (
                 <p className="font-bold text-sm text-rose-700">Baneada</p>
-              ) : statePost == 5 ? (
+              ) : statePost == 7 ? (
                 <p className="font-bold text-sm text-rose-700">
                   PAUSADA! <span className="text-gray-500">(re-elegir centro)</span>
                 </p>

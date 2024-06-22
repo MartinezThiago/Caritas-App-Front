@@ -147,7 +147,7 @@ export default function ExtendedPostCard(props: PostData) {
         router.push(`/`);
         router.push(`/posts/${props.idPost}`);
       })
-      .catch((error: { response: { data: { message: string } } }) => {});
+      .catch((error: { response: { data: { message: string } } }) => { });
   };
   const _handleSubmitUnSave = async (action: boolean) => {
     const formData = {
@@ -219,102 +219,108 @@ export default function ExtendedPostCard(props: PostData) {
     </div>
   ) : (
     <div className="">
-      <div className="w-[70%] h-[68vh] flex justify-around m-auto mt-10 font-sans">
-        <div className="w-[350px] flex items-center">
-          <ImageGallery
-            items={Images()}
-            showPlayButton={false}
-            showFullscreenButton={false}
-            showIndex={true}
-            showThumbnails={false} //Elimina las miniaturas
-          />
-        </div>
-        {/*DIV DE SEPARACION*/}
-        <div className="bg-rose-700 w-[0.5px] h-[100%] mx-[30px]"></div>
-        <div className="text-black flex flex-col justify-between w-[35%]">
-          <div>
-            <h1 className="font-bold">{props.title}</h1>
+      <div className="w-[100%]">
+        {props.postState == 7 && props.centersChoosed.length === 1 && props.user.userId ? <div className="flex justify-center">
+          <div className="w-fill h-[60px] border-b-[2px] border-x-[2px] border-rose-700 bg-white flex items-center justify-center rounded-bl-[20px] rounded-br-[20px]">
+            <p className="text-rose-700 px-[50px] font-semibold text-xl "><span className="font-bold">Publicacion pausada</span> se requiere elegir otro centro para que se vuelva a publicar</p>
+          </div>
+        </div> : <></>}
+        <div className="w-[70%] h-[68vh] flex justify-around m-auto mt-10 font-sans">
+          <div className="w-[350px] flex items-center">
+            <ImageGallery
+              items={Images()}
+              showPlayButton={false}
+              showFullscreenButton={false}
+              showIndex={true}
+              showThumbnails={false} //Elimina las miniaturas
+            />
+          </div>
+          {/*DIV DE SEPARACION*/}
+          <div className="bg-rose-700 w-[0.5px] h-[100%] mx-[30px]"></div>
+          <div className="text-black flex flex-col justify-between w-[35%]">
+            <div>
+              <h1 className="font-bold">{props.title}</h1>
 
-            <div className="ms-5 mt-1 flex flex-col h-[100%]">
-              <div className="h-20">
-                <p className="font-bold">Descripcion</p>
-                <p className="ms-3.5 mt-1.5">{props.description}</p>
-              </div>
-              <div className="w-[100%]">
-                <div className="flex justify-between ">
-                  <div className="font-bold ">
-                    <p>Estado: </p>
-                    <p className="my-5">Categoría: </p>
-                    <p className="my-5">Ubicacion: </p>
-                    <p className="my-5">Fecha: </p>
-                  </div>
-                  <div>
-                    <p>{props.nameStateProduct}</p>
-                    <p className="my-5">{props.nameProductCategorie}</p>
-                    <p className="my-5">{props.locationTrade}</p>
-                    <p className="my-5 text-sm">{props.postDate}</p>
-                  </div>
+              <div className="ms-5 mt-1 flex flex-col h-[100%]">
+                <div className="h-20">
+                  <p className="font-bold">Descripcion</p>
+                  <p className="ms-3.5 mt-1.5">{props.description}</p>
                 </div>
-
-                <div className="flex mt-5">
-                  <div className="flex items-center mb-[20px] w-full">
-                    <p className="font-bold">Creador: </p>
-                    <div className="flex items-center ms-[20px]">
-                      <Image
-                        alt={`ownerPostProfilePic`}
-                        className={"w-[38px] rounded-full"}
-                        width={0}
-                        height={0}
-                        src={props.profilePicOwner}
-                      />
-                      <p className="ms-[5px]">
-                        {props.nameUser} {props.surnameUser}
-                      </p>
+                <div className="w-[100%]">
+                  <div className="flex justify-between ">
+                    <div className="font-bold ">
+                      <p>Estado: </p>
+                      <p className="my-5">Categoría: </p>
+                      <p className="my-5">Ubicacion: </p>
+                      <p className="my-5">Fecha: </p>
+                    </div>
+                    <div>
+                      <p>{props.nameStateProduct}</p>
+                      <p className="my-5">{props.nameProductCategorie}</p>
+                      <p className="my-5">{props.locationTrade}</p>
+                      <p className="my-5 text-sm">{props.postDate}</p>
                     </div>
                   </div>
-                </div>
-                <div className="mt-[50px] w-[100%]">
-                  {props.user.userId == props.idOwnerUser ? (
-                    deleteBtnStatus == false ? (
-                      <div className="w-[100%] flex justify-center">
-                        <button
-                          key="delete-post"
-                          className="text-white font-semibold w-[90%] border-[3px] border-rose-700 bg-rose-700 hover:bg-white  hover:text-rose-700 duration-200"
-                          onClick={() => {
-                            setDeleteBtnStatus(true);
-                          }}
-                        >
-                          <p className="  mx-[10px] my-[10px] ">
-                            Eliminar publicacion
-                          </p>
-                        </button>
+
+                  <div className="flex mt-5">
+                    <div className="flex items-center mb-[20px] w-full">
+                      <p className="font-bold">Creador: </p>
+                      <div className="flex items-center ms-[20px]">
+                        <Image
+                          alt={`ownerPostProfilePic`}
+                          className={"w-[38px] rounded-full"}
+                          width={0}
+                          height={0}
+                          src={props.profilePicOwner}
+                        />
+                        <p className="ms-[5px]">
+                          {props.nameUser} {props.surnameUser}
+                        </p>
                       </div>
+                    </div>
+                  </div>
+                  <div className="mt-[50px] w-[100%]">
+                    {props.user.userId == props.idOwnerUser ? (
+                      deleteBtnStatus == false ? (
+                        <div className="w-[100%] flex justify-center">
+                          <button
+                            key="delete-post"
+                            className="text-white font-semibold w-[90%] border-[3px] border-rose-700 bg-rose-700 hover:bg-white  hover:text-rose-700 duration-200"
+                            onClick={() => {
+                              setDeleteBtnStatus(true);
+                            }}
+                          >
+                            <p className="  mx-[10px] my-[10px] ">
+                              Eliminar publicacion
+                            </p>
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex w-[100%]">
+                          <button
+                            key="delete-post"
+                            className="text-white mx-[30px] font-semibold w-[50%] border-[3px] border-rose-700 bg-rose-700 hover:bg-white  hover:text-rose-700  duration-200"
+                            onClick={() => {
+                              _handleDeletePost();
+                            }}
+                          >
+                            <p className="px-[10px] py-[10px]">Confirmar</p>
+                          </button>
+                          <button
+                            key="delete-post"
+                            className="hover:text-white font-semibold w-[50%] border-[3px] border-rose-700 hover:bg-rose-700 bg-white  text-rose-700 duration-200"
+                            onClick={() => {
+                              setDeleteBtnStatus(false);
+                            }}
+                          >
+                            <p className="  px-[10px] py-[10px] ">Cancelar</p>
+                          </button>
+                        </div>
+                      )
                     ) : (
-                      <div className="flex w-[100%]">
-                        <button
-                          key="delete-post"
-                          className="text-white mx-[30px] font-semibold w-[50%] border-[3px] border-rose-700 bg-rose-700 hover:bg-white  hover:text-rose-700  duration-200"
-                          onClick={() => {
-                            _handleDeletePost();
-                          }}
-                        >
-                          <p className="px-[10px] py-[10px]">Confirmar</p>
-                        </button>
-                        <button
-                          key="delete-post"
-                          className="hover:text-white font-semibold w-[50%] border-[3px] border-rose-700 hover:bg-rose-700 bg-white  text-rose-700 duration-200"
-                          onClick={() => {
-                            setDeleteBtnStatus(false);
-                          }}
-                        >
-                          <p className="  px-[10px] py-[10px] ">Cancelar</p>
-                        </button>
-                      </div>
-                    )
-                  ) : (
-                    <></>
-                  )}
-                  {/* {props.user.userId == props.idOwnerUser ? <button
+                      <></>
+                    )}
+                    {/* {props.user.userId == props.idOwnerUser ? <button
                     key='delete-post'
                     className='text-white font-semibold w-[80%] outline outline-transparent bg-rose-700 hover:bg-white  hover:text-rose-700 hover:outline-rose-700 hover:-outline-offset-1 duration-200'
 
@@ -324,215 +330,198 @@ export default function ExtendedPostCard(props: PostData) {
                   >
                     <p className="  mx-[10px] my-[10px] ">Eliminar publicacion</p>
                   </button> : <></>} */}
+                  </div>
                 </div>
               </div>
             </div>
+            <div className="text-white">
+              {props.user.role === "usuario_basico" ||
+                props.user.role === "non-registered" ? (
+                <>
+                  {props.user.role === "usuario_basico" ? (
+                    <>
+                      {props.user.userId != props.idOwnerUser ? (
+                        <div className="flex">
+                          {/* ACTIVE SESSION SECTION */}
+                          <button
+                            key="Trade"
+                            className="rounded-lg w-[100%] outline outline-transparent bg-rose-700 font-semibold hover:bg-white  hover:text-rose-700 hover:outline-rose-700 hover:-outline-offset-1 duration-200 rounded-s-[10px]"
+                            type={ButtonEnum.BUTTON}
+                            onClick={() => { }}
+                          >
+                            <Link
+                              href={`/posts/${router.query.id}/trade`}
+                              className="size-full py-2.5 px-14"
+                            >
+                              Ofertar objeto
+                            </Link>
+                          </button>
+                          {/* ESTA AFIRMACION SE TIENE QUE HACER SI LA PUBLICACION ESTA EN EL ARRAY DE GUARDADOS DEL USUARIO */}
+                          {savedPost ? (
+                            <button
+                              key="Save"
+                              className="rounded-lg ms-2 py-2.5 px-2.5 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200 rounded-e-[10px]"
+                              type={ButtonEnum.BUTTON}
+                              onClick={() => {
+                                _handleSubmitSave(true);
+                              }}
+                              onMouseEnter={() => setIsHovered(true)}
+                              onMouseLeave={() => setIsHovered(false)}
+                            >
+                              <Image
+                                alt=""
+                                src={isHovered ? saved : save}
+                                width={30}
+                              />
+                            </button>
+                          ) : (
+                            <button
+                              key="Saved"
+                              className="rounded-lg ms-2 py-2.5 px-2.5 outline -outline-offset-2 outline-[3px] outline-rose-700 bg-white text-rose-700 font-semibold hover:bg-rose-700 hover:text-white hover:outline-white hover:-outline-offset-0 duration-200 rounded-e-[10px]"
+                              type={ButtonEnum.BUTTON}
+                              onClick={() => {
+                                _handleSubmitUnSave(false);
+                              }}
+                              onMouseEnter={() => setIsHovered(true)}
+                              onMouseLeave={() => setIsHovered(false)}
+                            >
+                              <Image
+                                alt=""
+                                src={isHovered ? save : saved}
+                                width={30}
+                              />
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <>
+                          
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <div className="flex">
+                      {/* NO ACTIVE SESSION SECTION */}
+                      <button
+                        key="Trade"
+                        className="rounded-lg w-[100%] outline outline-transparent bg-rose-700 font-semibold hover:bg-white  hover:text-rose-700 hover:outline-rose-700 hover:-outline-offset-1 duration-200 rounded-s-[10px]"
+                        type={ButtonEnum.BUTTON}
+                        onClick={() => {
+                          router.push("/sign/in");
+                        }}
+                      >
+                        Ofertar objeto
+                      </button>
+                      <button
+                        key="Save"
+                        className="rounded-lg ms-2 py-2.5 px-2.5 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200 rounded-e-[10px]"
+                        type={ButtonEnum.BUTTON}
+                        onClick={() => {
+                          router.push("/sign/in");
+                        }}
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}
+                      >
+                        <Image alt="" src={isHovered ? saved : save} width={30} />
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="flex">
+                  {/* ADMIN SECTION */}
+                  <button
+                    key="Trade"
+                    className="rounded-lg w-[100%]  bg-gray-500 font-semibold hover:bg-gray-600 hover:cursor-not-allowed duration-200 rounded-s-[10px]"
+                    type={ButtonEnum.BUTTON}
+                  >
+                    Ofertar objeto
+                  </button>
+                  <button
+                    key="Save"
+                    className="rounded-lg ms-2 py-2.5 px-2.5  bg-gray-500 font-semibold hover:bg-gray-600 hover:cursor-not-allowed duration-200 rounded-e-[10px]"
+                    type={ButtonEnum.BUTTON}
+                  >
+                    <Image alt="" src={save} width={30} />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-          <div className="text-white">
-            {props.user.role === "usuario_basico" ||
-            props.user.role === "non-registered" ? (
-              <>
-                {props.user.role === "usuario_basico" ? (
+          {/*DIV DE SEPARACION*/}
+          <div className="bg-rose-700 w-[0.5px] h-[100%] mx-[30px]"></div>
+          <div className="text-black">
+            <p className="font-bold text-lg">
+              Centros elegidos para el intercambio:
+            </p>
+            <div className="ms-3.5 mt-1.5">{Centers()}</div>
+            {props.postState == 7 && props.centersChoosed.length === 1 && props.user.userId == props.idOwnerUser ? (
+              <button
+                key="change-center-post"
+                className=" mt-[30px] text-white font-semibold w-[90%] border-[3px] border-rose-700 bg-rose-700 hover:bg-white  hover:text-rose-700 duration-200"
+                onClick={() => {
+                  console.log('Apretaste en cambiar centro');
+
+                }}
+              >
+                <p className="  mx-[10px] my-[10px] ">Cambiar centro</p>
+              </button>
+            ) : (
+              <></>
+            )}
+          </div>
+        </div>
+        <div className="w-[60%] m-auto text-black mt-8">
+          <article>
+            {props.user.role === "usuario_basico" &&
+              props.user.userId != props.idOwnerUser ? (
+              <form noValidate onSubmit={handleSubmit(_handleSubmit)}>
+                <div className="flex items-center">
+                  <div className="w-[60%]">
+                    <Input
+                      id="question"
+                      register={register}
+                      type="text"
+                      key="question"
+                      registerOptions={{ required: "Escriba una pregunta" }}
+                      error={errors.question}
+                      placeholder="Escriba aquí su pregunta"
+                      label={"Preguntale al vendedor"}
+                    />
+                  </div>
+                  <button
+                    key="ask"
+                    className="rounded-lg w-32 h-10 text-white ms-12 py-2.5 px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200"
+                  >
+                    Preguntar
+                  </button>
+                </div>
+              </form>
+            ) : null}
+          </article>
+          <div>
+            {props.comments!.length > 0 || commentsUpdate ? (
+              <div>
+                <p className="font-bold text-xl mb-[10px]">Ultimas preguntas:</p>
+                {commentsUpdate ? (
                   <>
-                    {props.user.userId != props.idOwnerUser ? (
-                      <div className="flex">
-                        {/* ACTIVE SESSION SECTION */}
-                        <button
-                          key="Trade"
-                          className="rounded-lg w-[100%] outline outline-transparent bg-rose-700 font-semibold hover:bg-white  hover:text-rose-700 hover:outline-rose-700 hover:-outline-offset-1 duration-200 rounded-s-[10px]"
-                          type={ButtonEnum.BUTTON}
-                          onClick={() => {}}
-                        >
-                          <Link
-                            href={`/posts/${router.query.id}/trade`}
-                            className="size-full py-2.5 px-14"
-                          >
-                            Ofertar objeto
-                          </Link>
-                        </button>
-                        {/* ESTA AFIRMACION SE TIENE QUE HACER SI LA PUBLICACION ESTA EN EL ARRAY DE GUARDADOS DEL USUARIO */}
-                        {savedPost ? (
-                          <button
-                            key="Save"
-                            className="rounded-lg ms-2 py-2.5 px-2.5 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200 rounded-e-[10px]"
-                            type={ButtonEnum.BUTTON}
-                            onClick={() => {
-                              _handleSubmitSave(true);
-                            }}
-                            onMouseEnter={() => setIsHovered(true)}
-                            onMouseLeave={() => setIsHovered(false)}
-                          >
-                            <Image
-                              alt=""
-                              src={isHovered ? saved : save}
-                              width={30}
-                            />
-                          </button>
-                        ) : (
-                          <button
-                            key="Saved"
-                            className="rounded-lg ms-2 py-2.5 px-2.5 outline -outline-offset-2 outline-[3px] outline-rose-700 bg-white text-rose-700 font-semibold hover:bg-rose-700 hover:text-white hover:outline-white hover:-outline-offset-0 duration-200 rounded-e-[10px]"
-                            type={ButtonEnum.BUTTON}
-                            onClick={() => {
-                              _handleSubmitUnSave(false);
-                            }}
-                            onMouseEnter={() => setIsHovered(true)}
-                            onMouseLeave={() => setIsHovered(false)}
-                          >
-                            <Image
-                              alt=""
-                              src={isHovered ? save : saved}
-                              width={30}
-                            />
-                          </button>
-                        )}
-                      </div>
-                    ) : (
-                      <>
-                        {/*<button
-                          key="Trade"
-                          className="rounded-lg py-2.5 px-14 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 w-[100%]"
-                          type={ButtonEnum.BUTTON}
-                          onClick={() => {
-                            alert("No podes intercambiarte a ti mismo");
-                          }}
-                        >
-                          Intercambiar
-                        </button>
-                         <button
-                          key="Save"
-                          className="rounded-lg ms-12 py-2.5 px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200"
-                          type={ButtonEnum.BUTTON}
-                          onClick={() => {
-                            alert("No podes guardar tus propias publicaciones");
-                          }}
-                        >
-                          A
-                        </button> */}
-                      </>
-                    )}
+                    <AllComments comments={lastComments} user={props.user} />
                   </>
                 ) : (
-                  <div className="flex">
-                    {/* NO ACTIVE SESSION SECTION */}
-                    <button
-                      key="Trade"
-                      className="rounded-lg w-[100%] outline outline-transparent bg-rose-700 font-semibold hover:bg-white  hover:text-rose-700 hover:outline-rose-700 hover:-outline-offset-1 duration-200 rounded-s-[10px]"
-                      type={ButtonEnum.BUTTON}
-                      onClick={() => {
-                        router.push("/sign/in");
-                      }}
-                    >
-                      Ofertar objeto
-                    </button>
-                    <button
-                      key="Save"
-                      className="rounded-lg ms-2 py-2.5 px-2.5 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 duration-200 rounded-e-[10px]"
-                      type={ButtonEnum.BUTTON}
-                      onClick={() => {
-                        router.push("/sign/in");
-                      }}
-                      onMouseEnter={() => setIsHovered(true)}
-                      onMouseLeave={() => setIsHovered(false)}
-                    >
-                      <Image alt="" src={isHovered ? saved : save} width={30} />
-                    </button>
-                  </div>
+                  Comments()
                 )}
-              </>
+              </div>
             ) : (
               <div className="flex">
-                {/* ADMIN SECTION */}
-                <button
-                  key="Trade"
-                  className="rounded-lg w-[100%]  bg-gray-500 font-semibold hover:bg-gray-600 hover:cursor-not-allowed duration-200 rounded-s-[10px]"
-                  type={ButtonEnum.BUTTON}
-                >
-                  Ofertar objeto
-                </button>
-                <button
-                  key="Save"
-                  className="rounded-lg ms-2 py-2.5 px-2.5  bg-gray-500 font-semibold hover:bg-gray-600 hover:cursor-not-allowed duration-200 rounded-e-[10px]"
-                  type={ButtonEnum.BUTTON}
-                >
-                  <Image alt="" src={save} width={30} />
-                </button>
+                <p className="text-l font-bold text-gray-500 mt-[10px] m-auto">
+                  NO HAY PREGUNTAS ACTUALMENTE
+                </p>
               </div>
             )}
           </div>
         </div>
-        {/*DIV DE SEPARACION*/}
-        <div className="bg-rose-700 w-[0.5px] h-[100%] mx-[30px]"></div>
-        <div className="text-black">
-          <p className="font-bold text-lg">
-            Centros elegidos para el intercambio:
-          </p>
-          <div className="ms-3.5 mt-1.5">{Centers()}</div>
-          {props.postState==5 && props.centersChoosed.length === 1&& props.user.userId == props.idOwnerUser? (
-            <button
-              key="change-center-post"
-              className="text-white font-semibold w-[90%] border-[3px] border-rose-700 bg-rose-700 hover:bg-white  hover:text-rose-700 duration-200"
-              onClick={() => {
-                console.log('Apretaste en cambiar centro');
-                
-              }}
-            >
-              <p className="  mx-[10px] my-[10px] ">Cambiar centro</p>
-            </button>
-          ) : (
-            <></>
-          )}
-        </div>
-      </div>
-      <div className="w-[60%] m-auto text-black mt-8">
-        <article>
-          {props.user.role === "usuario_basico" &&
-          props.user.userId != props.idOwnerUser ? (
-            <form noValidate onSubmit={handleSubmit(_handleSubmit)}>
-              <div className="flex items-center">
-                <div className="w-[60%]">
-                  <Input
-                    id="question"
-                    register={register}
-                    type="text"
-                    key="question"
-                    registerOptions={{ required: "Escriba una pregunta" }}
-                    error={errors.question}
-                    placeholder="Escriba aquí su pregunta"
-                    label={"Preguntale al vendedor"}
-                  />
-                </div>
-                <button
-                  key="ask"
-                  className="rounded-lg w-32 h-10 text-white ms-12 py-2.5 px-4 outline outline-transparent bg-rose-700 font-semibold hover:bg-white hover:outline-[3px]  hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200"
-                >
-                  Preguntar
-                </button>
-              </div>
-            </form>
-          ) : null}
-        </article>
-        <div>
-          {props.comments!.length > 0 || commentsUpdate ? (
-            <div>
-              <p className="font-bold text-xl mb-[10px]">Ultimas preguntas:</p>
-              {commentsUpdate ? (
-                <>
-                  <AllComments comments={lastComments} user={props.user} />
-                </>
-              ) : (
-                Comments()
-              )}
-            </div>
-          ) : (
-            <div className="flex">
-              <p className="text-l font-bold text-gray-500 mt-[10px] m-auto">
-                NO HAY PREGUNTAS ACTUALMENTE
-              </p>
-            </div>
-          )}
-        </div>
       </div>
     </div>
+
   );
 }
