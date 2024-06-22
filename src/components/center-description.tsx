@@ -9,7 +9,8 @@ export default function CenterDescription({
     closingTime,
     workDays,
     onPost,
-    daysPostTrade
+    daysPostTrade,
+    deletedCenter
 }: {
     idCenter: number
     name: string
@@ -20,6 +21,7 @@ export default function CenterDescription({
     workDays?: days[]
     onPost: boolean
     daysPostTrade?: string[]
+    deletedCenter:boolean
 }) {
     const auxDaysCenters: string[] = []
     if (!onPost) {
@@ -43,7 +45,7 @@ export default function CenterDescription({
 
     return (
         <div className="my-2">
-            <p className="text-rose-700 text-l font-bold">{name}</p>
+            <p className="text-rose-700 text-l font-bold">{name} {deletedCenter?'- (Centro eliminado)':''}</p>
             <div className="mx-2 text-black">
                 <p><span className="font-semibold ">Localidad: </span> {location}</p>
                 <p><span className="font-semibold ">Direccion: </span> {address}</p>
