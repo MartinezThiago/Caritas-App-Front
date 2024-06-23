@@ -16,9 +16,43 @@ import { ButtonEnum } from "./types";
 import Link from "next/link";
 import save from "public/guardar.png";
 import saved from "public/guardado.png";
+import { Item } from "@/utils/examples/locations";
+import Select from "./inputs/select";
+import MultiSelect from "./inputs/multi-select";
+import FormChangeCenter from "./form-change-center";
 
 interface FormData {
   question: string;
+}
+
+interface CenterData {
+  dias: [{
+    idDia: number
+    descripcion: string
+  }
+  ]
+  direccion: string
+  horario_apertura: string
+  horario_cierre: string
+  id_centro: number
+  nombre_centro: string
+  ubicacion: string
+}
+
+/**
+ * The form data for the post creation.
+ */
+interface FormDataChangeCenter {
+  name: string // titulo
+  location: string
+  description: string // descripcion
+  category: string // categorias
+  photos: FileList | string[] // imagenes
+  status: string // estado_producto
+  centers: string[] // centros_elegidos
+  days: Record<string | number, string[]> // dias_elegidos
+  from: Record<string | number, string> // desde
+  to: Record<string | number, string> // hasta
 }
 
 interface questionBody {
@@ -45,7 +79,7 @@ export default function ExtendedPostCard(props: PostData) {
     formState: { errors },
     resetField,
   } = useForm<FormData>();
-  console.log(props);
+  //console.log(props);
 
   const router = useRouter();
   const [lastComments, setLastComments] = useState<[]>();
@@ -55,6 +89,14 @@ export default function ExtendedPostCard(props: PostData) {
   const [savedPost, setSavedPost] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const [deleteBtnStatus, setDeleteBtnStatus] = useState(false);
+
+
+  const [centersRaw, setCentersRaw] = useState<Item[]>([]);
+  const [changeCenter, setChangeCenter] = useState(false);
+  const [locationCentersList, setLocationCentersList] = useState<Item[]>([]);
+  const [centersRawList, setCentersRawList] = useState<CenterData[]>();
+
+
   useEffect(() => {
     // Simula una carga de datos
     setTimeout(() => {
@@ -78,6 +120,38 @@ export default function ExtendedPostCard(props: PostData) {
       getIdsPostFavs();
     }
   }, []);
+
+  useEffect(() => {
+    const centrosMuyAux: Item[] = []
+    const locationsMuyAux: Item[] = []
+    const getCenters = async () => {
+      await axios
+        .get(`${FRONT_BASE_URL}centers/get`)
+        .then((res: any) => {
+          setCentersRawList(res.data)
+          res.data.map((e: any) => {
+            centrosMuyAux.push({
+              value: `${e.id_centro}`,
+              label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}`
+            })
+            locationsMuyAux.push({
+              value: `${e.ubicacion}`,
+              label: `${e.ubicacion}`
+            })
+          })
+        })
+      const eliminarDuplicados = async (arr: Item[]) => {
+        return arr.filter((item, index) => {
+          return arr.findIndex((i) => i.value === item.value) === index;
+        });
+      };
+      setLocationCentersList(await eliminarDuplicados(locationsMuyAux))
+    }
+    getCenters()
+    setCentersRaw(centrosMuyAux)
+  }, [])
+
+
 
   const _handleSubmit = async (formData: FormData) => {
     const pregunta: questionBody = {
@@ -320,16 +394,6 @@ export default function ExtendedPostCard(props: PostData) {
                     ) : (
                       <></>
                     )}
-                    {/* {props.user.userId == props.idOwnerUser ? <button
-                    key='delete-post'
-                    className='text-white font-semibold w-[80%] outline outline-transparent bg-rose-700 hover:bg-white  hover:text-rose-700 hover:outline-rose-700 hover:-outline-offset-1 duration-200'
-
-                    onClick={() => {
-                      _handleDeletePost()
-                    }}
-                  >
-                    <p className="  mx-[10px] my-[10px] ">Eliminar publicacion</p>
-                  </button> : <></>} */}
                   </div>
                 </div>
               </div>
@@ -395,7 +459,7 @@ export default function ExtendedPostCard(props: PostData) {
                         </div>
                       ) : (
                         <>
-                          
+
                         </>
                       )}
                     </>
@@ -456,18 +520,37 @@ export default function ExtendedPostCard(props: PostData) {
             </p>
             <div className="ms-3.5 mt-1.5">{Centers()}</div>
             {props.postState == 7 && props.centersChoosed.length === 1 && props.user.userId == props.idOwnerUser ? (
-              <button
-                key="change-center-post"
-                className=" mt-[30px] text-white font-semibold w-[90%] border-[3px] border-rose-700 bg-rose-700 hover:bg-white  hover:text-rose-700 duration-200"
-                onClick={() => {
-                  console.log('Apretaste en cambiar centro');
+              <div>
+                {changeCenter === false ? <button
+                  key="change-center-post"
+                  className=" mt-[30px] py-[10px] text-white font-semibold w-[100%] border-[3px] border-rose-700 bg-rose-700 hover:bg-white  hover:text-rose-700 duration-200"
+                  onClick={() => {
+                    setChangeCenter(true)
+                  }}
+                >
+                 Cambiar centro
+                </button> : <></>}
 
-                }}
-              >
-                <p className="  mx-[10px] my-[10px] ">Cambiar centro</p>
-              </button>
+                {changeCenter === true ?
+                  <div>
+                    <FormChangeCenter
+                      idPost={props.idPost}
+                    />
+                    <button
+                      key="change-center-post"
+                      className="py-[10px] mt-[20px] hover:text-white font-semibold w-[100%] border-[3px] border-rose-700 hover:bg-rose-700 bg-white  text-rose-700 duration-200"
+                      onClick={() => {
+                        setChangeCenter(false)
+                      }}
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                  : <></>}
+              </div>
             ) : (
               <></>
+
             )}
           </div>
         </div>
