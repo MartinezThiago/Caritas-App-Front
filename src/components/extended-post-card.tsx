@@ -79,7 +79,7 @@ export default function ExtendedPostCard(props: PostData) {
     formState: { errors },
     resetField,
   } = useForm<FormData>();
-  console.log(props);
+  //console.log(props);
 
   const router = useRouter();
   const [lastComments, setLastComments] = useState<[]>();
@@ -537,6 +537,7 @@ export default function ExtendedPostCard(props: PostData) {
                   <div>
                     <FormChangeCenter
                       idPost={props.idPost}
+                      idOldCenter={props.centersChoosed[0].id_centro}
                     />
                     <button
                       key="change-center-post"

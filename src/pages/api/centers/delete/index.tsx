@@ -20,7 +20,7 @@ export default async function handler(
     const config = { headers: { Authorization: `Bearer ${token}` } }
     const formData = req.body.idCentro
     await axios
-        .get(`http://localhost:6389/CaritasBack/borrarCentro?idCentro=${formData}`, config)
+        .get(`${BACK_BASE_URL}CaritasBack/borrarCentro?idCentro=${formData}`, config)
         .then((result: any) => {
             res.status(result.status).json(result.data)
         })

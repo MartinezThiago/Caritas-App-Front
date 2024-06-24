@@ -37,7 +37,7 @@ interface FormData {
 
 
 export default function FormChangeCenter(props: any) {
-  //console.log(props);
+  console.log(props);
 
   const {
     register,
@@ -127,8 +127,29 @@ export default function FormChangeCenter(props: any) {
   }
 
   const _handleSubmit = async (formData: FormData) => {
-    console.log(formData);
+    //console.log(formData);
+    const auxForm = {
+      id_centro_nuevo: formData.centerChecked,
+      id_centro_viejo: props.idOldCenter,
+      id_publicacion: props.idPost,
+      desde: formData.from,
+      hasta: formData.to,
+      dias: formData.days
+    }
+    //console.log(auxForm);
+    await axios
+      .post(`${FRONT_BASE_URL}/change-center-post`, auxForm)
+      .then(async () => {
+        await router.push('/')
+        await router.push(`/posts/${props.idPost}`)
+      })
+      .catch((error: { response: { data: { message: string } } }) => {
 
+        if (error) {
+          alert(error.response.data.message)
+
+        }
+      })
   };
 
   const setTimeValue = (value: any, timeType: any) => {
