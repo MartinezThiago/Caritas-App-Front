@@ -32,7 +32,7 @@ export interface centerInfo {
   id_centro: string,
   nombre_centro: string,
   ubicacion: string,
-
+  borrado: boolean
 }
 
 
@@ -48,6 +48,8 @@ export default function UsersSistemList({ user }: { user: User }) {
         .get<any[]>(`${FRONT_BASE_URL}/centers/get`)
         .then((res: any) => {
           setCentersRaw(res.data)
+          console.log(res.data);
+
         })
         .catch((err: any) => {
           setCentersRaw([])
@@ -81,7 +83,18 @@ export default function UsersSistemList({ user }: { user: User }) {
   }
 
   const CenterList = () => {
+
     if (centersRaw) {
+      (centersRaw as { borrado: boolean }[]).sort((a, b) => {
+        // Comparamos los valores de la propiedad 'isTrue'
+        if (a.borrado === b.borrado) {
+          return 0;
+        } else if (a.borrado) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
       const centerL = centersRaw!.map((e: any) => {
         return (
           <tr key={e.id_centro} className='border-b-[1px] h-[50px]'>
@@ -91,32 +104,48 @@ export default function UsersSistemList({ user }: { user: User }) {
             <td className='p-[8px]'>{`${e.horario_apertura} ➜ ${e.horario_cierre}`}</td>
             <td className='p-[8px] font-medium text-gray-600 text-start'>{getFirstLettersDays(e.dias)}</td>
             <td className='border-e-[1px] border-gray-300 p-[8px]'>
-              <button
-                key='confirm-trade'
-                className='w-[100px] mx-[10px] py-[5px] bg-rose-700 rounded-bl-[10px] text-white hover:font-semibold hover:bg-white hover:text-rose-700 hover:border-[2px] hover:border-rose-700'
-                type={ButtonEnum.BUTTON}
-                onClick={() => {
-                  _handleBorrarCentro(e.id_centro)
+              {e.borrado == true ?
+                <div>
 
-                }}
-              >
-                Borrar
-              </button>
-              <button
-                key='confirm-trade'
-                className='w-[100px] py-[5px] bg-blue-900 rounded-br-[10px] text-white hover:font-semibold hover:bg-white hover:text-blue-900 hover:border-[2px] hover:border-blue-900'
-                type={ButtonEnum.BUTTON}
-                onClick={() => {
-                  _handleModificarCentro(e.id_centro)
+                  <button
+                    key='lock-confirm-trade'
+                    disabled={true}
+                    className='w-[213px] py-[5px] bg-rose-700 opacity-60 rounded-bl-[10px] rounded-br-[10px] text-white '
+                    type={ButtonEnum.BUTTON}
+                  >
+                    Centro eliminado
+                  </button>
+                </div>
+                : <div>
+                  <button
+                    key='confirm-center'
+                    className='w-[100px] me-[10px] py-[5px] bg-rose-700 rounded-bl-[10px] text-white hover:font-semibold hover:bg-white hover:text-rose-700 hover:border-[2px] hover:border-rose-700'
+                    type={ButtonEnum.BUTTON}
+                    onClick={() => {
+                      _handleBorrarCentro(e.id_centro)
 
-                }}
-              >
-                Modificar
-              </button>
+                    }}
+                  >
+                    Borrar
+                  </button>
+                  <button
+                    key='modify-center'
+                    className='w-[100px] py-[5px] bg-blue-900 rounded-br-[10px] text-white hover:font-semibold hover:bg-white hover:text-blue-900 hover:border-[2px] hover:border-blue-900'
+                    type={ButtonEnum.BUTTON}
+                    onClick={() => {
+                      _handleModificarCentro(e.id_centro)
+
+                    }}
+                  >
+                    Modificar
+                  </button>
+                </div>
+              }
             </td>
           </tr>
         )
       })
+
       return locationChecked == 'Todos' ? centerL : centerL.filter(x => x.props.children[1].props.children == locationChecked)
     }
   }
@@ -131,7 +160,24 @@ export default function UsersSistemList({ user }: { user: User }) {
     setLocationChecked(event.target.value);
   };
   const _handleBorrarCentro = async (e: number) => {
-    console.log('Centro a borrar: ' + e);
+    //console.log('Centro a borrar: ' + e);
+    const idCentro = {
+      idCentro: e
+    }
+    await axios
+      .post(`${FRONT_BASE_URL}centers/delete`, idCentro)
+      .then(async () => {
+        console.log('Borrado');
+        await router.push('/')
+        await router.push('/center-list')
+        alert(`Centro ${e} eliminado con exito`)
+      })
+      .catch((error: { response: { data: { message: string } } }) => {
+        if (error) {
+          alert(error.response.data.message);
+        }
+      });
+
   }
   const _handleModificarCentro = async (e: number) => {
     console.log('Centro a modificar: ' + e);

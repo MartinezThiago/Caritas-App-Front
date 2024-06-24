@@ -79,7 +79,7 @@ export default function ExtendedPostCard(props: PostData) {
     formState: { errors },
     resetField,
   } = useForm<FormData>();
-  //console.log(props);
+  console.log(props);
 
   const router = useRouter();
   const [lastComments, setLastComments] = useState<[]>();
@@ -267,6 +267,8 @@ export default function ExtendedPostCard(props: PostData) {
 
   const Centers = () => {
     const center = props.centersChoosed.map((e, index) => {
+      //console.log(e);
+      
       return (
         <CenterDescription
           key={e.id_centro}
@@ -279,7 +281,7 @@ export default function ExtendedPostCard(props: PostData) {
           onPost={true}
           daysPostTrade={props.centersChoosedInfoTrade[index].diasDeIntercambio}
           //CAMBIAR
-          deletedCenter={true}
+          deletedCenter={e.borrado}
         />
       );
     });

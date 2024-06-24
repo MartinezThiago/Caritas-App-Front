@@ -55,6 +55,7 @@ export interface UnadaptedUser {
  * @property {string} horario_apertura - The center openingTime.
  * @property {string} horario_cierre - The center closingTime
  * @property {[string]} [dias] - The center work days.
+ * @property {boolean} borrado - If the center was deleted
  */
 export interface UnadaptedCenter {
   id_centro: number
@@ -64,6 +65,7 @@ export interface UnadaptedCenter {
   horario_apertura: string
   horario_cierre: string
   dias: days[]
+  borrado:boolean
 }
 export type days = {
   idDia: number
