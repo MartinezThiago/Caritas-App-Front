@@ -32,7 +32,8 @@ export interface centerInfo {
   id_centro: string,
   nombre_centro: string,
   ubicacion: string,
-  borrado: boolean
+  borrado: boolean,
+  tiene_voluntario:boolean
 }
 
 
@@ -96,6 +97,8 @@ export default function UsersSistemList({ user }: { user: User }) {
         }
       });
       const centerL = centersRaw!.map((e: any) => {
+        console.log(e);
+        
         return (
           <tr key={e.id_centro} className='border-b-[1px] h-[50px]'>
             <td className='p-[8px] border-s-[1px] border-gray-300'>{e.nombre_centro}</td>
@@ -103,6 +106,7 @@ export default function UsersSistemList({ user }: { user: User }) {
             <td className='p-[8px]'>{e.direccion}</td>
             <td className='p-[8px]'>{`${e.horario_apertura} ➜ ${e.horario_cierre}`}</td>
             <td className='p-[8px] font-medium text-gray-600 text-start'>{getFirstLettersDays(e.dias)}</td>
+            <td className='p-[8px]'>{e.tiene_voluntario?'Si':'-'}</td>
             <td className='border-e-[1px] border-gray-300 p-[8px]'>
               {e.borrado == true ?
                 <div>
@@ -217,6 +221,7 @@ export default function UsersSistemList({ user }: { user: User }) {
                   <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Direccion</th>
                   <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Desde ➜ Hasta</th>
                   <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Dias</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Voluntario</th>
                   <th className='border-b-[1px] border-x-[1px] border-e-[1px] border-gray-300 p-[8px]'>Action</th>
                 </tr>
               </thead>

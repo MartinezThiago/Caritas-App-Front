@@ -37,6 +37,7 @@ interface CenterData {
   id_centro: number
   nombre_centro: string
   ubicacion: string
+  borrado: boolean
 }
 
 /**
@@ -79,7 +80,7 @@ export default function ExtendedPostCard(props: PostData) {
     formState: { errors },
     resetField,
   } = useForm<FormData>();
-  //console.log(props);
+  console.log(props);
 
   const router = useRouter();
   const [lastComments, setLastComments] = useState<[]>();
@@ -268,7 +269,7 @@ export default function ExtendedPostCard(props: PostData) {
   const Centers = () => {
     const center = props.centersChoosed.map((e, index) => {
       //console.log(e);
-      
+
       return (
         <CenterDescription
           key={e.id_centro}
@@ -296,7 +297,7 @@ export default function ExtendedPostCard(props: PostData) {
   ) : (
     <div className="">
       <div className="w-[100%]">
-        {props.postState == 7 && props.centersChoosed.length === 1 && props.user.userId ? <div className="flex justify-center">
+        {props.postState == 7 && props.centersChoosed.filter(x => x.borrado === false).length === 0 && props.user.userId == props.idOwnerUser ? <div className="flex justify-center">
           <div className="w-fill h-[60px] border-b-[2px] border-x-[2px] border-rose-700 bg-white flex items-center justify-center rounded-bl-[20px] rounded-br-[20px]">
             <p className="text-rose-700 px-[50px] font-semibold text-xl "><span className="font-bold">Publicacion pausada</span> se requiere elegir otro centro para que se vuelva a publicar</p>
           </div>
@@ -521,7 +522,7 @@ export default function ExtendedPostCard(props: PostData) {
               Centros elegidos para el intercambio:
             </p>
             <div className="ms-3.5 mt-1.5">{Centers()}</div>
-            {props.postState == 7 && props.centersChoosed.length === 1 && props.user.userId == props.idOwnerUser ? (
+            {props.postState == 7 && props.centersChoosed.filter(x => x.borrado === false).length === 0 && props.user.userId == props.idOwnerUser ? (
               <div>
                 {changeCenter === false ? <button
                   key="change-center-post"
@@ -530,7 +531,7 @@ export default function ExtendedPostCard(props: PostData) {
                     setChangeCenter(true)
                   }}
                 >
-                 Cambiar centro
+                  Cambiar centro
                 </button> : <></>}
 
                 {changeCenter === true ?

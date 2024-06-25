@@ -100,7 +100,8 @@ export default function CreatePost ({ user }: { user: User }) {
     const getCenters = async () => {
       await axios.get(`${FRONT_BASE_URL}centers/get`).then(async (res: any) => {
         setRaw(res.data)
-
+        console.log(res.data);
+        
         await axios
           .get(`${FRONT_BASE_URL}centers-user/get`)
           .then((res2: any) => {
