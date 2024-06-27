@@ -79,7 +79,7 @@ export default function UsersSistemList({ user }: { user: User }) {
     if (userRaw) {
       const userL = userRaw!.map((e: any) => {
         console.log(e);
-        
+
         return (
           <tr key={e.email} className='border-b-[1px]'>
             <td className={getBorderColor(e.rol, 'border-s-[4px] border-gray-300 p-[8px] flex justify-center')}>
@@ -94,30 +94,41 @@ export default function UsersSistemList({ user }: { user: User }) {
             <td className='p-[8px]'>{e.centro === -1 ? '-' : e.centro}</td>
             <td className='p-[8px]'>{parseText(e.rol)}</td>
             <td className='border-e-[1px] border-gray-300 p-[8px]'> {e.rol === 'voluntario' ?
-              <div>
-                <button
-                  key='confirm-trade'
-                  className='w-[100px] mx-[10px] py-[5px] bg-rose-700 rounded-bl-[10px] text-white hover:font-semibold hover:bg-white hover:text-rose-700 hover:border-[2px] hover:border-rose-700'
-                  type={ButtonEnum.BUTTON}
-                  onClick={() => {
-                    _handleBorrarVoluntario(e.id)
+              e.borrado == true ?
+                <div>
+                  <button
+                    key='lock-confirm-trade'
+                    disabled={true}
+                    className='w-[213px] py-[5px] bg-rose-700 opacity-60 rounded-bl-[10px] rounded-br-[10px] text-white '
+                    type={ButtonEnum.BUTTON}
+                  >
+                    Voluntario eliminado
+                  </button>
+                </div> :
+                <div>
+                  <button
+                    key='confirm-trade'
+                    className='w-[100px] mx-[10px] py-[5px] bg-rose-700 rounded-bl-[10px] text-white hover:font-semibold hover:bg-white hover:text-rose-700 hover:border-[2px] hover:border-rose-700'
+                    type={ButtonEnum.BUTTON}
+                    onClick={() => {
+                      _handleBorrarVoluntario(e.id)
 
-                  }}
-                >
-                  Borrar
-                </button>
-                <button
-                  key='confirm-trade'
-                  className='w-[100px] py-[5px] bg-blue-900 rounded-br-[10px] text-white hover:font-semibold hover:bg-white hover:text-blue-900 hover:border-[2px] hover:border-blue-900'
-                  type={ButtonEnum.BUTTON}
-                  onClick={() => {
-                    _handleModificarVoluntario(e.id)
+                    }}
+                  >
+                    Borrar
+                  </button>
+                  <button
+                    key='confirm-trade'
+                    className='w-[100px] py-[5px] bg-blue-900 rounded-br-[10px] text-white hover:font-semibold hover:bg-white hover:text-blue-900 hover:border-[2px] hover:border-blue-900'
+                    type={ButtonEnum.BUTTON}
+                    onClick={() => {
+                      _handleModificarVoluntario(e.id)
 
-                  }}
-                >
-                  Modificar
-                </button>
-              </div> : '-'}</td>
+                    }}
+                  >
+                    Modificar
+                  </button>
+                </div> : '-'}</td>
           </tr>
         )
       })
@@ -142,6 +153,19 @@ export default function UsersSistemList({ user }: { user: User }) {
   };
   const _handleBorrarVoluntario = async (e: number) => {
     console.log('Voluntario a borrar: ' + e);
+    const formData={
+      idVolunteer:e
+    }
+    await axios
+        .post<any[]>(`${FRONT_BASE_URL}/volunteer/delete`,formData)
+        .then(async (res: any) => {
+          await router.push('/')
+          await router.push('/users-list')
+          alert(`Voluntario ${e} eliminado correctamente`)
+        })
+        .catch((err: any) => {
+          setUserRaw([])
+        })
   }
   const _handleModificarVoluntario = async (e: number) => {
     console.log('Voluntario a modificar: ' + e);
