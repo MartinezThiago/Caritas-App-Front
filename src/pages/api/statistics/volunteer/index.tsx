@@ -22,8 +22,10 @@ export default async function handler(
             Authorization: `Bearer ${token}`
         }
     }    
+    const fechaInicio=req.body.fechaInicio
+    const fechaFin=req.body.fechaFin
     await axios
-        .get(`${BACK_BASE_URL}CaritasBack/getEstadisticasVoluntario`, config)
+        .get(`${BACK_BASE_URL}CaritasBack/getEstadisticasVoluntario?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`, config)
         .then((result: any) => {
             res.status(result.status).json(result.data)
         })
