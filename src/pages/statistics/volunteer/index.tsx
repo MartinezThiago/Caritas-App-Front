@@ -14,6 +14,10 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { ButtonEnum } from "@/components/types";
 import CenterDescription from "@/components/center-description";
+import Image from "next/image";
+import defaultProfilePic from 'public/profile-pic-default.jpg'
+import { LineChart } from '@tremor/react';
+import { Loading } from "@/components/loading";
 
 interface FormData {
   fecha_inicio: string;
@@ -22,7 +26,7 @@ interface FormData {
 
 interface StatisticsVolunteer {
   borrado: boolean;
-  cantidadDeProductosDonadoPorCategoriaGlobal: [
+  cantidadIntercambiosPorCategoria: [
     { cantidadIntercambios: number; categoriaProducto: number }
   ];
   cantidadIntercambiosCancelados: number;
@@ -38,6 +42,10 @@ interface StatisticsVolunteer {
   nombre: string;
   ubicacion: string;
   dias: [{ idDia: number; descripcion: string }];
+  fotoVoluntarioMasAuditador: string;
+  nombreVoluntarioMasAuditador: string;
+  apellidoVoluntarioMasAuditador: string;
+  cantidadVoluntarioMasAuditador: number;
 }
 export async function getServerSideProps({
   req,
@@ -55,6 +63,7 @@ export default function UsersSistemList({ user }: { user: User }) {
   const [dayTo, setDayTo] = useState<string>("");
   const [statistics, setStatistics] = useState<StatisticsVolunteer>();
   const arrayCategoria = ["Utiles escolares", "Alimentos", "Limpieza", "Ropa"];
+  const [isLoading, setIsLoading] = useState(true)
   const {
     register,
     handleSubmit,
@@ -81,9 +90,9 @@ export default function UsersSistemList({ user }: { user: User }) {
   }, []);
 
   const getDays = () => {
-    let diaZ=''
-    statistics?.dias.map((e)=>{
-      diaZ=`${diaZ} ${e.descripcion.substring(0,2)} `
+    let diaZ = ''
+    statistics?.dias.map((e) => {
+      diaZ = `${diaZ} ${e.descripcion.substring(0, 2)} `
     })
     return diaZ
   };
@@ -95,7 +104,7 @@ export default function UsersSistemList({ user }: { user: User }) {
       { name: "Alimento", value: 0 },
       { name: "Limpieza", value: 0 },
     ];
-    statistics?.cantidadDeProductosDonadoPorCategoriaGlobal.map((e) => {
+    statistics?.cantidadIntercambiosPorCategoria.map((e) => {
       let index = cate.findIndex(
         (x) => x.name == arrayCategoria[e.categoriaProducto - 1]
       );
@@ -188,11 +197,46 @@ export default function UsersSistemList({ user }: { user: User }) {
       setDayTo(value);
     }
   };
-  const validateDay = (): boolean => {
-    return dayTo < dayFrom;
-  };
-  const valueFormatter = (number: number) =>
-    `Total: ${Intl.NumberFormat("us").format(number).toString()}`;
+  const chartdata = [
+    {
+      date: 'Jan 22',
+      Confirmados: 1,
+      'Cantidad': 1,
+    },
+    {
+      date: 'Feb 22',
+      Confirmados: 2,
+      'Cantidad': 2,
+    },
+    {
+      date: 'Mar 22',
+      Confirmados: 1,
+      'Cantidad': 1,
+    },
+    {
+      date: 'Apr 22',
+      Rechazados: 1,
+      'Cantidad': 1,
+    },
+    {
+      date: 'May 22',
+      Rechazados: 1,
+      'Cantidad': 1,
+    },
+    {
+      date: 'Jun 22',
+      Cancelados: 1,
+      'Cantidad': 1,
+    }
+  ];
+
+  useEffect(() => {
+    // Simula una carga de datos
+    setTimeout(() => {
+      setIsLoading(false) // Cambia isLoading a false después de 2 segundos
+    }, 400)
+  }, [])
+  const valueFormatter = (number: number) => `Total: ${Intl.NumberFormat("us").format(number).toString()}`;
 
   return (
     <RootLayout user={user}>
@@ -202,173 +246,198 @@ export default function UsersSistemList({ user }: { user: User }) {
             ESTADISTICAS EN: {statistics?.nombre.toUpperCase()}
           </p>
         </div>
-        <div className="flex justify-center mt-[40px]">
-          <div className="w-[65vw] flex justify-between bg-blue-900 bg-opacity-10 p-[25px] rounded-[10px] items-center">
-            <form
-              key="request-date-form"
-              noValidate
-              onSubmit={handleSubmit(_handleSubmit)}
-              className="  "
-            >
-              <div className="flex items-end">
-                <div className="me-[40px]">
-                  <Field
-                    text="Desde"
-                    handleClick={handleDayFromClick}
-                    datePickerValue={dayFrom}
-                    dis={false}
-                  />
-                </div>
-                <div className="me-[40px]">
-                  <Field
-                    text="Hasta"
-                    handleClick={handleDayToClick}
-                    datePickerValue={dayTo}
-                    dis={dayFrom == ""}
-                  />
-                </div>
-                <button
-                  key="request-date-form-submit-button"
-                  type={ButtonEnum.SUBMIT}
-                  className=" h-[2.5rem] px-6 w-[150px] outline-transparent outline disabled:bg-gray-500 disabled:hover:text-white disabled:hover:outline-none disabled:hover:bg-gray-600 bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 text-white active:text-white active:bg-rose-700"
-                  disabled={dayFrom == "" || dayTo == ""}
+        {isLoading ? <div className="flex justify-center mt-[50px]">
+          <div className="">
+            <Loading />
+          </div>
+        </div> :
+          statistics ? <>
+            <div className="flex justify-center mt-[40px]">
+              <div className="w-[75vw] flex justify-between bg-blue-900 bg-opacity-10 p-[25px] rounded-[10px] items-center">
+                <form
+                  key="request-date-form"
+                  noValidate
+                  onSubmit={handleSubmit(_handleSubmit)}
+                  className="  "
                 >
-                  Consultar
-                </button>
-              </div>
-            </form>
-            <div className="text-black flex flex-col items-center">
-              <p className="text-lg font-bold text-[20px]">
-                Informacion de: {statistics?.nombre}
-              </p>
-              <div className="w-[300px]">
-                <p className="w-auto flex justify-between">
-                  <span className="font-semibold text-[18px]">Localidad: </span>{" "}
-                  {statistics?.ubicacion}
-                </p>
-                <p className="w-auto flex justify-between">
-                  <span className="font-semibold text-[18px]">Direccion: </span>{" "}
-                  {statistics?.direccion}
-                </p>
-                <p className="w-auto flex justify-between">
-                  <span className="font-semibold text-[18px]">Dias: </span>{" "}
-                  {getDays()}
-                </p>
-                <p className="w-auto flex justify-between">
-                  <span className="font-semibold text-[18px]">Horarios:</span>{" "}
-                  {statistics?.horarioApertura} - {statistics?.horarioCierre}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className=" flex justify-center ">
-          {/* <div className='flex mt-[40px]'>
-            
-            <div className='me-[60px]'>
-              <SimpleBarCharts
-                data={[
-                  {
-                    nombre: "Utiles", CantidadConfirmados: 41
-                  },
-                  {
-                    nombre: "Ropa", CantidadConfirmados: 10
-                  },
-                  {
-                    nombre: "Alimentos", CantidadConfirmados: 13
-                  }
-                  ,
-                  {
-                    nombre: "Limpieza", CantidadConfirmados: 13
-                  }
-                ]}
-                type='categories'
-              />
-            </div>
-            <div>
-              <SimplePieCharts />
-            </div>
-          </div> */}
-          <div className="h-[100vh] w-[65vw]">
-            <div className="flex mt-[40px] justify-between">
-              <div className="flex flex-col bg-blue-900 bg-opacity-10 rounded-[10px] p-[25px] ">
-                <h1 className="font-semibold text-black text-2xl">
-                  Cantidad de intercambios por categoria
-                </h1>
-                <div className="mt-[20px]">
-                  <BarList
-                    data={getCategoriesStatistics()}
-                    className="w-[500px]"
-                  />
+                  <div className="flex items-end">
+                    <div className="me-[40px]">
+                      <Field
+                        text="Desde"
+                        handleClick={handleDayFromClick}
+                        datePickerValue={dayFrom}
+                        dis={false}
+                      />
+                    </div>
+                    <div className="me-[40px]">
+                      <Field
+                        text="Hasta"
+                        handleClick={handleDayToClick}
+                        datePickerValue={dayTo}
+                        dis={dayFrom == ""}
+                      />
+                    </div>
+                    <button
+                      key="request-date-form-submit-button"
+                      type={ButtonEnum.SUBMIT}
+                      className=" h-[2.5rem] px-6 w-[150px] outline-transparent outline disabled:bg-gray-500 disabled:hover:text-white disabled:hover:outline-none disabled:hover:bg-gray-600 bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 text-white active:text-white active:bg-rose-700"
+                      disabled={dayFrom == "" || dayTo == ""}
+                    >
+                      Consultar
+                    </button>
+                  </div>
+                </form>
+                <div className="text-black flex flex-col items-center">
+                  <p className="text-lg font-bold text-[20px]">
+                    Informacion de: {statistics?.nombre}
+                  </p>
+                  <div className="w-[300px]">
+                    <p className="w-auto flex justify-between">
+                      <span className="font-semibold text-[18px]">Localidad: </span>{" "}
+                      {statistics?.ubicacion}
+                    </p>
+                    <p className="w-auto flex justify-between">
+                      <span className="font-semibold text-[18px]">Direccion: </span>{" "}
+                      {statistics?.direccion}
+                    </p>
+                    <p className="w-auto flex justify-between">
+                      <span className="font-semibold text-[18px]">Dias: </span>{" "}
+                      {getDays()}
+                    </p>
+                    <p className="w-auto flex justify-between">
+                      <span className="font-semibold text-[18px]">Horarios:</span>{" "}
+                      {statistics?.horarioApertura} - {statistics?.horarioCierre}
+                    </p>
+                  </div>
                 </div>
               </div>
-              <div className=" flex flex-col items-center bg-blue-900 bg-opacity-10 rounded-[10px] p-[25px]">
-                <h1 className="font-semibold text-black text-3xl">
-                  Intercambios en {statistics?.nombre}
-                </h1>
-                <div className="flex justify-center items-center mt-[20px]">
-                  <div>
-                    <DonutChart
-                      data={trades}
-                      category="trades"
-                      index="name"
+            </div>
+            <div className=" flex justify-center ">
+              <div className="h-[100vh] w-[75vw]">
+                <div className="flex mt-[40px] justify-between">
+                  {/* <div className="flex flex-col bg-blue-900 bg-opacity-10 rounded-[10px] p-[25px] ">
+                  <h1 className="font-semibold text-black text-2xl">
+                    Cantidad de intercambios por categoria
+                  </h1>
+                  <div className="mt-[20px]">
+                    <BarList
+                      data={getCategoriesStatistics()}
+                      className="w-[500px]"
+                    />
+                  </div>
+                </div> */}
+                  <div className="w-[780px] h-auto bg-blue-900 bg-opacity-10 rounded-[10px] flex flex-col items-center">
+                    <h1 className="font-semibold text-black text-2xl pt-[20px]">
+                      Intercambios desde siempre hasta hoy
+                    </h1>
+                    <LineChart
+                      className="w-[600px] py-[20px]"
+                      data={chartdata}
+                      index="date"
+                      yAxisWidth={65}
+                      categories={['Confirmados', 'Rechazados', 'Cancelados']}
                       colors={["green-500", "blue-900", "rose-700"]}
-                      showLabel={true}
-                      showAnimation={true}
                       valueFormatter={valueFormatter}
-                      className="w-[300px] h-[180px] font-semibold text-xl "
                     />
                   </div>
-                  <div>
-                    <Legend
-                      categories={["Confirmados", "Rechazados", "Cancelados"]}
-                      colors={["green-500", "blue-900", "rose-700"]}
-                      className="w-[200px] text-black font-semibold h-[120px]"
-                    />
+                  <div className="flex flex-col items-center bg-blue-900 bg-opacity-10 rounded-[10px] p-[25px]">
+                    <h1 className="font-semibold text-black text-3xl">
+                      Intercambios en {statistics?.nombre}
+                    </h1>
+                    <div className="flex justify-center items-center mt-[20px]">
+                      <div>
+                        <DonutChart
+                          data={trades}
+                          category="trades"
+                          index="name"
+                          colors={["green-500", "blue-900", "rose-700"]}
+                          showLabel={true}
+                          showAnimation={true}
+                          valueFormatter={valueFormatter}
+                          className="w-[300px] h-[180px] font-semibold "
+                        />
+                      </div>
+                      <div>
+                        <Legend
+                          categories={["Confirmados", "Rechazados", "Cancelados"]}
+                          colors={["green-500", "blue-900", "rose-700"]}
+                          className="w-[200px] text-black font-semibold h-[120px]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-between">
+                  <div className="w-[700px] bg-blue-900 bg-opacity-10 rounded-[10px] mt-[40px] ">
+                    <div className="w-[100%] h-[100%] p-[25px] text-black ">
+                      <p className="text-lg flex justify-between">
+                        <span className="font-semibold text-lg">
+                          Voluntario que mas audito intercambios:
+                        </span>
+                        <div className="flex items-center ms-[20px]">
+                          <Image
+                            alt={`ownerPostProfilePic`}
+                            className={"w-[38px] rounded-full"}
+                            width={0}
+                            height={0}
+                            src={statistics?.fotoVoluntarioMasAuditador ? statistics?.fotoVoluntarioMasAuditador : defaultProfilePic}
+                          />
+                          <p className="ms-[5px]">
+                            {statistics?.nombreVoluntarioMasAuditador} {statistics?.apellidoVoluntarioMasAuditador} <span className="font-semibold text-gray-700">| {statistics?.cantidadVoluntarioMasAuditador} |</span>
+                          </p>
+                        </div>
+                      </p>
+                      <p className="text-lg flex justify-between">
+                        <span className="font-semibold text-lg">
+                          Cantidad de intercambios con donacion:{" "}
+                        </span>{" "}
+                        {statistics.cantidadProductosDonados}
+                      </p>
+                      <p className="text-lg flex justify-between">
+                        <span className="font-semibold text-lg">
+                          Motivo mas comun de Rechazo:{" "}
+                        </span>{" "}
+                        {statistics?.motivoMasComunRechazo}
+                      </p>
+                      <p className="text-lg flex justify-between">
+                        <span className="font-semibold text-lg">
+                          Motivo mas comun de Cancelacion:{" "}
+                        </span>{" "}
+                        {statistics?.motivoMasComunCancelacion}
+                      </p>
+                    </div>
+                  </div>
+                  {/* <div className="w-[600px] h-auto bg-blue-900 bg-opacity-10 rounded-[10px] mt-[40px] flex flex-col items-center">
+                  <h1 className="font-semibold text-black text-2xl">
+                    Intercambios desde siempre hasta hoy
+                  </h1>
+                  <LineChart
+                    className="w-auto"
+                    data={chartdata}
+                    index="date"
+                    yAxisWidth={65}
+                    categories={['Confirmados', 'Rechazados', 'Cancelados']}
+                    colors={["green-500", "blue-900", "rose-700"]}
+                    valueFormatter={valueFormatter}
+                  />
+                </div> */}
+                  <div className="flex flex-col bg-blue-900 bg-opacity-10 rounded-[10px] w-[650px] p-[25px] mt-[40px]">
+                    <h1 className="font-semibold text-black text-2xl">
+                      Cantidad de intercambios por categoria
+                    </h1>
+                    <div className="mt-[20px]">
+                      <BarList
+                        data={getCategoriesStatistics()}
+                        className="w-[500px]"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="flex justify-between">
-              <div className="w-[750px] bg-blue-900 bg-opacity-10 rounded-[10px] mt-[40px] ">
-                <div className="w-[100%] h-[100%] p-[25px] text-black ">
-                  {/* <p className="text-lg flex justify-between">
-                    <span className="font-semibold text-lg">
-                      Centro con mas intercambios:{" "}
-                    </span>
-                    Centro Y La Pampa, Santa Rosa
-                  </p> */}
-                  <p className="text-lg flex justify-between">
-                    <span className="font-semibold text-lg">
-                      Voluntario que mas audito intercambios:
-                    </span>
-                    Matias Diz
-                  </p>
-                  <p className="text-lg flex justify-between">
-                    <span className="font-semibold text-lg">
-                      Cantidad de intercambios con donacion:{" "}
-                    </span>{" "}
-                    48
-                  </p>
-                  <p className="text-lg flex justify-between">
-                    <span className="font-semibold text-lg">
-                      Motivo mas comun de Rechazo:{" "}
-                    </span>{" "}
-                    {statistics?.motivoMasComunRechazo}
-                  </p>
-                  <p className="text-lg flex justify-between">
-                    <span className="font-semibold text-lg">
-                      Motivo mas comun de Cancelacion:{" "}
-                    </span>{" "}
-                    {statistics?.motivoMasComunCancelacion}
-                  </p>
-                </div>
-              </div>
-              <div className="w-[400px] h-auto bg-blue-900 bg-opacity-10 rounded-[10px] mt-[40px] "></div>
-            </div>
-          </div>
-        </div>
+          </> : <><p className="text-l font-bold text-gray-500 mt-[10px] m-auto">
+            NO PERTENECES A NINGUN CENTRO
+          </p></>}
       </div>
     </RootLayout>
   );

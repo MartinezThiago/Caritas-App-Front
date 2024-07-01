@@ -469,3 +469,7 @@ body {
     transform: rotate(360deg);
   }
 }
+
+.tremor-Legend-legendItem p{
+  font-size: 18px;
+}
