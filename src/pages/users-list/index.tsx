@@ -1,5 +1,6 @@
 import Select from '@/components/inputs/select'
 import { Loading } from '@/components/loading'
+import { ButtonEnum } from '@/components/types'
 import { FRONT_BASE_URL } from '@/constants'
 import RootLayout from '@/layouts/root-layout'
 import {
@@ -77,6 +78,8 @@ export default function UsersSistemList({ user }: { user: User }) {
   const UserList = (rolUser: string) => {
     if (userRaw) {
       const userL = userRaw!.map((e: any) => {
+        console.log(e);
+
         return (
           <tr key={e.email} className='border-b-[1px]'>
             <td className={getBorderColor(e.rol, 'border-s-[4px] border-gray-300 p-[8px] flex justify-center')}>
@@ -90,7 +93,42 @@ export default function UsersSistemList({ user }: { user: User }) {
             <td className='p-[8px]'>{e.fecha_registro}</td>
             <td className='p-[8px]'>{e.centro === -1 ? '-' : e.centro}</td>
             <td className='p-[8px]'>{parseText(e.rol)}</td>
-            <td className='border-e-[1px] border-gray-300 p-[8px]'> {e.rol === 'voluntario' ? 'Borrar / Modificar' : ''}</td>
+            <td className='border-e-[1px] border-gray-300 p-[8px]'> {e.rol === 'voluntario' ?
+              e.borrado == true ?
+                <div>
+                  <button
+                    key='lock-confirm-trade'
+                    disabled={true}
+                    className='w-[213px] py-[5px] bg-rose-700 opacity-60 rounded-bl-[10px] rounded-br-[10px] text-white '
+                    type={ButtonEnum.BUTTON}
+                  >
+                    Voluntario eliminado
+                  </button>
+                </div> :
+                <div>
+                  <button
+                    key='confirm-trade'
+                    className='w-[100px] mx-[10px] py-[5px] bg-rose-700 rounded-bl-[10px] text-white hover:font-semibold hover:bg-white hover:text-rose-700 hover:border-[2px] hover:border-rose-700'
+                    type={ButtonEnum.BUTTON}
+                    onClick={() => {
+                      _handleBorrarVoluntario(e.id)
+
+                    }}
+                  >
+                    Borrar
+                  </button>
+                  <button
+                    key='confirm-trade'
+                    className='w-[100px] py-[5px] bg-blue-900 rounded-br-[10px] text-white hover:font-semibold hover:bg-white hover:text-blue-900 hover:border-[2px] hover:border-blue-900'
+                    type={ButtonEnum.BUTTON}
+                    onClick={() => {
+                      _handleModificarVoluntario(e.id)
+
+                    }}
+                  >
+                    Modificar
+                  </button>
+                </div> : '-'}</td>
           </tr>
         )
       })
@@ -98,7 +136,7 @@ export default function UsersSistemList({ user }: { user: User }) {
 
       //userL.sort((a, b) => a.props.children[8].props.children - b.props.children[8].props.children)
       userL.sort((a, b) => {
-        return rolesOrder.indexOf(a.props.children[8].props.children)-rolesOrder.indexOf(b.props.children[8].props.children)
+        return rolesOrder.indexOf(a.props.children[8].props.children) - rolesOrder.indexOf(b.props.children[8].props.children)
       })
       return rolUser == 'Todos' ? userL : userL.filter(x => x.props.children[8].props.children == rolUser)
     }
@@ -113,6 +151,25 @@ export default function UsersSistemList({ user }: { user: User }) {
   const handleChange = (event: any) => {
     setRolChecked(event.target.value);
   };
+  const _handleBorrarVoluntario = async (e: number) => {
+    console.log('Voluntario a borrar: ' + e);
+    const formData={
+      idVolunteer:e
+    }
+    await axios
+        .post<any[]>(`${FRONT_BASE_URL}/volunteer/delete`,formData)
+        .then(async (res: any) => {
+          await router.push('/')
+          await router.push('/users-list')
+          alert(`Voluntario ${e} eliminado correctamente`)
+        })
+        .catch((err: any) => {
+          setUserRaw([])
+        })
+  }
+  const _handleModificarVoluntario = async (e: number) => {
+    console.log('Voluntario a modificar: ' + e);
+  }
   return (
     <RootLayout user={user}>
       {isLoading ? (
@@ -146,14 +203,14 @@ export default function UsersSistemList({ user }: { user: User }) {
               <thead>
                 <tr className='text-gray-600 '>
                   <th className='border-b-[1px] border-s-[1px] border-gray-300 p-[8px]'>Foto</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>Nombre</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>Apellido</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>DNI</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>E-mail</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>Fecha de nacimiento</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>Registrado desde</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>Center</th>
-                  <th className='border-b-[1px] border-gray-300 p-[8px]'>Rol</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Nombre</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Apellido</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>DNI</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>E-mail</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Fecha de nacimiento</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Registrado desde</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Center</th>
+                  <th className='border-b-[1px] border-x-[1px] border-gray-300 p-[8px]'>Rol</th>
                   <th className='border-b-[1px] border-e-[1px] border-gray-300 p-[8px]'>Action</th>
                 </tr>
               </thead>

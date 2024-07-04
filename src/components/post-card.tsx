@@ -1,5 +1,5 @@
-import Image from 'next/image'
-import Link from 'next/link'
+import Image from "next/image";
+import Link from "next/link";
 
 /**
  * The product card data.
@@ -12,19 +12,19 @@ import Link from 'next/link'
  * @property {string} image - The first image of the post
  */
 export interface CardProductProps {
-  id: number
-  title: string
-  desciption: string
-  nameProductCategorie: string
-  nameProductState: string
-  locationTrade: string
-  image: string
-  ownerPost: boolean
-  link?: string
-  handleClick?: (id: string) => void
-  enableLink?: boolean
-  onMyPost?: boolean
-  statePost?: number
+  id: number;
+  title: string;
+  desciption: string;
+  nameProductCategorie: string;
+  nameProductState: string;
+  locationTrade: string;
+  image: string;
+  ownerPost: boolean;
+  link?: string;
+  handleClick?: (id: string) => void;
+  enableLink?: boolean;
+  onMyPost?: boolean;
+  statePost?: number;
 }
 
 export default function CardProduct({
@@ -40,72 +40,90 @@ export default function CardProduct({
   handleClick,
   onMyPost,
   statePost,
-  enableLink = true
+  enableLink = true,
 }: CardProductProps) {
-  const Slot = enableLink ? Link : 'div'
-  
-  function truncateText(text:string,maxLength:number){
+  const Slot = enableLink ? Link : "div";
+
+  function truncateText(text: string, maxLength: number) {
     if (text.length > maxLength) {
-      return text.substring(0, maxLength) + '...';
-  } else {
+      return text.substring(0, maxLength) + "...";
+    } else {
       return text;
-  }
+    }
   }
 
   const onClick = () => {
-    handleClick && handleClick(String(id))
-  }
+    handleClick && handleClick(String(id));
+  };
 
   return (
     <Slot
       href={link ? link : `/posts/${id}`}
-      className='w-[16rem] h-[20rem] me-[1rem] mb-[1rem] border-[2px] border-blue-900 rounded-tl-[15px] rounded-br-[15px] hover:scale-105 duration-300 cursor-pointer'
+      className="w-[16rem] h-[20rem] me-[1rem] mb-[1rem] border-[2px] border-blue-900 rounded-tl-[15px] rounded-br-[15px] hover:scale-105 duration-300 cursor-pointer"
       onClick={onClick}
     >
-      <div className='h-[145px] flex items-center justify-center'>
+      <div className="h-[145px] flex items-center justify-center">
         <Image
           alt={`post-image-${id}`}
-          className={'h-auto w-[35%]'}
+          className={"h-auto w-[35%]"}
           src={image}
           width={0}
           height={0}
         />
       </div>
-      <div className={'flex flex-col justify-between h-[54%] '}>
-        <div className='mt-2.5 ms-2.5 h-full flex flex-col justify-between'>
+      <div className={"flex flex-col justify-between h-[54%] "}>
+        <div className="mt-2.5 ms-2.5 h-full flex flex-col justify-between">
           <div>
-            <p className={'text-2xl font-bold'}>{title}</p>
-            <p className='ms-2.5 mt-0.5'>{truncateText(desciption,25)}</p>
+            <p className={"text-2xl font-bold"}>{title}</p>
+            <p className="ms-2.5 mt-0.5">{truncateText(desciption, 25)}</p>
           </div>
           <div>
             {ownerPost ? (
-              <p className='font-bold text-sm text-rose-700'>Guardado</p>
+              <p className="font-bold text-sm text-rose-700">Guardado</p>
             ) : (
               <></>
             )}
             {onMyPost ? (
-              statePost == 1 ? <p className='font-bold text-sm text-blue-900'>Publicado</p> : statePost == 2 ? <p className='font-bold text-sm text-gray-500'>Ofertado</p> : statePost == 4 ?<p className='font-bold text-sm text-green-700'>En proceso de intercambio</p>:statePost == 3 ?<p className='font-bold text-sm text-rose-700'>Baneada</p>:<></>
+              statePost == 1 ? (
+                <p className="font-bold text-sm text-blue-900">Publicado</p>
+              ) : statePost == 2 ? (
+                <p className="font-bold text-sm text-gray-500">Ofertado</p>
+              ) : statePost == 4 ? (
+                <p className="font-bold text-sm text-green-700">
+                  En proceso de intercambio
+                </p>
+              ) : statePost == 3 ? (
+                <p className="font-bold text-sm text-rose-700">Baneada</p>
+              ) : statePost == 7 ? (
+                <p className="font-bold text-sm text-rose-700">
+                  PAUSADA! <span className="text-gray-500">(re-elegir centro)</span>
+                </p>
+              ) : (
+                <></>
+              )
             ) : (
               <></>
             )}
-            <p className='font-semibold mb-1.5'>{truncateText(locationTrade,25)}</p>
+            <p className="font-semibold mb-1.5">
+              {truncateText(locationTrade, 25)}
+            </p>
           </div>
         </div>
         <div
           className={
-            'flex justify-center items-center border-t-[1px] border-blue-900 h-10 '
+            "flex justify-center items-center border-t-[1px] border-blue-900 h-10 "
           }
         >
           <p
             className={
-              'font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto'
+              "font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto"
             }
           >
             {nameProductCategorie}
           </p>
           <p
             className={
-              'font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto'
+              "font-bold text-white bg-rose-700 inline rounded-xl text-sm px-2.5 py-0.5 m-auto"
             }
           >
             {nameProductState}
@@ -113,5 +131,5 @@ export default function CardProduct({
         </div>
       </div>
     </Slot>
-  )
+  );
 }

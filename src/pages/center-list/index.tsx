@@ -1,6 +1,7 @@
 import { Loading } from '@/components/loading'
 import { Button } from '@/components/ui/button'
 import { FRONT_BASE_URL, defaultHours, workingDays } from '@/constants'
+import { ButtonEnum } from '@/components/types'
 import RootLayout from '@/layouts/root-layout'
 import { GetSSPropsResult, User } from '@/types'
 import { getUser } from '@/utils'
@@ -33,7 +34,6 @@ export async function getServerSideProps ({
 }>): Promise<GetSSPropsResult> {
   return requireNothing(getUser(req, res))
 }
-
 export interface CenterInfo {
   dias: any[]
   direccion: string
@@ -102,6 +102,7 @@ const HourSelector = ({
       </select>
     </div>
   )
+
 }
 
 const Input = ({
@@ -170,6 +171,8 @@ export default function UsersSistemList ({ user }: { user: User }) {
         .get<any[]>(`${FRONT_BASE_URL}/centers/get`)
         .then((res: any) => {
           setCentersRaw(res.data)
+          console.log(res.data);
+
         })
         .catch((err: any) => {
           setCentersRaw([])
@@ -314,9 +317,23 @@ export default function UsersSistemList ({ user }: { user: User }) {
   }
 
   const centerList = () => {
+
     if (centersRaw) {
+      (centersRaw as { borrado: boolean }[]).sort((a, b) => {
+        // Comparamos los valores de la propiedad 'isTrue'
+        if (a.borrado === b.borrado) {
+          return 0;
+        } else if (a.borrado) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
       const centerL = centersRaw!.map((e: any) => {
+        console.log(e);
+        
         return (
+
           <tr key={e.id_centro} className='border border-gray-400 h-[50px]'>
             {e.id_centro === modifying ? (
               <Fragment>
@@ -456,6 +473,7 @@ export default function UsersSistemList ({ user }: { user: User }) {
                   </Button>
                 </div>
               )}
+
             </td>
           </tr>
         )
@@ -467,6 +485,40 @@ export default function UsersSistemList ({ user }: { user: User }) {
             x => x.props.children[1].props.children == locationChecked
           )
     }
+  }
+
+
+  useEffect(() => {
+    // Simula una carga de datos
+    setTimeout(() => {
+      setIsLoading(false) // Cambia isLoading a false después de 2 segundos
+    }, 400)
+  }, [])
+  const handleChange = (event: any) => {
+    setLocationChecked(event.target.value);
+  };
+  const _handleBorrarCentro = async (e: number) => {
+    //console.log('Centro a borrar: ' + e);
+    const idCentro = {
+      idCentro: e
+    }
+    await axios
+      .post(`${FRONT_BASE_URL}centers/delete`, idCentro)
+      .then(async () => {
+        console.log('Borrado');
+        await router.push('/')
+        await router.push('/center-list')
+        alert(`Centro ${e} eliminado con exito`)
+      })
+      .catch((error: { response: { data: { message: string } } }) => {
+        if (error) {
+          alert(error.response.data.message);
+        }
+      });
+
+  }
+  const _handleModificarCentro = async (e: number) => {
+    console.log('Centro a modificar: ' + e);
   }
 
   return (
@@ -516,6 +568,7 @@ export default function UsersSistemList ({ user }: { user: User }) {
                   </th>
                   <th className='p-2 border-e border-gray-400'>Días</th>
                   <th className='p-2'>Acciones</th>
+
                 </tr>
               </thead>
               <tbody className='text-black'>

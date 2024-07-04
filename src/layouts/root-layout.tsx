@@ -123,8 +123,8 @@ export default function RootLayout({
         </> : user.role === 'admin_centro' ? <>
           <Link
             key='link-statistics'
-            href='/statistics'
-            className={getLinkClass('/statistics')}
+            href='/statistics/admin'
+            className={getLinkClass('/statistics/admin')}
           >
             Estadísticas
           </Link>
@@ -170,6 +170,13 @@ export default function RootLayout({
         >
           Intercambios
         </Link>
+        <Link
+            key='link-statistics'
+            href='/statistics/volunteer'
+            className={getLinkClass('/statistics/volunteer')}
+          >
+            Estadísticas
+          </Link>
           <div
             key='header-separator'
             className='flex-grow'

@@ -61,7 +61,7 @@ export default function UserPostsInfo({ user }: { user: User }) {
             nameProductState={e.nombre_estado_producto}
             locationTrade={e.ubicacion_trade}
             image={
-              e.imagenes[0].base64_imagen ? e.imagenes[0].base64_imagen : auxPic
+              e.imagenes[0]?.base64_imagen ? e.imagenes[0].base64_imagen : auxPic
             }
             ownerPost={e.usuario_owner === parseInt(user.userId.toString())}
             onMyPost={true}
