@@ -187,15 +187,20 @@ export default function UsersSistemList({ user }: { user: User }) {
         .get(`${FRONT_BASE_URL}centers/get`)
         .then((res: any) => {
           setCentersRawList(res.data)
+          console.log(res.data);
+
           res.data.map((e: any) => {
-            centrosMuyAux.push({
-              value: `${e.id_centro}`,
-              label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}`
-            })
-            locationsMuyAux.push({
-              value: `${e.ubicacion}`,
-              label: `${e.ubicacion}`
-            })
+            if (!e.borrado) {
+              centrosMuyAux.push({
+                value: `${e.id_centro}`,
+                label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}`
+              })
+
+              locationsMuyAux.push({
+                value: `${e.ubicacion}`,
+                label: `${e.ubicacion}`
+              })
+            }
           })
         })
       const eliminarDuplicados = async (arr: Item[]) => {
@@ -225,11 +230,11 @@ export default function UsersSistemList({ user }: { user: User }) {
   }
   const dataFormatter = (number: number) =>
     Intl.NumberFormat('us').format(number).toString();
-  
+
   const trades = [
     {
       name: "Confirmados",
-      trades: (statistics?.estadisticasGlobales.intercambiosConfirmadosConDonacionCount?? 0) + (statistics?.estadisticasGlobales?.intercambiosConfirmadosSinDonacionCount?? 0),
+      trades: (statistics?.estadisticasGlobales.intercambiosConfirmadosConDonacionCount ?? 0) + (statistics?.estadisticasGlobales?.intercambiosConfirmadosSinDonacionCount ?? 0),
     },
     {
       name: "Rechazados",
@@ -357,7 +362,7 @@ export default function UsersSistemList({ user }: { user: User }) {
     // setValue('from', 0)
     // setValue('to', 0)
     console.log(e.target.value);
-    
+
   }
   const getCategoriesStatistics = () => {
     let cate = [
@@ -673,7 +678,7 @@ export default function UsersSistemList({ user }: { user: User }) {
                                   src={statistics?.estadisticasVoluntario.fotoVoluntarioMasAuditador ? statistics?.estadisticasVoluntario.fotoVoluntarioMasAuditador : defaultProfilePic}
                                 />
                                 <p className="ms-[5px]">
-                                  {statistics?.estadisticasVoluntario.nombreVoluntarioMasAuditador} {statistics?.estadisticasVoluntario.apellidoVoluntarioMasAuditador} <span className="font-semibold text-gray-700">| {statistics?.cantidadVoluntarioMasAuditador} |</span>
+                                  {statistics?.estadisticasVoluntario.nombreVoluntarioMasAuditador} {statistics?.estadisticasVoluntario.apellidoVoluntarioMasAuditador} <span className="font-semibold text-gray-700">| {statistics?.estadisticasVoluntario.cantidadVoluntarioMasAuditador} |</span>
                                 </p>
                               </div>
                             </p>
