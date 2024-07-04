@@ -26,3 +26,11 @@ export const daysByDay = {
   5: 'Viernes',
   6: 'Sábado'
 }
+
+export const workingDays = [
+  'Lunes',
+  'Martes',
+  'Miércoles',
+  'Jueves',
+  'Viernes',
+]
