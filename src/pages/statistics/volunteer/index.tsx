@@ -146,17 +146,10 @@ export default function UsersSistemList({ user }: { user: User }) {
     },
   ];
   const _handleSubmit = async (formData: FormData) => {
-    // if (dayTo < dayFrom) {
-    //   alert(`La fecha 'Hasta' no puede ser menor a la fecha 'Desde'`)
-    //   setDayFrom('')
-    //   setDayTo('')
-    //   return
-    // }
     const formDataAux = {
       fechaInicio: dayFrom,
       fechaFin: dayTo,
     };
-    //console.log(formDataAux);
     const getStatistics = async () => {
       await axios
         .post(`${FRONT_BASE_URL}/statistics/volunteer`, formDataAux)
@@ -341,17 +334,6 @@ export default function UsersSistemList({ user }: { user: User }) {
               <div className=" flex justify-center ">
                 <div className="h-[100vh] w-[75vw]">
                   <div className="flex mt-[40px] justify-between">
-                    {/* <div className="flex flex-col bg-blue-900 bg-opacity-10 rounded-[10px] p-[25px] ">
-                  <h1 className="font-semibold text-black text-2xl">
-                    Cantidad de intercambios por categoria
-                  </h1>
-                  <div className="mt-[20px]">
-                    <BarList
-                      data={getCategoriesStatistics()}
-                      className="w-[500px]"
-                    />
-                  </div>
-                </div> */}
                     <div className="w-[780px] h-auto bg-blue-900 bg-opacity-10 rounded-[10px] flex flex-col items-center">
                       <h1 className="font-semibold text-black text-3xl pt-[20px]">
                         {dayFromAUX==''&&dayToAUX==''?'Todos los intercambios': `Intercambios desde ${formatDate(dayFromAUX)} hasta ${formatDate(dayToAUX)}`}
@@ -433,20 +415,6 @@ export default function UsersSistemList({ user }: { user: User }) {
                         </p>
                       </div>
                     </div>
-                    {/* <div className="w-[600px] h-auto bg-blue-900 bg-opacity-10 rounded-[10px] mt-[40px] flex flex-col items-center">
-                  <h1 className="font-semibold text-black text-2xl">
-                    Intercambios desde siempre hasta hoy
-                  </h1>
-                  <LineChart
-                    className="w-auto"
-                    data={chartdata}
-                    index="date"
-                    yAxisWidth={65}
-                    categories={['Confirmados', 'Rechazados', 'Cancelados']}
-                    colors={["green-500", "blue-900", "rose-700"]}
-                    valueFormatter={valueFormatter}
-                  />
-                </div> */}
                     <div className="flex flex-col bg-blue-900 bg-opacity-10 rounded-[10px] w-[650px] p-[25px] mt-[40px]">
                       <h1 className="font-semibold text-black text-2xl">
                         Cantidad de intercambios por categoria
