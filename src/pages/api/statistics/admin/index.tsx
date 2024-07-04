@@ -21,14 +21,14 @@ export default async function handler(
         headers: {
             Authorization: `Bearer ${token}`
         }
-    }    
-    const fechaInicio=req.body.fechaInicio
-    const fechaFin=req.body.fechaFin
-    const URL=req.body.center?`${BACK_BASE_URL}CaritasBack/getEstadisticasAdmin?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&idCentro=${req.body.center}`:`${BACK_BASE_URL}CaritasBack/getEstadisticasAdmin?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`
+    }
+    const fechaInicio = req.body.fechaInicio
+    const fechaFin = req.body.fechaFin
+    const URL = req.body.center != -1 ?`${BACK_BASE_URL}CaritasBack/getEstadisticasAdmin?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&idCentro=${req.body.center}`:`${BACK_BASE_URL}CaritasBack/getEstadisticasAdmin?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`
     console.log(URL);
-    
+
     await axios
-        .get(`${BACK_BASE_URL}CaritasBack/getEstadisticasAdmin?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&idCentro=${req.body.center}`, config)
+        .get(URL, config)
         .then((result: any) => {
             res.status(result.status).json(result.data)
         })

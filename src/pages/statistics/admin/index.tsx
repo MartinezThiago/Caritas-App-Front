@@ -1,4 +1,4 @@
-import { Select, SimpleBarCharts, SimplePieCharts } from '@/components'
+import { ScrollButton, Select, SimpleBarCharts, SimplePieCharts } from '@/components'
 import { Loading } from '@/components/loading'
 import { FRONT_BASE_URL } from '@/constants'
 import RootLayout from '@/layouts/root-layout'
@@ -120,7 +120,7 @@ interface StatisticsAdmin {
 interface FormData {
   fecha_inicio: string;
   fecha_fin: string;
-  center?: string;
+  center: number | string;
 }
 interface CenterData {
   dias: [{
@@ -145,6 +145,7 @@ export default function UsersSistemList({ user }: { user: User }) {
   const [centersRawList, setCentersRawList] = useState<CenterData[]>();
   const [centersRaw, setCentersRaw] = useState<Item[]>([]);
   const [locationCentersList, setLocationCentersList] = useState<Item[]>([]);
+  const [centerSelected, setCenterSelected] = useState(-1)
   const {
     register,
     handleSubmit,
@@ -158,13 +159,14 @@ export default function UsersSistemList({ user }: { user: User }) {
     let auxDates = {
       fechaInicio: '1900-01-01',
       fechaFin: '2400-01-01',
-      center: 62
+      center: -1
     }
     const getStatistics = async () => {
       await axios
         .post(`${FRONT_BASE_URL}/statistics/admin`, auxDates)
         .then(async (res: any) => {
           console.log(res.data);
+          setValue('center', -1)
           setStatistics(res.data);
         })
         .catch((error: { response: { data: { message: string } } }) => {
@@ -187,20 +189,17 @@ export default function UsersSistemList({ user }: { user: User }) {
         .get(`${FRONT_BASE_URL}centers/get`)
         .then((res: any) => {
           setCentersRawList(res.data)
-          console.log(res.data);
+          console.log(centersRawList);
 
           res.data.map((e: any) => {
-            if (!e.borrado) {
-              centrosMuyAux.push({
-                value: `${e.id_centro}`,
-                label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}`
-              })
-
-              locationsMuyAux.push({
-                value: `${e.ubicacion}`,
-                label: `${e.ubicacion}`
-              })
-            }
+            centrosMuyAux.push({
+              value: `${e.id_centro}`,
+              label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}  ${e.borrado ? '- (BORRADO)' : ''}`
+            })
+            locationsMuyAux.push({
+              value: `${e.ubicacion}`,
+              label: `${e.ubicacion}`
+            })
           })
         })
       const eliminarDuplicados = async (arr: Item[]) => {
@@ -286,9 +285,12 @@ export default function UsersSistemList({ user }: { user: User }) {
   }
   const _handleSubmit = async (formData: FormData) => {
     const formDataAux = {
-      fechaInicio: dayFrom,
-      fechaFin: dayTo,
+      fechaInicio: dayFrom == '' ? '1900-01-01' : dayFrom,
+      fechaFin: dayTo == '' ? '2400-01-01' : dayTo,
+      center: formData.center == "" ? -1 : formData.center
     };
+    //console.log(formDataAux);
+
     const getStatistics = async () => {
       await axios
         .post(`${FRONT_BASE_URL}/statistics/admin`, formDataAux)
@@ -306,6 +308,7 @@ export default function UsersSistemList({ user }: { user: User }) {
     setDayToAUX(dayTo)
     setDayFrom('')
     setDayTo('')
+    setValue('center', -1)
   };
   const Field = ({
     text,
@@ -354,15 +357,9 @@ export default function UsersSistemList({ user }: { user: User }) {
     }
   };
   const handleCenterChange = (e: any) => {
-    // setValue('center', parseInt(e.target.value))
-    // clearErrors('centerChecked')
-    // setActualCenterSelected(centersRawList?.find(x => x.id_centro == parseInt(e.target.value)))
-    // console.log(actualCenterSelected);
-    // setValue('days', [])
-    // setValue('from', 0)
-    // setValue('to', 0)
-    console.log(e.target.value);
-
+    setValue('center', parseInt(e.target.value))
+    clearErrors('center')
+    setCenterSelected(parseInt(e.target.value));
   }
   const getCategoriesStatistics = () => {
     let cate = [
@@ -380,9 +377,50 @@ export default function UsersSistemList({ user }: { user: User }) {
     //   });
     //   cate.sort((a, b) => b.value - a.value);
     // }
-
     return cate;
   };
+  
+  const getDays = (arr: [{
+    descripcion: string,
+    idDia: number
+  }]) => {
+    let diaZ = ''
+    arr.map((e) => {
+      diaZ = `${diaZ} ${e.descripcion.substring(0, 2)} `
+    })
+    return diaZ
+  };
+
+  const getInformationCenter = () => {
+    return centersRawList?.filter(x => x.id_centro == centerSelected).map((e) => {
+      return (
+        <div className="text-black flex flex-col items-center me-[60px]">
+          <h1 className="text-2xl font-bold mb-[20px]">
+            Informacion de: {e.nombre_centro}
+          </h1>
+          <div className="w-[300px]">
+            <p className="w-auto flex justify-between pb-[5px]">
+              <span className="font-semibold text-[18px]">Localidad: </span>{" "}
+              {e.ubicacion}
+            </p>
+            <p className="w-auto flex justify-between py-[5px]">
+              <span className="font-semibold text-[18px]">Direccion: </span>{" "}
+              {e.direccion}
+            </p>
+            <p className="w-auto flex justify-between py-[5px]">
+              <span className="font-semibold text-[18px]">Dias: </span>{" "}
+              {getDays(e.dias)}
+            </p>
+            <p className="w-auto flex justify-between py-[5px]">
+              <span className="font-semibold text-[18px]">Horarios:</span>{" "}
+              {e.horario_apertura} - {e.horario_cierre}
+            </p>
+          </div>
+        </div>
+      )
+    })
+  }
+
   return (
     <RootLayout user={user}>
       <div className="">
@@ -407,75 +445,77 @@ export default function UsersSistemList({ user }: { user: User }) {
                   key="request-date-form"
                   noValidate
                   onSubmit={handleSubmit(_handleSubmit)}
-                  className="  "
+                  className="ms-[60px]"
                 >
-                  <div className="flex items-end">
-                    <div className="me-[40px]">
-                      <Field
-                        text="Desde"
-                        handleClick={handleDayFromClick}
-                        datePickerValue={dayFrom}
-                        dis={false}
-                      />
+                  <div className='' >
+                    <div className="flex items-end">
+                      <div className="me-[40px]">
+                        <Field
+                          text="Desde"
+                          handleClick={handleDayFromClick}
+                          datePickerValue={dayFrom}
+                          dis={false}
+                        />
+                      </div>
+                      <div className="me-[40px]">
+                        <Field
+                          text="Hasta"
+                          handleClick={handleDayToClick}
+                          datePickerValue={dayTo}
+                          dis={dayFrom == ""}
+                        />
+                      </div>
+                      <button
+                        key="request-date-form-submit-button"
+                        type={ButtonEnum.SUBMIT}
+                        className=" h-[2.5rem] px-6 w-[150px] outline-transparent outline disabled:bg-gray-500 disabled:hover:text-white disabled:hover:outline-none disabled:hover:bg-gray-600 bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 text-white active:text-white active:bg-rose-700"
+                        disabled={(dayFrom == "" || dayTo == "") && (watch('center') == -1)}
+                      >
+                        Consultar
+                      </button>
+                      <button
+                        key="request-date-form-submit-second-button"
+                        type={ButtonEnum.SUBMIT}
+                        className=" h-[2.5rem] px-6 w-[150px] outline-transparent outline ms-[20px] bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 text-white active:text-white active:bg-rose-700 disabled:bg-gray-500 disabled:hover:text-white disabled:hover:outline-none disabled:hover:bg-gray-600"
+                        // disabled={(dayFrom != "" || dayTo != "")&&(watch('center')!= -1)}
+                        disabled={dayFrom == "" && dayTo == "" && (watch('center') == -1)}
+                        onClick={() => {
+                          setDayFrom('')
+                          setDayFromAUX('')
+                          setDayTo('')
+                          setDayToAUX('')
+                          setValue('center', -1)
+                        }}
+                      >
+                        Limpiar filtros
+                      </button>
                     </div>
-                    <div className="me-[40px]">
-                      <Field
-                        text="Hasta"
-                        handleClick={handleDayToClick}
-                        datePickerValue={dayTo}
-                        dis={dayFrom == ""}
-                      />
+                    <div className='flex w-[100%] flex-col mt-[20px]'>
+                      <h1 className="text-lg font-semibold text-black place-self-start">
+                        Centro
+                      </h1>
+                      <div className='flex justify-between w-[100%]'>
+                        <div className='text-black w-[auto]'>
+                          <Select
+                            id='center'
+                            // label='Centro'
+                            placeholder='Elegir centro'
+                            register={register}
+                            handleChange={handleCenterChange}
+                            options={centersRaw}
+                          />
+                        </div>
+                        <div className=''>
+                          {(statistics.estadisticasVoluntario == null) ? <ScrollButton targetId="div-center-statistics" label="⥥ Ir a la estadistica ⥥" disabledFlag={true} /> :
+                            <ScrollButton targetId="div-center-statistics" label="⥥ Ir a la estadistica ⥥" disabledFlag={false} />}
+                        </div>
+                      </div>
                     </div>
-                    <button
-                      key="request-date-form-submit-button"
-                      type={ButtonEnum.SUBMIT}
-                      className=" h-[2.5rem] px-6 w-[150px] outline-transparent outline disabled:bg-gray-500 disabled:hover:text-white disabled:hover:outline-none disabled:hover:bg-gray-600 bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 text-white active:text-white active:bg-rose-700"
-                      disabled={dayFrom == "" || dayTo == ""}
-                    >
-                      Consultar
-                    </button>
-                    <button
-                      key="request-date-form-submit-second-button"
-                      type={ButtonEnum.SUBMIT}
-                      className=" h-[2.5rem] px-6 w-[150px] outline-transparent outline ms-[20px] bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 text-white active:text-white active:bg-rose-700"
-                      disabled={dayFrom != "" || dayTo != ""}
-                    >
-                      Limpiar filtros
-                    </button>
-                  </div>
-                  <div>
-                    <Select
-                      id='centerChecked'
-                      label='Centro'
-                      register={register}
-                      handleChange={handleCenterChange}
-                      options={centersRaw}
-                    />
                   </div>
                 </form>
-                <div className="text-black flex flex-col items-center me-[60px]">
-                  <p className="text-lg font-bold text-[20px]">
-                    Informacion de: {statistics?.estadisticasVoluntario.nombre}
-                  </p>
-                  <div className="w-[300px]">
-                    <p className="w-auto flex justify-between">
-                      <span className="font-semibold text-[18px]">Localidad: </span>{" "}
-                      {statistics?.estadisticasVoluntario.ubicacion}
-                    </p>
-                    <p className="w-auto flex justify-between">
-                      <span className="font-semibold text-[18px]">Direccion: </span>{" "}
-                      {statistics?.estadisticasVoluntario.direccion}
-                    </p>
-                    <p className="w-auto flex justify-between">
-                      <span className="font-semibold text-[18px]">Dias: </span>{" "}
-
-                    </p>
-                    <p className="w-auto flex justify-between">
-                      <span className="font-semibold text-[18px]">Horarios:</span>{" "}
-                      {statistics?.estadisticasVoluntario.horarioApertura} - {statistics?.estadisticasVoluntario.horarioCierre}
-                    </p>
-                  </div>
-                </div>
+                {statistics.estadisticasVoluntario != null ?
+                  getInformationCenter()
+                  : <></>}
               </div>
               <div className='w-[80vw]'>
                 <div className='w-[100%] flex justify-between my-[40px]'>
@@ -611,10 +651,10 @@ export default function UsersSistemList({ user }: { user: User }) {
                   </div>
                 </div>
               </div>
-              <div className='w-[100%] h-[1px] bg-blue-900 bg-opacity-10 my-[50px]'>
+              <div className='w-[100%] h-[1px] bg-blue-900 bg-opacity-10 mt-[50px]'>
               </div>
-              <div>
-                {statistics.estadisticasVoluntario ?
+              <div id='div-center-statistics'>
+                {statistics.estadisticasVoluntario ? (statistics?.estadisticasVoluntario.cantidadIntercambiosConfirmados != 0 || statistics?.estadisticasVoluntario.cantidadIntercambiosCancelados != 0 || statistics?.estadisticasVoluntario.cantidadIntercambiosRechazados != 0) ?
                   <div className=" flex flex-col items-center ">
                     <p className="text-xl font-semibold text-blue-900  mt-[20px] m-auto">
                       ESTADISTICAS EN: {statistics?.estadisticasVoluntario.nombre.toUpperCase()}
@@ -715,7 +755,9 @@ export default function UsersSistemList({ user }: { user: User }) {
                         </div>
                       </div>
                     </div>
-                  </div> : <></>}
+                  </div> : <div className="flex justify-center"><p className="text-2xl font-bold text-gray-500 my-[40px] m-auto">
+                    EL CENTRO NO TUVO INTERCAMBIOS AUN
+                  </p></div> : <></>}
               </div>
             </div>
         }
