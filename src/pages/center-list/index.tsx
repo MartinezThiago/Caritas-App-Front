@@ -24,8 +24,9 @@ import {
   useForm
 } from 'react-hook-form'
 import Select from 'react-select'
+import { useRouter } from 'next/router'
 
-export async function getServerSideProps ({
+export async function getServerSideProps({
   req,
   res
 }: Readonly<{
@@ -144,12 +145,13 @@ const Input = ({
   )
 }
 
-export default function UsersSistemList ({ user }: { user: User }) {
+export default function UsersSistemList({ user }: { user: User }) {
   const [centersRaw, setCentersRaw] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [submiting, setSubmiting] = useState(false)
   const [modifying, setModifying] = useState(-1)
   const [locationChecked, setLocationChecked] = useState('Todos')
+  const router = useRouter()
   const {
     register: postRegister,
     handleSubmit: handlePostSubmit,
@@ -218,11 +220,14 @@ export default function UsersSistemList ({ user }: { user: User }) {
     setSubmiting(true)
     axios
       .post(`${FRONT_BASE_URL}centers/post`, formData)
-      .then(() => {
-        alert('Centro agregado correctamente')
+      .then(async () => {
+        //alert('Centro agregado correctamente')
         // ACTUALIZAR LA LISTA DE CENTROS CON LA LISTA DE CENTROS DEVUELTA POR EL ENDPOINT DEL BACK PARA QUE SE RENDERICE EL NUEVO CENTROVICK
         setSubmiting(false)
         postReset()
+        await router.push('/')
+        await router.push('/center-list')
+        alert('Centro agregado correctamente')
       })
       .catch(() => {
         alert('Ha ocurrido un error al agregar el centro')
@@ -233,6 +238,8 @@ export default function UsersSistemList ({ user }: { user: User }) {
   const onPatchSubmit = (formData: CenterInfo) => {
     console.log(formData)
     setSubmiting(true)
+    formData.id_centro = modifying.toString()
+    //console.log(modifying);
 
     // Si no hay días seleccionados
     if (formData.dias === undefined || formData.dias === null) {
@@ -261,14 +268,17 @@ export default function UsersSistemList ({ user }: { user: User }) {
 
     axios
       .patch(`${FRONT_BASE_URL}centers/patch`, formData)
-      .then(() => {
-        alert('Centro agregado correctamente')
+      .then(async () => {
+        //alert('Centro agregado correctamente')
         // ACTUALIZAR LA LISTA DE CENTROS CON LA LISTA DE CENTROS DEVUELTA POR EL ENDPOINT DEL BACK PARA QUE SE RENDERICE EL CENTROVICK MODIFICADO
         setSubmiting(false)
         patchReset()
+        await router.push('/')
+        await router.push('/center-list')
+        alert('Centro modificado correctamente')
       })
       .catch(() => {
-        alert('Ha ocurrido un error al agregar el centro')
+        alert('Ha ocurrido un error al modificar el centro')
         setSubmiting(false)
       })
 
@@ -277,10 +287,14 @@ export default function UsersSistemList ({ user }: { user: User }) {
     patchReset()
   }
 
-  const onDelete = () => {}
+  // const onDelete = () => {
+  //   console.log('aaaaaaa');
+  // }
 
   const handleLocationChange = (event: any) => {
     setLocationChecked(event.target.value)
+    console.log(locationChecked);
+    
   }
 
   const handleMultiSelectChange = (
@@ -317,7 +331,6 @@ export default function UsersSistemList ({ user }: { user: User }) {
   }
 
   const centerList = () => {
-
     if (centersRaw) {
       (centersRaw as { borrado: boolean }[]).sort((a, b) => {
         // Comparamos los valores de la propiedad 'isTrue'
@@ -330,10 +343,8 @@ export default function UsersSistemList ({ user }: { user: User }) {
         }
       });
       const centerL = centersRaw!.map((e: any) => {
-        console.log(e);
-        
+        //console.log(e);
         return (
-
           <tr key={e.id_centro} className='border border-gray-400 h-[50px]'>
             {e.id_centro === modifying ? (
               <Fragment>
@@ -452,11 +463,11 @@ export default function UsersSistemList ({ user }: { user: User }) {
                   </Button>
                 </div>
               ) : (
-                <div className='size-full flex justify-center items-center gap-2'>
+                e.borrado == false ? <div className='size-full flex justify-center items-center gap-2'>
                   <Button
                     type='button'
                     disabled={submiting || modifying > -1}
-                    onClick={onDelete}
+                    onClick={() => { _handleBorrarCentro(e.id_centro) }}
                     className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
                   >
                     <FileMinus />
@@ -471,19 +482,20 @@ export default function UsersSistemList ({ user }: { user: User }) {
                   >
                     <FilePenLine />
                   </Button>
-                </div>
+                </div> : <p className='text-rose-700 font-semibold'>Centro eliminado</p>
               )}
 
             </td>
           </tr>
         )
       })
-
+      console.log(centerL[1].props.children[0].props.children[1].props.children);
+      
       return locationChecked == 'Todos'
         ? centerL
         : centerL.filter(
-            x => x.props.children[1].props.children == locationChecked
-          )
+          x => x.props.children[0].props.children[1].props.children == locationChecked
+        )
     }
   }
 
@@ -494,11 +506,12 @@ export default function UsersSistemList ({ user }: { user: User }) {
       setIsLoading(false) // Cambia isLoading a false después de 2 segundos
     }, 400)
   }, [])
-  const handleChange = (event: any) => {
-    setLocationChecked(event.target.value);
-  };
+  // const handleChangeLocation = (event: any) => {
+  //   console.log(event.targe.value);
+
+  //   setLocationChecked(event.target.value);
+  // };
   const _handleBorrarCentro = async (e: number) => {
-    //console.log('Centro a borrar: ' + e);
     const idCentro = {
       idCentro: e
     }

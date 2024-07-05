@@ -19,6 +19,7 @@ export default async function handler(
     const token = getCookie("access", { req, res });
     const config = { headers: { Authorization: `Bearer ${token}` } }
     const formData = req.body.idCentro
+    //console.log(formData);
     await axios
         .get(`${BACK_BASE_URL}CaritasBack/borrarCentro?idCentro=${formData}`, config)
         .then((result: any) => {
