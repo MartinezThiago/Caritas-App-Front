@@ -25,7 +25,7 @@ export default async function handler(
     const fechaInicio = req.body.fechaInicio
     const fechaFin = req.body.fechaFin
     const URL = req.body.center != -1 ?`${BACK_BASE_URL}CaritasBack/getEstadisticasAdmin?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&idCentro=${req.body.center}`:`${BACK_BASE_URL}CaritasBack/getEstadisticasAdmin?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`
-    console.log(URL);
+    //console.log(URL);
 
     await axios
         .get(URL, config)

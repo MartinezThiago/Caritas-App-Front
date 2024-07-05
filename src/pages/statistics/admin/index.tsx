@@ -29,6 +29,8 @@ export async function getServerSideProps({
 }
 interface GlobalStatistics {
   cantidadProductosDonadosCentro: number
+  cantidadIntercambiosConfirmadosVoluntario: number
+  intercambiosPorCategoria: [{ cantidad: number, categoria: string }]
   centroConMasCantidadDeIntercambios: {
     borrado: boolean
     dias: string[]
@@ -144,8 +146,8 @@ export default function UsersSistemList({ user }: { user: User }) {
   const [dayToAUX, setDayToAUX] = useState<string>("");
   const [centersRawList, setCentersRawList] = useState<CenterData[]>();
   const [centersRaw, setCentersRaw] = useState<Item[]>([]);
-  const [locationCentersList, setLocationCentersList] = useState<Item[]>([]);
-  const [centerSelected, setCenterSelected] = useState(-1)
+  const [centerSelected, setCenterSelected] = useState(-1);
+  const arrayCategoria = ["Utiles escolares", "Alimentos", "Limpieza", "Ropa"];
   const {
     register,
     handleSubmit,
@@ -166,7 +168,7 @@ export default function UsersSistemList({ user }: { user: User }) {
         .post(`${FRONT_BASE_URL}/statistics/admin`, auxDates)
         .then(async (res: any) => {
           console.log(res.data);
-          setValue('center', -1)
+          setValue('center', -1);
           setStatistics(res.data);
         })
         .catch((error: { response: { data: { message: string } } }) => {
@@ -183,44 +185,52 @@ export default function UsersSistemList({ user }: { user: User }) {
   }, [])
   useEffect(() => {
     const centrosMuyAux: Item[] = []
-    const locationsMuyAux: Item[] = []
+
     const getCenters = async () => {
       await axios
         .get(`${FRONT_BASE_URL}centers/get`)
         .then((res: any) => {
           setCentersRawList(res.data)
-          console.log(centersRawList);
-
-          res.data.map((e: any) => {
+          //console.log(res.data);
+          res.data.sort((a: any, b: any) => {
+            if (a.borrado && !b.borrado) return 1;
+            if (!a.borrado && b.borrado) return -1;
+            return 0;
+          }).map((e: any) => {
             centrosMuyAux.push({
               value: `${e.id_centro}`,
-              label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}  ${e.borrado ? '- (BORRADO)' : ''}`
+              label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro} ${e.tiene_voluntario ? '- Voluntario activo' : ''} ${e.borrado ? '- (BORRADO)' : ''}`
             })
-            locationsMuyAux.push({
-              value: `${e.ubicacion}`,
-              label: `${e.ubicacion}`
-            })
+
           })
         })
-      const eliminarDuplicados = async (arr: Item[]) => {
-        return arr.filter((item, index) => {
-          return arr.findIndex((i) => i.value === item.value) === index;
-        });
-      };
-      setLocationCentersList(await eliminarDuplicados(locationsMuyAux))
     }
     getCenters()
+    //console.log(centrosMuyAux);
+
     setCentersRaw(centrosMuyAux)
+    console.log(centersRaw);
+
   }, [])
 
   const mapDonacionesPorCategoria = () => {
-    let arr: any = []
+    let arr: any = [
+      { name: "Ropa", 'Cantidad de donaciones': 0 },
+      { name: "Utiles escolares", 'Cantidad de donaciones': 0 },
+      { name: "Alimento", 'Cantidad de donaciones': 0 },
+      { name: "Limpieza", 'Cantidad de donaciones': 0 }]
     statistics?.estadisticasGlobales.donacionesPorCategoria.map((e) => {
-      arr.push({
-        name: firstLetterUpperCase(e.categoria),
-        'Cantidad de donaciones': e.cantidad
-      })
+      // arr.push({
+      //   name: firstLetterUpperCase(e.categoria),
+      //   'Cantidad de donaciones': e.cantidad
+      // })
+      let index = arr.findIndex(
+        (x:any) => x.name == firstLetterUpperCase(e.categoria)
+      );
+      arr[index]['Cantidad de donaciones'] = e.cantidad;
     })
+    console.log(arr);
+
     arr.sort((a: any, b: any) => b['Cantidad de donaciones'] - a['Cantidad de donaciones']);
     return arr
   }
@@ -363,23 +373,23 @@ export default function UsersSistemList({ user }: { user: User }) {
   }
   const getCategoriesStatistics = () => {
     let cate = [
-      { name: "Ropa", value: 18 },
-      { name: "Utiles escolares", value: 13 },
-      { name: "Alimento", value: 2 },
-      { name: "Limpieza", value: 6 },
+      { name: "Ropa", value: 0 },
+      { name: "Utiles escolares", value: 0 },
+      { name: "Alimento", value: 0 },
+      { name: "Limpieza", value: 0 },
     ];
-    // if (statistics?.cantidadIntercambiosPorCategoria != null) {
-    //   statistics?.cantidadIntercambiosPorCategoria.map((e) => {
-    //     let index = cate.findIndex(
-    //       (x) => x.name == arrayCategoria[e.categoriaProducto - 1]
-    //     );
-    //     cate[index].value = e.cantidadIntercambios;
-    //   });
-    //   cate.sort((a, b) => b.value - a.value);
-    // }
+    if (statistics?.estadisticasGlobales.intercambiosPorCategoria != null) {
+      statistics?.estadisticasGlobales.intercambiosPorCategoria.map((e) => {
+        let index = cate.findIndex(
+          (x) => x.name == firstLetterUpperCase(e.categoria)
+        );
+        cate[index].value = e.cantidad;
+      });
+      cate.sort((a, b) => b.value - a.value);
+    }
     return cate;
   };
-  
+
   const getDays = (arr: [{
     descripcion: string,
     idDia: number
@@ -390,6 +400,14 @@ export default function UsersSistemList({ user }: { user: User }) {
     })
     return diaZ
   };
+
+  // const checkButtonDisabled = () => {
+  //   const button = document.querySelector('#request-global-stats-button');
+  //   if (button) {
+  //     return button.disabled;
+  //   }
+  //   return null;
+  // };
 
   const getInformationCenter = () => {
     return centersRawList?.filter(x => x.id_centro == centerSelected).map((e) => {
@@ -426,7 +444,7 @@ export default function UsersSistemList({ user }: { user: User }) {
       <div className="">
         <div className="w-[100vw] flex justify-center">
           <p className="text-xl font-semibold text-blue-900  mt-[20px] m-auto">
-            ESTADISTICAS GLOBALES
+            ESTADISTICAS
           </p>
         </div>
         {statistics?.estadisticasGlobales == null ? <div className="flex justify-center"><p className="text-2xl font-bold text-gray-500 mt-[40px] m-auto">
@@ -478,7 +496,7 @@ export default function UsersSistemList({ user }: { user: User }) {
                         type={ButtonEnum.SUBMIT}
                         className=" h-[2.5rem] px-6 w-[150px] outline-transparent outline ms-[20px] bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 text-white active:text-white active:bg-rose-700 disabled:bg-gray-500 disabled:hover:text-white disabled:hover:outline-none disabled:hover:bg-gray-600"
                         // disabled={(dayFrom != "" || dayTo != "")&&(watch('center')!= -1)}
-                        disabled={dayFrom == "" && dayTo == "" && (watch('center') == -1)}
+                        disabled={(dayFromAUX == "" && dayToAUX == "" && watch('center') == -1)}
                         onClick={() => {
                           setDayFrom('')
                           setDayFromAUX('')
@@ -494,8 +512,8 @@ export default function UsersSistemList({ user }: { user: User }) {
                       <h1 className="text-lg font-semibold text-black place-self-start">
                         Centro
                       </h1>
-                      <div className='flex justify-between w-[100%]'>
-                        <div className='text-black w-[auto]'>
+                      <div className='flex justify-between w-[100%] mt-[5px]'>
+                        <div className='text-black w-[79%]'>
                           <Select
                             id='center'
                             // label='Centro'
@@ -506,8 +524,34 @@ export default function UsersSistemList({ user }: { user: User }) {
                           />
                         </div>
                         <div className=''>
-                          {(statistics.estadisticasVoluntario == null) ? <ScrollButton targetId="div-center-statistics" label="⥥ Ir a la estadistica ⥥" disabledFlag={true} /> :
-                            <ScrollButton targetId="div-center-statistics" label="⥥ Ir a la estadistica ⥥" disabledFlag={false} />}
+                          {//(statistics.estadisticasVoluntario == null) ?
+                            // <button
+                            //   id='request-global-stats-button'
+                            //   key="request-global-stats-button"
+                            //   type={ButtonEnum.BUTTON}
+                            //   className="h-[2.5rem] w-[150px] outline-transparent outline disabled:bg-gray-500 disabled:hover:text-white disabled:hover:outline-none disabled:hover:bg-gray-600 bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 text-white active:text-white active:bg-rose-700"
+                            //   disabled={true}
+                            // >
+                            //   Global
+                            // </button> :
+                            <button
+                              id='request-global-stats-button'
+                              key="request-global-stats-button"
+                              type={ButtonEnum.BUTTON}
+                              className=" h-[2.5rem]  w-[150px] outline-transparent outline disabled:bg-gray-500 disabled:hover:text-white disabled:hover:outline-none disabled:hover:bg-gray-600 bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 duration-200 text-white active:text-white active:bg-rose-700"
+                              disabled={false}
+                              hidden={statistics.estadisticasVoluntario == null}
+                              onClick={() => {
+                                setDayFrom('')
+                                setDayFromAUX('')
+                                setDayTo('')
+                                setDayToAUX('')
+                                setValue('center', -1)
+                                _handleSubmit({ center: -1, fecha_fin: '2400-01-01', fecha_inicio: '1900-01-01' })
+                              }}
+                            >
+                              Global
+                            </button>}
                         </div>
                       </div>
                     </div>
@@ -517,194 +561,95 @@ export default function UsersSistemList({ user }: { user: User }) {
                   getInformationCenter()
                   : <></>}
               </div>
-              <div className='w-[80vw]'>
-                <div className='w-[100%] flex justify-between my-[40px]'>
-                  <div className='w-[650px] bg-blue-900 bg-opacity-10 rounded-[10px] p-[20px] flex flex-col items-center'>
-                    <h1 className="font-semibold text-black text-3xl pb-[20px]">
-                      Cantidad de donaciones por categoria
-                    </h1>
-                    <BarChart
-                      className="mt-6"
-                      data={mapDonacionesPorCategoria()}
-                      index="name"
-                      categories={['Cantidad de donaciones']}
-                      colors={['blue']}
-                      valueFormatter={dataFormatter}
-                      yAxisWidth={48}
-                    />
-                  </div>
-                  <div className="w-[780px] h-auto bg-blue-900 bg-opacity-10 rounded-[10px] flex flex-col items-center">
-                    <h1 className="font-semibold text-black text-3xl pt-[20px]">
-                      {dayFromAUX == '' && dayToAUX == '' ? 'Todos los intercambios' : `Intercambios desde ${formatDate(dayFromAUX)} hasta ${formatDate(dayToAUX)}`}
-                    </h1>
-                    <LineChart
-                      className="w-[600px] py-[20px]"
-                      data={intercambiosPorDias()}
-                      index="date"
-                      yAxisWidth={65}
-                      categories={['Confirmados', 'Rechazados', 'Cancelados']}
-                      colors={["green-500", "blue-900", "rose-700"]}
-                      valueFormatter={valueFormatter}
-                    />
-                  </div>
-                </div>
-                <div className='w-[100%] flex justify-between my-[40px]'>
-                  <div className="flex flex-col items-center bg-blue-900 bg-opacity-10 p-[20px] rounded-[10px] w-[600px]">
-                    <h1 className="font-semibold text-black text-3xl pb-[20px]">
-                      Intercambios totales
-                    </h1>
-                    <div className="flex justify-center items-center mt-[20px]">
-                      <div>
-                        <DonutChart
-                          data={trades}
-                          category="trades"
+              {statistics?.estadisticasVoluntario == null ?
+                <div>
+                  <p className="text-xl font-semibold text-blue-900  mt-[20px] m-auto">
+                    ESTADISTICAS GLOBALES  {((dayFromAUX != '') && (dayToAUX != '')) ? `- ${formatDate(dayFromAUX)} ➜ ${formatDate(dayToAUX)}` : ''}
+                  </p>
+                  <div className='w-[100%] h-[1px] bg-blue-900 '></div>
+                  <div className='w-[80vw]'>
+                    <div className='w-[100%] flex justify-between my-[40px]'>
+                      <div className='w-[650px] bg-blue-900 bg-opacity-10 rounded-[10px] p-[20px] flex flex-col items-center'>
+                        <h1 className="font-semibold text-black text-3xl pb-[20px]">
+                          Cantidad de donaciones por categoria
+                        </h1>
+                        <BarChart
+                          className="mt-6"
+                          data={mapDonacionesPorCategoria()}
                           index="name"
+                          categories={['Cantidad de donaciones']}
+                          colors={['blue']}
+                          valueFormatter={dataFormatter}
+                          yAxisWidth={48}
+                        />
+                      </div>
+                      <div className="w-[780px] h-auto bg-blue-900 bg-opacity-10 rounded-[10px] flex flex-col items-center">
+                        <h1 className="font-semibold text-black text-3xl pt-[20px]">
+                          {dayFromAUX == '' && dayToAUX == '' ? 'Todos los intercambios' : `Intercambios desde ${formatDate(dayFromAUX)} hasta ${formatDate(dayToAUX)}`}
+                        </h1>
+                        <LineChart
+                          className="w-[600px] py-[20px]"
+                          data={intercambiosPorDias()}
+                          index="date"
+                          yAxisWidth={65}
+                          categories={['Confirmados', 'Rechazados', 'Cancelados']}
                           colors={["green-500", "blue-900", "rose-700"]}
-                          showLabel={true}
-                          showAnimation={true}
                           valueFormatter={valueFormatter}
-                          className="w-[300px] h-[180px] font-semibold "
-                        />
-                      </div>
-                      <div>
-                        <Legend
-                          categories={["Confirmados", "Rechazados", "Cancelados"]}
-                          colors={["green-500", "blue-900", "rose-700"]}
-                          className="w-[200px] text-black font-semibold h-[120px]"
                         />
                       </div>
                     </div>
-                  </div>
-
-                  <div className='w-[700px] bg-blue-900 bg-opacity-10 rounded-[10px] p-[20px] flex flex-col items-center'>
-                    <h1 className="font-semibold text-black text-3xl pb-[20px]">
-                      Top 3 localidades con mas intercambios
-                    </h1>
-                    <BarChart
-                      className="h-60"
-                      data={mapTopLocationTrades()}
-                      index="Localidad"
-                      categories={['Confirmados', 'Rechazados', 'Cancelados']}
-                      colors={["green-500", "blue-900", "rose-700"]}
-                      yAxisWidth={30}
-                    />
-
-                  </div>
-                </div>
-              </div>
-              <div className="w-[80vw]">
-                <div className='flex justify-between my-[40px]'>
-                  <div className="bg-blue-900 bg-opacity-10 rounded-[10px] w-[700px] flex justify-between">
-                    <div className="w-[100%] p-[25px] text-black  flex flex-col items-center">
-                      <h1 className="font-semibold text-black text-3xl pb-[20px]">
-                        Informacion adicional
-                      </h1>
-                      <div className='w-[90%]'>
-                        <p className="text-lg flex justify-between">
-                          <span className="font-semibold text-lg">
-                            Voluntario que mas audito intercambios:
-                          </span>
-                          <div className="flex items-center ms-[20px]">
-                            <Image
-                              alt={`ownerPostProfilePic`}
-                              className={"w-[38px] rounded-full"}
-                              width={0}
-                              height={0}
-                              src={statistics?.estadisticasGlobales.voluntarioConMasIntercambiosConfirmados.foto ? statistics?.estadisticasGlobales.voluntarioConMasIntercambiosConfirmados.foto : defaultProfilePic}
+                    <div className='w-[100%] flex justify-between my-[40px]'>
+                      <div className="flex flex-col items-center bg-blue-900 bg-opacity-10 p-[20px] rounded-[10px] w-[600px]">
+                        <h1 className="font-semibold text-black text-3xl pb-[20px]">
+                          Intercambios totales
+                        </h1>
+                        <div className="flex justify-center items-center mt-[20px]">
+                          <div>
+                            <DonutChart
+                              data={trades}
+                              category="trades"
+                              index="name"
+                              colors={["green-500", "blue-900", "rose-700"]}
+                              showLabel={true}
+                              showAnimation={true}
+                              valueFormatter={valueFormatter}
+                              className="w-[300px] h-[180px] font-semibold "
                             />
-                            <p className="ms-[5px]">
-                              {statistics?.estadisticasGlobales.voluntarioConMasIntercambiosConfirmados.nombre} {statistics?.estadisticasGlobales.voluntarioConMasIntercambiosConfirmados.apellido} <span className="font-semibold text-gray-700">| 3 |</span>
-                            </p>
                           </div>
-                        </p>
-                        <p className="text-lg flex justify-between">
-                          <span className="font-semibold text-lg">
-                            Cantidad de intercambios con donacion:{" "}
-                          </span>{" "}
-                          {statistics?.estadisticasGlobales.intercambiosConfirmadosConDonacionCount}
-                        </p>
-                        <p className="text-lg flex justify-between">
-                          <span className="font-semibold text-lg">
-                            Motivo mas comun de Rechazo:{" "}
-                          </span>{" "}
-                          {statistics?.estadisticasGlobales.motivoDeRechazoMasFrecuente}
-                        </p>
-                        <p className="text-lg flex justify-between">
-                          <span className="font-semibold text-lg">
-                            Motivo mas comun de Cancelacion:{" "}
-                          </span>{" "}
-                          {statistics?.estadisticasGlobales.motivoDeCancelacionMasFrecuente}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-col bg-blue-900 bg-opacity-10 rounded-[10px] w-[600px] p-[25px] items-center">
-                    <h1 className="font-semibold text-black text-3xl pb-[20px]">
-                      Cantidad de intercambios por categoria
-                    </h1>
-                    <div className="mt-[20px]">
-                      <BarList
-                        data={getCategoriesStatistics()}
-                        className="w-[500px]"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className='w-[100%] h-[1px] bg-blue-900 bg-opacity-10 mt-[50px]'>
-              </div>
-              <div id='div-center-statistics'>
-                {statistics.estadisticasVoluntario ? (statistics?.estadisticasVoluntario.cantidadIntercambiosConfirmados != 0 || statistics?.estadisticasVoluntario.cantidadIntercambiosCancelados != 0 || statistics?.estadisticasVoluntario.cantidadIntercambiosRechazados != 0) ?
-                  <div className=" flex flex-col items-center ">
-                    <p className="text-xl font-semibold text-blue-900  mt-[20px] m-auto">
-                      ESTADISTICAS EN: {statistics?.estadisticasVoluntario.nombre.toUpperCase()}
-                    </p>
-                    <div className="h-[100vh] w-[75vw]">
-                      <div className="flex mt-[40px] justify-between">
-                        <div className="w-[780px] h-auto bg-blue-900 bg-opacity-10 rounded-[10px] flex flex-col items-center">
-                          <h1 className="font-semibold text-black text-3xl pt-[20px]">
-                            {dayFromAUX == '' && dayToAUX == '' ? 'Todos los intercambios' : `Intercambios desde ${formatDate(dayFromAUX)} hasta ${formatDate(dayToAUX)}`}
-                          </h1>
-                          <LineChart
-                            className="w-[600px] py-[20px]"
-                            data={intercambiosPorDias()}
-                            index="date"
-                            yAxisWidth={65}
-                            categories={['Confirmados', 'Rechazados', 'Cancelados']}
-                            colors={["green-500", "blue-900", "rose-700"]}
-                            valueFormatter={valueFormatter}
-                          />
-                        </div>
-                        <div className="flex flex-col items-center bg-blue-900 bg-opacity-10 rounded-[10px] p-[25px]">
-                          <h1 className="font-semibold text-black text-3xl">
-                            Intercambios en {statistics?.estadisticasVoluntario.nombre}
-                          </h1>
-                          <div className="flex justify-center items-center mt-[20px]">
-                            <div>
-                              <DonutChart
-                                data={trades}
-                                category="trades"
-                                index="name"
-                                colors={["green-500", "blue-900", "rose-700"]}
-                                showLabel={true}
-                                showAnimation={true}
-                                valueFormatter={valueFormatter}
-                                className="w-[300px] h-[180px] font-semibold "
-                              />
-                            </div>
-                            <div>
-                              <Legend
-                                categories={["Confirmados", "Rechazados", "Cancelados"]}
-                                colors={["green-500", "blue-900", "rose-700"]}
-                                className="w-[200px] text-black font-semibold h-[120px]"
-                              />
-                            </div>
+                          <div>
+                            <Legend
+                              categories={["Confirmados", "Rechazados", "Cancelados"]}
+                              colors={["green-500", "blue-900", "rose-700"]}
+                              className="w-[200px] text-black font-semibold h-[120px]"
+                            />
                           </div>
                         </div>
                       </div>
-                      <div className="flex justify-between">
-                        <div className="w-[700px] bg-blue-900 bg-opacity-10 rounded-[10px] mt-[40px] ">
-                          <div className="w-[100%] h-[100%] p-[25px] text-black ">
+
+                      <div className='w-[700px] bg-blue-900 bg-opacity-10 rounded-[10px] p-[20px] flex flex-col items-center'>
+                        <h1 className="font-semibold text-black text-3xl pb-[20px]">
+                          Top 3 localidades con mas intercambios
+                        </h1>
+                        <BarChart
+                          className="h-60"
+                          data={mapTopLocationTrades()}
+                          index="Localidad"
+                          categories={['Confirmados', 'Rechazados', 'Cancelados']}
+                          colors={["green-500", "blue-900", "rose-700"]}
+                          yAxisWidth={30}
+                        />
+
+                      </div>
+                    </div>
+                  </div>
+                  <div className="w-[80vw]">
+                    <div className='flex justify-between my-[40px]'>
+                      <div className="bg-blue-900 bg-opacity-10 rounded-[10px] w-[700px] flex justify-between">
+                        <div className="w-[100%] p-[25px] text-black  flex flex-col items-center">
+                          <h1 className="font-semibold text-black text-3xl pb-[20px]">
+                            Informacion adicional
+                          </h1>
+                          <div className='w-[90%]'>
                             <p className="text-lg flex justify-between">
                               <span className="font-semibold text-lg">
                                 Voluntario que mas audito intercambios:
@@ -715,10 +660,10 @@ export default function UsersSistemList({ user }: { user: User }) {
                                   className={"w-[38px] rounded-full"}
                                   width={0}
                                   height={0}
-                                  src={statistics?.estadisticasVoluntario.fotoVoluntarioMasAuditador ? statistics?.estadisticasVoluntario.fotoVoluntarioMasAuditador : defaultProfilePic}
+                                  src={statistics?.estadisticasGlobales.voluntarioConMasIntercambiosConfirmados.foto ? statistics?.estadisticasGlobales.voluntarioConMasIntercambiosConfirmados.foto : defaultProfilePic}
                                 />
                                 <p className="ms-[5px]">
-                                  {statistics?.estadisticasVoluntario.nombreVoluntarioMasAuditador} {statistics?.estadisticasVoluntario.apellidoVoluntarioMasAuditador} <span className="font-semibold text-gray-700">| {statistics?.estadisticasVoluntario.cantidadVoluntarioMasAuditador} |</span>
+                                  {statistics?.estadisticasGlobales.voluntarioConMasIntercambiosConfirmados.nombre} {statistics?.estadisticasGlobales.voluntarioConMasIntercambiosConfirmados.apellido} <span className="font-semibold text-gray-700">| {statistics.estadisticasGlobales.cantidadIntercambiosConfirmadosVoluntario} |</span>
                                 </p>
                               </div>
                             </p>
@@ -726,39 +671,146 @@ export default function UsersSistemList({ user }: { user: User }) {
                               <span className="font-semibold text-lg">
                                 Cantidad de intercambios con donacion:{" "}
                               </span>{" "}
-                              {statistics?.estadisticasVoluntario.cantidadProductosDonados}
+                              {statistics?.estadisticasGlobales.intercambiosConfirmadosConDonacionCount}
                             </p>
                             <p className="text-lg flex justify-between">
                               <span className="font-semibold text-lg">
                                 Motivo mas comun de Rechazo:{" "}
                               </span>{" "}
-                              {statistics?.estadisticasVoluntario.motivoMasComunRechazo}
+                              {statistics?.estadisticasGlobales.motivoDeRechazoMasFrecuente}
                             </p>
                             <p className="text-lg flex justify-between">
                               <span className="font-semibold text-lg">
                                 Motivo mas comun de Cancelacion:{" "}
                               </span>{" "}
-                              {statistics?.estadisticasVoluntario.motivoMasComunCancelacion}
+                              {statistics?.estadisticasGlobales.motivoDeCancelacionMasFrecuente}
                             </p>
                           </div>
                         </div>
-                        <div className="flex flex-col bg-blue-900 bg-opacity-10 rounded-[10px] w-[650px] p-[25px] mt-[40px]">
-                          <h1 className="font-semibold text-black text-2xl">
-                            Cantidad de intercambios por categoria
-                          </h1>
-                          <div className="mt-[20px]">
-                            <BarList
-                              data={getCategoriesStatistics()}
-                              className="w-[500px]"
-                            />
-                          </div>
+                      </div>
+                      <div className="flex flex-col bg-blue-900 bg-opacity-10 rounded-[10px] w-[600px] p-[25px] items-center">
+                        <h1 className="font-semibold text-black text-3xl pb-[20px]">
+                          Cantidad de intercambios por categoria
+                        </h1>
+                        <div className="mt-[20px]">
+                          <BarList
+                            data={getCategoriesStatistics()}
+                            className="w-[500px]"
+                          />
                         </div>
                       </div>
                     </div>
-                  </div> : <div className="flex justify-center"><p className="text-2xl font-bold text-gray-500 my-[40px] m-auto">
-                    EL CENTRO NO TUVO INTERCAMBIOS AUN
-                  </p></div> : <></>}
-              </div>
+                  </div>
+                </div> :
+                <div className='w-[80vw]'>
+                  {statistics?.estadisticasVoluntario ? (statistics?.estadisticasVoluntario.cantidadIntercambiosConfirmados != 0 || statistics?.estadisticasVoluntario.cantidadIntercambiosCancelados != 0 || statistics?.estadisticasVoluntario.cantidadIntercambiosRechazados != 0) ?
+                    <div className=" flex flex-col items-center w-[100%] ">
+                      <div className='w-[100%]'>
+                        <p className="text-xl font-semibold text-blue-900 mt-[20px] m-auto">
+                          ESTADISTICAS EN: {statistics?.estadisticasVoluntario.nombre.toUpperCase()}
+                        </p>
+                      </div>
+                      <div className='w-[100%] h-[1px] bg-blue-900 '></div>
+                      <div className="h-[auto] w-[100%] mb-[40px]">
+                        <div className="flex mt-[40px] justify-between">
+                          <div className="w-[780px] h-auto bg-blue-900 bg-opacity-10 rounded-[10px] flex flex-col items-center">
+                            <h1 className="font-semibold text-black text-3xl pt-[20px]">
+                              {dayFromAUX == '' && dayToAUX == '' ? 'Todos los intercambios' : `Intercambios desde ${formatDate(dayFromAUX)} hasta ${formatDate(dayToAUX)}`}
+                            </h1>
+                            <LineChart
+                              className="w-[600px] py-[20px]"
+                              data={intercambiosPorDias()}
+                              index="date"
+                              yAxisWidth={65}
+                              categories={['Confirmados', 'Rechazados', 'Cancelados']}
+                              colors={["green-500", "blue-900", "rose-700"]}
+                              valueFormatter={valueFormatter}
+                            />
+                          </div>
+                          <div className="flex flex-col items-center bg-blue-900 bg-opacity-10 rounded-[10px] p-[25px]">
+                            <h1 className="font-semibold text-black text-3xl">
+                              Intercambios en {statistics?.estadisticasVoluntario.nombre}
+                            </h1>
+                            <div className="flex justify-center items-center mt-[20px]">
+                              <div>
+                                <DonutChart
+                                  data={trades}
+                                  category="trades"
+                                  index="name"
+                                  colors={["green-500", "blue-900", "rose-700"]}
+                                  showLabel={true}
+                                  showAnimation={true}
+                                  valueFormatter={valueFormatter}
+                                  className="w-[300px] h-[180px] font-semibold "
+                                />
+                              </div>
+                              <div>
+                                <Legend
+                                  categories={["Confirmados", "Rechazados", "Cancelados"]}
+                                  colors={["green-500", "blue-900", "rose-700"]}
+                                  className="w-[200px] text-black font-semibold h-[120px]"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex justify-between">
+                          <div className="w-[700px] bg-blue-900 bg-opacity-10 rounded-[10px] mt-[40px] ">
+                            <div className="w-[100%] h-[100%] p-[25px] text-black ">
+                              <p className="text-lg flex justify-between">
+                                <span className="font-semibold text-lg">
+                                  Voluntario que mas audito intercambios:
+                                </span>
+                                <div className="flex items-center ms-[20px]">
+                                  <Image
+                                    alt={`ownerPostProfilePic`}
+                                    className={"w-[38px] rounded-full"}
+                                    width={0}
+                                    height={0}
+                                    src={statistics?.estadisticasVoluntario.fotoVoluntarioMasAuditador ? statistics?.estadisticasVoluntario.fotoVoluntarioMasAuditador : defaultProfilePic}
+                                  />
+                                  <p className="ms-[5px]">
+                                    {statistics?.estadisticasVoluntario.nombreVoluntarioMasAuditador} {statistics?.estadisticasVoluntario.apellidoVoluntarioMasAuditador} <span className="font-semibold text-gray-700">| {statistics?.estadisticasVoluntario.cantidadVoluntarioMasAuditador} |</span>
+                                  </p>
+                                </div>
+                              </p>
+                              <p className="text-lg flex justify-between">
+                                <span className="font-semibold text-lg">
+                                  Cantidad de intercambios con donacion:{" "}
+                                </span>{" "}
+                                {statistics?.estadisticasVoluntario.cantidadProductosDonados}
+                              </p>
+                              <p className="text-lg flex justify-between">
+                                <span className="font-semibold text-lg">
+                                  Motivo mas comun de Rechazo:{" "}
+                                </span>{" "}
+                                {statistics?.estadisticasVoluntario.motivoMasComunRechazo}
+                              </p>
+                              <p className="text-lg flex justify-between">
+                                <span className="font-semibold text-lg">
+                                  Motivo mas comun de Cancelacion:{" "}
+                                </span>{" "}
+                                {statistics?.estadisticasVoluntario.motivoMasComunCancelacion}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex flex-col bg-blue-900 bg-opacity-10 rounded-[10px] w-[650px] p-[25px] mt-[40px]">
+                            <h1 className="font-semibold text-black text-2xl">
+                              Cantidad de intercambios por categoria
+                            </h1>
+                            <div className="mt-[20px]">
+                              <BarList
+                                data={getCategoriesStatistics()}
+                                className="w-[500px]"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div> : <div className="flex justify-center"><p className="text-2xl font-bold text-gray-500 m-auto mt-[40px]">
+                      EL CENTRO NO TUVO INTERCAMBIOS AUN
+                    </p></div> : <></>}
+                </div>}
             </div>
         }
       </div>
