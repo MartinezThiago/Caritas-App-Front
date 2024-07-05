@@ -294,7 +294,7 @@ export default function UsersSistemList({ user }: { user: User }) {
   const handleLocationChange = (event: any) => {
     setLocationChecked(event.target.value)
     console.log(locationChecked);
-    
+
   }
 
   const handleMultiSelectChange = (
@@ -330,6 +330,9 @@ export default function UsersSistemList({ user }: { user: User }) {
     }
   }
 
+  const getBackgroundTr = (e: boolean, styles: string) => {
+    return e ? `${styles} bg-gray-200 bg-opacity-70` : styles
+  }
   const centerList = () => {
     if (centersRaw) {
       (centersRaw as { borrado: boolean }[]).sort((a, b) => {
@@ -345,7 +348,7 @@ export default function UsersSistemList({ user }: { user: User }) {
       const centerL = centersRaw!.map((e: any) => {
         //console.log(e);
         return (
-          <tr key={e.id_centro} className='border border-gray-400 h-[50px]'>
+          <tr key={e.id_centro} className={getBackgroundTr(e.borrado, 'border border-gray-400 h-[50px]')}>
             {e.id_centro === modifying ? (
               <Fragment>
                 <Input
@@ -482,7 +485,7 @@ export default function UsersSistemList({ user }: { user: User }) {
                   >
                     <FilePenLine />
                   </Button>
-                </div> : <p className='text-rose-700 font-semibold'>Centro eliminado</p>
+                </div> : <p className='text-rose-700 font-semibold text-sm'>CENTRO ELIMINADO</p>
               )}
 
             </td>
@@ -490,7 +493,7 @@ export default function UsersSistemList({ user }: { user: User }) {
         )
       })
       console.log(centerL[1].props.children[0].props.children[1].props.children);
-      
+
       return locationChecked == 'Todos'
         ? centerL
         : centerL.filter(
