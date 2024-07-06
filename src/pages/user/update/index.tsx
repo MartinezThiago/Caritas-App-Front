@@ -43,6 +43,8 @@ interface CenterData {
   ubicacion: File
   dias: string[]
   id_centro: number
+  tiene_voluntario:boolean
+  borrado:boolean
 }
 
 /**
@@ -90,15 +92,18 @@ export default function UpdateUserInfo({ user }: { user: User }) {
       await axios
         .get(`${FRONT_BASE_URL}centers/get`)
         .then((res: any) => {
+
           res.data.map((e: CenterData) => {
-            centrosMuyAux.push({
-              value: `${e.id_centro}`,
-              label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}`
-            })
-            locationsMuyAux.push({
-              value: `${e.ubicacion}`,
-              label: `${e.ubicacion}`
-            })
+            if (e.borrado == false && e.tiene_voluntario == true) {
+              centrosMuyAux.push({
+                value: `${e.id_centro}`,
+                label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}`
+              })
+              locationsMuyAux.push({
+                value: `${e.ubicacion}`,
+                label: `${e.ubicacion}`
+              })
+            }
           })
         })
       const eliminarDuplicados = async (arr: Item[]) => {
