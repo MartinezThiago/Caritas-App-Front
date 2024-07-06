@@ -312,8 +312,6 @@ export default function UsersSistemList ({ user }: { user: User }) {
     patchReset()
   }
 
-  const onDelete = () => {}
-
   const handleSetPatchModify = (id: number, days?: string[]) => {
     setModifying(id)
     if (days) {
@@ -339,6 +337,23 @@ export default function UsersSistemList ({ user }: { user: User }) {
   useEffect(() => {
     console.log('PATCHERRORS', patchErrors)
   }, [patchErrors])
+
+  const handleBorrarVoluntario = async (e: number) => {
+    console.log('Voluntario a borrar: ' + e);
+    const formData={
+      idVolunteer:e
+    }
+    await axios
+        .post<any[]>(`${FRONT_BASE_URL}/volunteer/delete`,formData)
+        .then(async (res: any) => {
+          await router.push('/')
+          await router.push('/users-list')
+          alert(`Voluntario ${e} eliminado correctamente`)
+        })
+        .catch((err: any) => {
+          setUserRaw([])
+        })
+  }
 
   const UserList = (rolUser: string) => {
     if (userRaw) {
@@ -530,7 +545,7 @@ export default function UsersSistemList ({ user }: { user: User }) {
                       <Button
                         type='button'
                         disabled={submiting || modifying > -1}
-                        onClick={onDelete}
+                        onClick={() => handleBorrarVoluntario(e.id)}
                         className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
                       >
                         <FileMinus />

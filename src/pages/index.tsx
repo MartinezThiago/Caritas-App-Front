@@ -367,7 +367,7 @@ export default function Home ({
                   nameProductState={e.nombre_estado_producto}
                   locationTrade={e.ubicacion_trade}
                   image={
-                    e.imagenes[0].base64_imagen
+                    e.imagenes[0]?.base64_imagen
                       ? e.imagenes[0].base64_imagen
                       : auxPic
                   }

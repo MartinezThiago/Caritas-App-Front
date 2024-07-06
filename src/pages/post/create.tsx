@@ -21,7 +21,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
  * Gets the user from the request and response objects in the server side and pass it
  * to the page component.
  */
-export async function getServerSideProps ({
+export async function getServerSideProps({
   req,
   res
 }: Readonly<{
@@ -53,12 +53,14 @@ interface CenterData {
   ubicacion: File
   dias: string[]
   id_centro: number
+  tiene_voluntario:boolean
+  borrado:boolean
 }
 
 /**
  * The create post page.
  */
-export default function CreatePost ({ user }: { user: User }) {
+export default function CreatePost({ user }: { user: User }) {
   const router = useRouter()
   const [loading, setLoaging] = useState(false)
 
@@ -100,6 +102,7 @@ export default function CreatePost ({ user }: { user: User }) {
     const getCenters = async () => {
       await axios.get(`${FRONT_BASE_URL}centers/get`).then(async (res: any) => {
         setRaw(res.data)
+        //console.log(res.data);
 
         await axios
           .get(`${FRONT_BASE_URL}centers-user/get`)
@@ -107,19 +110,20 @@ export default function CreatePost ({ user }: { user: User }) {
             res.data.map((e: CenterData) => {
               // si es el centro elegido metele la estrellita
 
-              const isSelected = res2.data.find(
-                (c: any) => c.id_centro === e.id_centro
-              )
-              centrosMuyAux.push({
-                value: `${e.id_centro}`,
-                label: `${isSelected ? '✰ ' : ''}${e.ubicacion} - ${
-                  e.direccion
-                } - ${e.nombre_centro}`
-              })
-              locationsMuyAux.push({
-                value: `${e.ubicacion}`,
-                label: `${isSelected ? '✰ ' : ''}${e.ubicacion}`
-              })
+              if ( e.borrado==false && e.tiene_voluntario==true) {
+                const isSelected = res2.data.find(
+                  (c: any) => c.id_centro === e.id_centro
+                )
+                centrosMuyAux.push({
+                  value: `${e.id_centro}`,
+                  label: `${isSelected ? '✰ ' : ''}${e.ubicacion} - ${e.direccion
+                    } - ${e.nombre_centro}`
+                })
+                locationsMuyAux.push({
+                  value: `${e.ubicacion}`,
+                  label: `${isSelected ? '✰ ' : ''}${e.ubicacion}`
+                })
+              }
             })
           })
           .catch(() => {
@@ -196,7 +200,7 @@ export default function CreatePost ({ user }: { user: User }) {
   const _handleSubmit = async (formData: FormData) => {
     setLoaging(true)
 
-    if (((watch('status')!=='Nuevo')&&(watch('status')!=='Usado'))) {
+    if (((watch('status') !== 'Nuevo') && (watch('status') !== 'Usado'))) {
       alert('El estado del producto debe ser Nuevo o Usado')
       setLoaging(false)
       return
@@ -404,9 +408,8 @@ export default function CreatePost ({ user }: { user: User }) {
                     center = index.toString()
                   }
                 }
-                const title = `${raw[Number(center)].ubicacion} - ${
-                  raw[Number(center)].direccion
-                }`
+                const title = `${raw[Number(center)].ubicacion} - ${raw[Number(center)].direccion
+                  }`
                 return (
                   <>
                     <p
