@@ -346,7 +346,7 @@ export default function UsersSistemList({ user }: { user: User }) {
           return -1;
         }
       });
-      const centerL:any = centersRaw!.map((e: any) => {
+      const centerL: any = centersRaw!.map((e: any) => {
         //console.log(e);
         if (hiddeCards) {
           return ([])
@@ -502,7 +502,7 @@ export default function UsersSistemList({ user }: { user: User }) {
       return locationChecked == 'Todos'
         ? centerL
         : centerL.filter(
-          (x:any) => x.props.children[0].props.children[1].props.children == locationChecked
+          (x: any) => x.props.children[0].props.children[1].props.children == locationChecked
         )
     }
   }
@@ -675,6 +675,9 @@ export default function UsersSistemList({ user }: { user: User }) {
               </tbody>
             </table>
           </form>
+          {hiddeCards ? <p className='text-2xl font-bold text-gray-500 mt-[10px] m-auto'>
+            No hay centros cargados en el sistema
+          </p>:<></>}
         </div>
       )}
     </RootLayout>
