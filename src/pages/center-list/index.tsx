@@ -151,6 +151,7 @@ export default function UsersSistemList({ user }: { user: User }) {
   const [submiting, setSubmiting] = useState(false)
   const [modifying, setModifying] = useState(-1)
   const [locationChecked, setLocationChecked] = useState('Todos')
+  const [hiddeCards, setHiddeCards] = useState<boolean>(false)
   const router = useRouter()
   const {
     register: postRegister,
@@ -345,159 +346,163 @@ export default function UsersSistemList({ user }: { user: User }) {
           return -1;
         }
       });
-      const centerL = centersRaw!.map((e: any) => {
+      const centerL:any = centersRaw!.map((e: any) => {
         //console.log(e);
-        return (
-          <tr key={e.id_centro} className={getBackgroundTr(e.borrado, 'border border-gray-400 h-[50px]')}>
-            {e.id_centro === modifying ? (
-              <Fragment>
-                <Input
-                  id='nombre_centro'
-                  register={patchRegister}
-                  registerOptions={{ required: false }}
-                  watch={patchWatch}
-                  setValue={setPatchValue}
-                  alter={modifying}
-                  props={{ placeholder: e.nombre_centro }}
-                />
-                <Input
-                  id='ubicacion'
-                  register={patchRegister}
-                  registerOptions={{ required: false }}
-                  watch={patchWatch}
-                  setValue={setPatchValue}
-                  alter={modifying}
-                  props={{ placeholder: e.ubicacion }}
-                />
-                <Input
-                  id='direccion'
-                  register={patchRegister}
-                  registerOptions={{ required: false }}
-                  watch={patchWatch}
-                  setValue={setPatchValue}
-                  alter={modifying}
-                  props={{ placeholder: e.direccion }}
-                />
-                <td className='p-2 border-e border-gray-400'>
-                  <div className='size-full flex gap-2'>
-                    <HourSelector
-                      id='horario_apertura'
-                      defaultOption={{
-                        label: e.horario_apertura,
-                        value: e.horario_apertura
-                      }}
-                      register={patchRegister}
-                      registerOptions={{ required: true }}
-                      watch={patchWatch}
-                      setValue={setPatchValue}
-                      alter={modifying}
-                    />
-                    ➜
-                    <HourSelector
-                      id='horario_cierre'
-                      defaultOption={{
-                        label: e.horario_cierre,
-                        value: e.horario_cierre
-                      }}
-                      register={patchRegister}
-                      registerOptions={{ required: true }}
-                      watch={patchWatch}
-                      setValue={setPatchValue}
-                      alter={modifying}
-                    />
-                  </div>
-                </td>
-                <td className='relative p-2 flex flex-col justify-center items-start border-e border-gray-400'>
-                  <span className='absolute z-50 top-3 right-6 text-red-500 text-sm'>
-                    *
-                  </span>
-                  <Select
-                    options={workingDays.map(day => ({
-                      value: day,
-                      label: day
-                    }))}
-                    defaultValue={e.dias.map((day: any) => ({
-                      value: day.descripcion,
-                      label: day.descripcion
-                    }))}
-                    placeholder='...'
-                    isMulti
-                    onChange={(e: any) => {
-                      handleMultiSelectChange(e, setPatchValue)
-                    }}
-                    className='w-full'
+        if (hiddeCards) {
+          return ([])
+        } else {
+          return (
+            <tr key={e.id_centro} className={getBackgroundTr(e.borrado, 'border border-gray-400 h-[50px]')}>
+              {e.id_centro === modifying ? (
+                <Fragment>
+                  <Input
+                    id='nombre_centro'
+                    register={patchRegister}
+                    registerOptions={{ required: false }}
+                    watch={patchWatch}
+                    setValue={setPatchValue}
+                    alter={modifying}
+                    props={{ placeholder: e.nombre_centro }}
                   />
-                </td>
-              </Fragment>
-            ) : (
-              <Fragment>
-                <td className='p-2 border-e border-gray-400'>
-                  {e.nombre_centro}
-                </td>
-                <td className='p-2 border-e border-gray-400'>{e.ubicacion}</td>
-                <td className='p-2 border-e border-gray-400'>{e.direccion}</td>
-                <td className='p-2 border-e border-gray-400'>{`${e.horario_apertura} ➜ ${e.horario_cierre}`}</td>
-                <td className='p-2 font-medium text-gray-600 text-start border-e border-gray-400'>
-                  {e.dias
-                    .map((day: any) => day.descripcion[0] + day.descripcion[1])
-                    .join(', ')}
-                </td>
-              </Fragment>
-            )}
-            <td className='p-2 text-center'>
-              {modifying === e.id_centro ? (
-                <div className='size-full flex justify-center items-center gap-2'>
-                  <Button
-                    type='submit'
-                    disabled={submiting}
-                    className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-green-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-green-700 hover:outline-green-700 active:text-white active:bg-green-700 duration-200'
-                  >
-                    <FileCheck />
-                  </Button>
-                  <Button
-                    type='button'
-                    onClick={() => {
-                      handleSetPatchModify(-1)
-                    }}
-                    disabled={submiting}
-                    className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
-                  >
-                    <X />
-                  </Button>
-                </div>
+                  <Input
+                    id='ubicacion'
+                    register={patchRegister}
+                    registerOptions={{ required: false }}
+                    watch={patchWatch}
+                    setValue={setPatchValue}
+                    alter={modifying}
+                    props={{ placeholder: e.ubicacion }}
+                  />
+                  <Input
+                    id='direccion'
+                    register={patchRegister}
+                    registerOptions={{ required: false }}
+                    watch={patchWatch}
+                    setValue={setPatchValue}
+                    alter={modifying}
+                    props={{ placeholder: e.direccion }}
+                  />
+                  <td className='p-2 border-e border-gray-400'>
+                    <div className='size-full flex gap-2'>
+                      <HourSelector
+                        id='horario_apertura'
+                        defaultOption={{
+                          label: e.horario_apertura,
+                          value: e.horario_apertura
+                        }}
+                        register={patchRegister}
+                        registerOptions={{ required: true }}
+                        watch={patchWatch}
+                        setValue={setPatchValue}
+                        alter={modifying}
+                      />
+                      ➜
+                      <HourSelector
+                        id='horario_cierre'
+                        defaultOption={{
+                          label: e.horario_cierre,
+                          value: e.horario_cierre
+                        }}
+                        register={patchRegister}
+                        registerOptions={{ required: true }}
+                        watch={patchWatch}
+                        setValue={setPatchValue}
+                        alter={modifying}
+                      />
+                    </div>
+                  </td>
+                  <td className='relative p-2 flex flex-col justify-center items-start border-e border-gray-400'>
+                    <span className='absolute z-50 top-3 right-6 text-red-500 text-sm'>
+                      *
+                    </span>
+                    <Select
+                      options={workingDays.map(day => ({
+                        value: day,
+                        label: day
+                      }))}
+                      defaultValue={e.dias.map((day: any) => ({
+                        value: day.descripcion,
+                        label: day.descripcion
+                      }))}
+                      placeholder='...'
+                      isMulti
+                      onChange={(e: any) => {
+                        handleMultiSelectChange(e, setPatchValue)
+                      }}
+                      className='w-full'
+                    />
+                  </td>
+                </Fragment>
               ) : (
-                e.borrado == false ? <div className='size-full flex justify-center items-center gap-2'>
-                  <Button
-                    type='button'
-                    disabled={submiting || modifying > -1}
-                    onClick={() => { _handleBorrarCentro(e.id_centro) }}
-                    className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
-                  >
-                    <FileMinus />
-                  </Button>
-                  <Button
-                    type='button'
-                    disabled={submiting || modifying > -1}
-                    onClick={() => {
-                      handleSetPatchModify(e.id_centro, e.dias)
-                    }}
-                    className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-orange-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-orange-700 hover:outline-orange-700 active:text-white active:bg-orange-700 duration-200'
-                  >
-                    <FilePenLine />
-                  </Button>
-                </div> : <p className='text-rose-700 font-semibold text-sm'>CENTRO ELIMINADO</p>
+                <Fragment>
+                  <td className='p-2 border-e border-gray-400'>
+                    {e.nombre_centro}
+                  </td>
+                  <td className='p-2 border-e border-gray-400'>{e.ubicacion}</td>
+                  <td className='p-2 border-e border-gray-400'>{e.direccion}</td>
+                  <td className='p-2 border-e border-gray-400'>{`${e.horario_apertura} ➜ ${e.horario_cierre}`}</td>
+                  <td className='p-2 font-medium text-gray-600 text-start border-e border-gray-400'>
+                    {e.dias
+                      .map((day: any) => day.descripcion[0] + day.descripcion[1])
+                      .join(', ')}
+                  </td>
+                </Fragment>
               )}
+              <td className='p-2 text-center'>
+                {modifying === e.id_centro ? (
+                  <div className='size-full flex justify-center items-center gap-2'>
+                    <Button
+                      type='submit'
+                      disabled={submiting}
+                      className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-green-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-green-700 hover:outline-green-700 active:text-white active:bg-green-700 duration-200'
+                    >
+                      <FileCheck />
+                    </Button>
+                    <Button
+                      type='button'
+                      onClick={() => {
+                        handleSetPatchModify(-1)
+                      }}
+                      disabled={submiting}
+                      className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
+                    >
+                      <X />
+                    </Button>
+                  </div>
+                ) : (
+                  e.borrado == false ? <div className='size-full flex justify-center items-center gap-2'>
+                    <Button
+                      type='button'
+                      disabled={submiting || modifying > -1}
+                      onClick={() => { _handleBorrarCentro(e.id_centro) }}
+                      className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
+                    >
+                      <FileMinus />
+                    </Button>
+                    <Button
+                      type='button'
+                      disabled={submiting || modifying > -1}
+                      onClick={() => {
+                        handleSetPatchModify(e.id_centro, e.dias)
+                      }}
+                      className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-orange-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-orange-700 hover:outline-orange-700 active:text-white active:bg-orange-700 duration-200'
+                    >
+                      <FilePenLine />
+                    </Button>
+                  </div> : <p className='text-rose-700 font-semibold text-sm'>CENTRO ELIMINADO</p>
+                )}
 
-            </td>
-          </tr>
-        )
+              </td>
+            </tr>
+          )
+        }
       })
-      console.log(centerL[1].props.children[0].props.children[1].props.children);
+      //console.log(centerL[1].props.children[0].props.children[1].props.children);
 
       return locationChecked == 'Todos'
         ? centerL
         : centerL.filter(
-          x => x.props.children[0].props.children[1].props.children == locationChecked
+          (x:any) => x.props.children[0].props.children[1].props.children == locationChecked
         )
     }
   }
@@ -553,15 +558,27 @@ export default function UsersSistemList({ user }: { user: User }) {
         <div className='p-8 flex flex-col justify-center items-center gap-8'>
           <div className='w-full flex m-auto'>
             <div className='w-[100%] flex justify-between'>
-              <select
-                id='location-select'
-                value={locationChecked}
-                onChange={handleLocationChange}
-                className='hover:cursor-pointer w-[300px] h-[40px] font-semibold text-black border border-gray-400'
-              >
-                <option value='Todos'>Todos los centros</option>
-                {locationList()}
-              </select>
+              <div>
+                <select
+                  id='location-select'
+                  value={locationChecked}
+                  onChange={handleLocationChange}
+                  className='hover:cursor-pointer w-[300px] h-[40px] font-semibold text-black border border-gray-400'
+                >
+                  <option value='Todos'>Todos los centros</option>
+                  {hiddeCards == false ? locationList() : <></>}
+
+                </select>
+                <button
+                  key='hiddenPosts'
+                  className='ms-[20px] text-white rounded-lg py-[10px] px-14 outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
+                  onClick={() => {
+                    setHiddeCards(true)
+                  }}
+                >
+                  Vaciar centros
+                </button>
+              </div>
             </div>
           </div>
           <form
