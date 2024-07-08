@@ -64,14 +64,16 @@ export default function FormChangeCenter(props: any) {
         .then((res: any) => {
           setCentersRawList(res.data)
           res.data.map((e: any) => {
-            centrosMuyAux.push({
-              value: `${e.id_centro}`,
-              label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}`
-            })
-            locationsMuyAux.push({
-              value: `${e.ubicacion}`,
-              label: `${e.ubicacion}`
-            })
+            if ((!e.borrado) && (e.tiene_voluntario)) {
+              centrosMuyAux.push({
+                value: `${e.id_centro}`,
+                label: `${e.ubicacion} - ${e.direccion} - ${e.nombre_centro}`
+              })
+              locationsMuyAux.push({
+                value: `${e.ubicacion}`,
+                label: `${e.ubicacion}`
+              })
+            }
           })
         })
       const eliminarDuplicados = async (arr: Item[]) => {
