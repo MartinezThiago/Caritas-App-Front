@@ -29,6 +29,7 @@ interface centerBody {
   horario_apertura: string
   horario_cierre: string
   dias: days[]
+  borrado:boolean
 }
 
 export default function UserInfo({ user }: { user: User }) {
@@ -79,7 +80,7 @@ export default function UserInfo({ user }: { user: User }) {
           workDays={e.dias}
           onPost={false}
           //CAMBIAR
-          deletedCenter={true}
+          deletedCenter={e.borrado}
         />
       )
     })
@@ -155,7 +156,7 @@ export default function UserInfo({ user }: { user: User }) {
               </div>
             ) : user.role == 'voluntario' ? (
               <div>
-                <p className='font-bold text-black text-xl'>Voluntario en</p>
+                <p className='font-bold text-black text-xl'>{Number(user.center) != -1 ? 'Voluntario en' : 'No tienes centro asignado'}</p>
                 <div className='mt-[10px] ms-[15px]'>{Centers()}</div>
               </div>
             ) : (

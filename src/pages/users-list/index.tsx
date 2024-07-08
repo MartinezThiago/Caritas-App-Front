@@ -31,7 +31,7 @@ import {
 import Select from 'react-select'
 import { CenterInfo } from '../center-list'
 
-export async function getServerSideProps ({
+export async function getServerSideProps({
   req,
   res
 }: Readonly<{
@@ -207,7 +207,7 @@ const getCenterDescription = (center?: CenterInfo) => {
   return `${center.ubicacion} - ${center.direccion} - ${center.nombre_centro}`
 }
 
-export default function UsersSistemList ({ user }: { user: User }) {
+export default function UsersSistemList({ user }: { user: User }) {
   const router = useRouter()
   const [userRaw, setUserRaw] = useState([])
   const [centers, setCenters] = useState([])
@@ -302,10 +302,8 @@ export default function UsersSistemList ({ user }: { user: User }) {
     }
 
     // SI NO ELIGIÓ CENTRO
-    if (newForm.centro && newForm.centro === '') {
-      alert('Eliga un centro')
-      setSubmiting(false)
-      return
+    if (!newForm.centro || newForm.centro === '') {
+      newForm.centro = -1
     }
 
     const reader = new FileReader()
@@ -400,11 +398,9 @@ export default function UsersSistemList ({ user }: { user: User }) {
     }
 
     // SI NO ELIGIÓ CENTRO
-    if (newForm.centro && newForm.centro === '') {
-      alert('Eliga un centro')
-      setSubmiting(false)
-      return
-    }
+    // if (!newForm.centro || newForm.centro === '') {
+    //   newForm.centro = -1
+    // }
 
     if (typeof newForm.foto !== 'string') {
       const reader = new FileReader()
@@ -530,8 +526,8 @@ export default function UsersSistemList ({ user }: { user: User }) {
                 })}
               >
                 {e.rol === 'voluntario' &&
-                !e.borrado &&
-                e.mail === modifying ? (
+                  !e.borrado &&
+                  e.mail === modifying ? (
                   <Fragment>
                     <InputFile
                       id='foto'
@@ -613,28 +609,25 @@ export default function UsersSistemList ({ user }: { user: User }) {
                           *
                         </span>
                         <Select
-                          options={(centers as CenterInfo[]).map(center => ({
+                          options={[...(centers as CenterInfo[]).map(center => ({
                             value: center.id_centro,
                             label: `${center.ubicacion} - ${center.direccion} - ${center.nombre_centro}`
-                          }))}
+                          })), { value: -1, label: `No asignarle centro` }].sort((a: any, b: any) => a.value > b.value ? 1 : -1)}
                           defaultValue={{
                             value: String(e.centro),
-                            label: `${
-                              centersRaw.find(
-                                center =>
-                                  String(center.id_centro) === String(e.centro)
-                              )?.ubicacion
-                            } - ${
-                              centersRaw.find(
+                            label: `${centersRaw.find(
+                              center =>
+                                String(center.id_centro) === String(e.centro)
+                            )?.ubicacion
+                              } - ${centersRaw.find(
                                 center =>
                                   String(center.id_centro) === String(e.centro)
                               )?.direccion
-                            } - ${
-                              centersRaw.find(
+                              } - ${centersRaw.find(
                                 center =>
                                   String(center.id_centro) === String(e.centro)
                               )?.nombre_centro
-                            }`
+                              }`
                           }}
                           placeholder='...'
                           onChange={(e: any) => {
@@ -666,7 +659,7 @@ export default function UsersSistemList ({ user }: { user: User }) {
                         <Image
                           src={
                             String(e.foto).includes('data:image/png;base64,') ||
-                            String(e.foto).includes('https://')
+                              String(e.foto).includes('https://')
                               ? e.foto
                               : defaultPhoto
                           }
@@ -698,43 +691,40 @@ export default function UsersSistemList ({ user }: { user: User }) {
                       {e.centro === -1
                         ? 'Sin asignar'
                         : getCenterDescription(
-                            (centers as CenterInfo[]).find(
-                              center => center.id_centro === e.centro
-                            )
-                          ) !== 'Sin asignar'
-                        ? getCenterDescription(
+                          (centers as CenterInfo[]).find(
+                            center => center.id_centro === e.centro
+                          )
+                        ) !== 'Sin asignar'
+                          ? getCenterDescription(
                             (centers as CenterInfo[]).find(
                               center => center.id_centro === e.centro
                             )
                           )
-                        : centersRaw.find(
+                          : centersRaw.find(
                             center =>
                               String(center.id_centro) === String(e.centro)
                           ) !== undefined
-                        ? `${
-                            centersRaw.find(
+                            ? `${centersRaw.find(
                               center =>
                                 String(center.id_centro) === String(e.centro)
                             )?.ubicacion
-                          } - ${
-                            centersRaw.find(
+                            } - ${centersRaw.find(
                               center =>
                                 String(center.id_centro) === String(e.centro)
                             )?.direccion
-                          } - ${
-                            centersRaw.find(
+                            } - ${centersRaw.find(
                               center =>
                                 String(center.id_centro) === String(e.centro)
                             )?.nombre_centro
-                          }`
-                        : 'Sin asignar'}
+                            }`
+                            : 'Sin asignar'}
                     </td>
                     <td className='p-2 border-x border-gray-300'>
                       {e.rol === 'usuario_basico'
                         ? 'Básico'
                         : e.rol === 'admin_centro'
-                        ? 'Administrador'
-                        : 'Voluntario'}
+                          ? 'Administrador'
+                          : 'Voluntario'}
                     </td>
                   </Fragment>
                 )}
@@ -932,10 +922,10 @@ export default function UsersSistemList ({ user }: { user: User }) {
                         *
                       </span>
                       <Select
-                        options={(centers as CenterInfo[]).map(center => ({
+                        options={[...(centers as CenterInfo[]).map(center => ({
                           value: center.id_centro,
                           label: `${center.ubicacion} - ${center.direccion} - ${center.nombre_centro}`
-                        }))}
+                        })), { value: -1, label: `No asignarle centro` }].sort((a: any, b: any) => a.value > b.value ? 1 : -1)}
                         placeholder='...'
                         onChange={(e: any) => {
                           handleMultiSelectChange(e, setPostValue)
@@ -960,10 +950,10 @@ export default function UsersSistemList ({ user }: { user: User }) {
                 {rolChecked == 'voluntario'
                   ? UserList('voluntario')
                   : rolChecked == 'admin_centro'
-                  ? UserList('administrador')
-                  : rolChecked == 'usuario_basico'
-                  ? UserList('basico')
-                  : UserList('Todos')}
+                    ? UserList('administrador')
+                    : rolChecked == 'usuario_basico'
+                      ? UserList('basico')
+                      : UserList('Todos')}
               </tbody>
             </table>
           </div>
