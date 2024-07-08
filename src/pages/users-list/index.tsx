@@ -31,7 +31,7 @@ import {
 import Select from 'react-select'
 import { CenterInfo } from '../center-list'
 
-export async function getServerSideProps ({
+export async function getServerSideProps({
   req,
   res
 }: Readonly<{
@@ -207,7 +207,7 @@ const getCenterDescription = (center?: CenterInfo) => {
   return `${center.ubicacion} - ${center.direccion} - ${center.nombre_centro}`
 }
 
-export default function UsersSistemList ({ user }: { user: User }) {
+export default function UsersSistemList({ user }: { user: User }) {
   const router = useRouter()
   const [userRaw, setUserRaw] = useState([])
   const [centers, setCenters] = useState([])
@@ -315,7 +315,7 @@ export default function UsersSistemList ({ user }: { user: User }) {
 
       axios
         .post(
-          'http://localhost:5000/CaritasBack/registrarUsuarioInterno',
+          'http://localhost:6389/CaritasBack/registrarUsuarioInterno',
           newForm,
           { headers: { Authorization: `Bearer ${getCookie('access')}` } }
         )
@@ -337,7 +337,7 @@ export default function UsersSistemList ({ user }: { user: User }) {
     }
   }
 
-  const onPatchSubmit = (formData: UserInfo) => {
+  const onPatchSubmit = (formData: UserInfo, id_entrante: any) => {
     setSubmiting(true)
     const newForm: any = formData
 
@@ -361,8 +361,8 @@ export default function UsersSistemList ({ user }: { user: User }) {
     )
     if (
       userEmail &&
-      userEmail.dni !== newForm.dni &&
-      userEmail.mail === newForm.mail
+      userEmail.dni === newForm.dni &&
+      userEmail.mail !== newForm.mail
     ) {
       alert('Email en uso. No puede repetirse')
       setSubmiting(false)
@@ -378,7 +378,7 @@ export default function UsersSistemList ({ user }: { user: User }) {
     }
 
     newForm['id_usuario'] = (userRaw as any).find(
-      (user: UserInfo) => user.mail === newForm.mail
+      (user: any) => user.id === id_entrante
     ).id
     newForm['email'] = newForm.mail
     newForm['nacimiento'] = new Date(newForm.nacimiento)
@@ -388,7 +388,7 @@ export default function UsersSistemList ({ user }: { user: User }) {
     // AGREGA CENTRO SI DEJÓ EL DEFAULT
     if (newForm['centro'] === undefined) {
       newForm['centro'] =
-        (userRaw as any).find((user: UserInfo) => user.mail === newForm.email)
+        (userRaw as any).find((user: any) => user.id === id_entrante)
           .centro
     }
 
@@ -402,7 +402,7 @@ export default function UsersSistemList ({ user }: { user: User }) {
 
         axios
           .post(
-            'http://localhost:5000CaritasBack/cambiarDatosPersonalesVoluntario',
+            'http://localhost:6389/CaritasBack/cambiarDatosPersonalesVoluntario',
             newForm,
             { headers: { Authorization: `Bearer ${getCookie('access')}` } }
           )
@@ -429,7 +429,7 @@ export default function UsersSistemList ({ user }: { user: User }) {
 
       axios
         .post(
-          'http://localhost:5000/CaritasBack/cambiarDatosPersonalesVoluntario',
+          'http://localhost:6389/CaritasBack/cambiarDatosPersonalesVoluntario',
           newForm,
           { headers: { Authorization: `Bearer ${getCookie('access')}` } }
         )
@@ -516,8 +516,8 @@ export default function UsersSistemList ({ user }: { user: User }) {
                 })}
               >
                 {e.rol === 'voluntario' &&
-                !e.borrado &&
-                e.mail === modifying ? (
+                  !e.borrado &&
+                  e.mail === modifying ? (
                   <Fragment>
                     <InputFile
                       id='foto'
@@ -570,7 +570,7 @@ export default function UsersSistemList ({ user }: { user: User }) {
                     />
                     <td className='border border-gray-300'>
                       <div className='relative size-full p-1 flex flex-col justify-center items-center'>
-                        <span className='absolute -bottom-1 left-1 text-xs text-gray-300 opacity-70'>
+                        <span className='absolute -bottom-1  text-xs text-black font-semibold opacity-70'>
                           {e.fecha_nacimiento}
                         </span>
                         <InputBday
@@ -605,22 +605,19 @@ export default function UsersSistemList ({ user }: { user: User }) {
                           }))}
                           defaultValue={{
                             value: String(e.centro),
-                            label: `${
-                              centersRaw.find(
-                                center =>
-                                  String(center.id_centro) === String(e.centro)
-                              )?.ubicacion
-                            } - ${
-                              centersRaw.find(
+                            label: `${centersRaw.find(
+                              center =>
+                                String(center.id_centro) === String(e.centro)
+                            )?.ubicacion
+                              } - ${centersRaw.find(
                                 center =>
                                   String(center.id_centro) === String(e.centro)
                               )?.direccion
-                            } - ${
-                              centersRaw.find(
+                              } - ${centersRaw.find(
                                 center =>
                                   String(center.id_centro) === String(e.centro)
                               )?.nombre_centro
-                            }`
+                              }`
                           }}
                           placeholder='...'
                           onChange={(e: any) => {
@@ -652,7 +649,7 @@ export default function UsersSistemList ({ user }: { user: User }) {
                         <Image
                           src={
                             String(e.foto).includes('data:image/png;base64,') ||
-                            String(e.foto).includes('https://')
+                              String(e.foto).includes('https://')
                               ? e.foto
                               : defaultPhoto
                           }
@@ -684,43 +681,40 @@ export default function UsersSistemList ({ user }: { user: User }) {
                       {e.centro === -1
                         ? 'Sin asignar'
                         : getCenterDescription(
-                            (centers as CenterInfo[]).find(
-                              center => center.id_centro === e.centro
-                            )
-                          ) !== 'Sin asignar'
-                        ? getCenterDescription(
+                          (centers as CenterInfo[]).find(
+                            center => center.id_centro === e.centro
+                          )
+                        ) !== 'Sin asignar'
+                          ? getCenterDescription(
                             (centers as CenterInfo[]).find(
                               center => center.id_centro === e.centro
                             )
                           )
-                        : centersRaw.find(
+                          : centersRaw.find(
                             center =>
                               String(center.id_centro) === String(e.centro)
                           ) !== undefined
-                        ? `${
-                            centersRaw.find(
+                            ? `${centersRaw.find(
                               center =>
                                 String(center.id_centro) === String(e.centro)
                             )?.ubicacion
-                          } - ${
-                            centersRaw.find(
+                            } - ${centersRaw.find(
                               center =>
                                 String(center.id_centro) === String(e.centro)
                             )?.direccion
-                          } - ${
-                            centersRaw.find(
+                            } - ${centersRaw.find(
                               center =>
                                 String(center.id_centro) === String(e.centro)
                             )?.nombre_centro
-                          }`
-                        : 'Sin asignar'}
+                            }`
+                            : 'Sin asignar'}
                     </td>
                     <td className='p-2 border-x border-gray-300'>
                       {e.rol === 'usuario_basico'
                         ? 'Básico'
                         : e.rol === 'admin_centro'
-                        ? 'Administrador'
-                        : 'Voluntario'}
+                          ? 'Administrador'
+                          : 'Voluntario'}
                     </td>
                   </Fragment>
                 )}
@@ -731,7 +725,10 @@ export default function UsersSistemList ({ user }: { user: User }) {
                         <Button
                           type='submit'
                           disabled={submiting}
-                          onClick={handlePatchSubmit(onPatchSubmit)}
+                          onClick={handlePatchSubmit((formData) => {
+                            onPatchSubmit(formData, e.id)
+
+                          })}
                           className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-green-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-green-700 hover:outline-green-700 active:text-white active:bg-green-700 duration-200'
                         >
                           <FileCheck />
@@ -814,6 +811,7 @@ export default function UsersSistemList ({ user }: { user: User }) {
               <button
                 className='text-white rounded-lg py-[10px] px-14 outline-transparentoutline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
                 onClick={hideUsers}
+                hidden={true}
               >
                 {hiddeList ? 'Cargar usuarios' : 'Vaciar usuarios'}
               </button>
@@ -943,10 +941,10 @@ export default function UsersSistemList ({ user }: { user: User }) {
                 {rolChecked == 'voluntario'
                   ? UserList('voluntario')
                   : rolChecked == 'admin_centro'
-                  ? UserList('administrador')
-                  : rolChecked == 'usuario_basico'
-                  ? UserList('basico')
-                  : UserList('Todos')}
+                    ? UserList('administrador')
+                    : rolChecked == 'usuario_basico'
+                      ? UserList('basico')
+                      : UserList('Todos')}
               </tbody>
             </table>
           </div>
