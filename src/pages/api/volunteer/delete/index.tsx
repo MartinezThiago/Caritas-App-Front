@@ -6,6 +6,14 @@ import { BACK_BASE_URL } from '@/constants'
 import { getCookie } from 'cookies-next'
 import { getUser } from '@/utils'
 
+export const config = {
+    api: {
+      bodyParser: {
+        sizeLimit: "15mb", // Incrementa el límite a 15MB
+      },
+    },
+  };
+  
 /**
  * Async handler function that sends the signin form data to the external server.
  * Filters the response and retrieves the appropriate status code and message
