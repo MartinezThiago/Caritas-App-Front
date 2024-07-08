@@ -115,7 +115,7 @@ export default function UsersSistemList({ user }: { user: User }) {
     let cate = [
       { name: "Ropa", value: 0 },
       { name: "Utiles escolares", value: 0 },
-      { name: "Alimento", value: 0 },
+      { name: "Alimentos", value: 0 },
       { name: "Limpieza", value: 0 },
     ];
     if (statistics?.cantidadIntercambiosPorCategoria != null) {

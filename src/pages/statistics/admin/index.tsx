@@ -217,7 +217,7 @@ export default function UsersSistemList({ user }: { user: User }) {
     let arr: any = [
       { name: "Ropa", 'Cantidad de donaciones': 0 },
       { name: "Utiles escolares", 'Cantidad de donaciones': 0 },
-      { name: "Alimento", 'Cantidad de donaciones': 0 },
+      { name: "Alimentos", 'Cantidad de donaciones': 0 },
       { name: "Limpieza", 'Cantidad de donaciones': 0 }]
     statistics?.estadisticasGlobales.donacionesPorCategoria.map((e) => {
       // arr.push({
@@ -375,7 +375,7 @@ export default function UsersSistemList({ user }: { user: User }) {
     let cate = [
       { name: "Ropa", value: 0 },
       { name: "Utiles escolares", value: 0 },
-      { name: "Alimento", value: 0 },
+      { name: "Alimentos", value: 0 },
       { name: "Limpieza", value: 0 },
     ];
     if (statistics?.estadisticasGlobales.intercambiosPorCategoria != null) {
