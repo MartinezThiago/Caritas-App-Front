@@ -384,6 +384,14 @@ export default function UsersSistemList ({ user }: { user: User }) {
     newForm['nacimiento'] = new Date(newForm.nacimiento)
     delete newForm.mail
 
+    console.log('NEWFORM CENTRO', newForm['centro'])
+    // AGREGA CENTRO SI DEJÓ EL DEFAULT
+    if (newForm['centro'] === undefined) {
+      newForm['centro'] =
+        (userRaw as any).find((user: UserInfo) => user.mail === newForm.email)
+          .centro
+    }
+
     if (typeof newForm.foto !== 'string') {
       const reader = new FileReader()
       reader.readAsDataURL((newForm.foto as FileList)[0])
