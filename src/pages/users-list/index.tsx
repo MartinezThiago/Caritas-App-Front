@@ -46,10 +46,11 @@ export interface UserInfo {
   apellido: string
   dni: string
   mail: string
-  fechaNacimiento: string
+  nacimiento: string
   registradoDesde: string
-  center: string
+  centro: string
   rol: string
+  borrado: boolean
 }
 
 const file2b64 = (file: File, setBase64: (file: string) => void): string => {
@@ -58,7 +59,6 @@ const file2b64 = (file: File, setBase64: (file: string) => void): string => {
   reader.readAsDataURL(file)
   reader.onload = () => {
     b64 = reader.result as string
-    console.log('al menos llega y esto es file', file, 'y esto es b64', b64)
     setBase64(b64)
   }
   reader.onerror = () => alert('Error al cargar la imagen')
@@ -73,6 +73,7 @@ const Input = ({
   setValue,
   alter,
   classNames,
+  error,
   props
 }: {
   id: keyof UserInfo
@@ -85,6 +86,7 @@ const Input = ({
     td?: string
     input?: string
   }
+  error?: string
   props?: DetailedHTMLProps<
     InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
@@ -98,6 +100,7 @@ const Input = ({
     <td className={cn('relative px-1 border border-gray-300', classNames?.td)}>
       <div>
         <span className='absolute right-3 text-red-500 text-sm'>*</span>
+        <span className='absolute top-0 text-rose-700 text-xs'>{error}</span>
         <input
           {...register(id, registerOptions)}
           className={cn(
@@ -119,6 +122,7 @@ const InputFile = ({
   setValue,
   alter,
   classNames,
+  error,
   props
 }: {
   id: keyof UserInfo
@@ -131,18 +135,20 @@ const InputFile = ({
     td?: string
     input?: string
   }
+  error?: string
   props?: DetailedHTMLProps<
     InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
   >
 }): React.ReactNode => {
   const [base64, setBase64] = useState<string>('')
-  const ref = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (typeof props?.placeholder === 'string' && props?.placeholder !== '') {
       setBase64(props?.placeholder as string)
       setValue && setValue(id, props?.placeholder as string)
+      // alert('SETEA FOTO PLACEHOLDER')
+      console.log('SETEA FOTO PLACEHOLDER', props?.placeholder)
     }
   }, [props?.placeholder])
 
@@ -153,6 +159,7 @@ const InputFile = ({
       watch('foto').length > 0 &&
       typeof watch('foto') !== 'string'
     ) {
+      alert('entra')
       console.log('ESTO ENTONCES ES TRUE', watch('foto'))
       file2b64((watch('foto') as unknown as FileList)[0], setBase64)
     }
@@ -162,6 +169,7 @@ const InputFile = ({
     <td className={cn('relative p-1 border border-gray-300', classNames?.td)}>
       <div>
         <span className='absolute right-3 text-red-500 text-sm'>*</span>
+        <span className='absolute top-0 text-rose-700 text-xs'>{error}</span>
         {base64 ? (
           <div className='size-full flex justify-center items-center'>
             <Image
@@ -207,7 +215,10 @@ export default function UsersSistemList ({ user }: { user: User }) {
   const [submiting, setSubmiting] = useState(false)
   const [modifying, setModifying] = useState(-1)
   const [rolChecked, setRolChecked] = useState<Role | 'Todos'>('Todos')
-  const rolesOrder = ['administrador', 'voluntario', 'basico']
+  const [hiddeList, setHiddeList] = useState<boolean>(false)
+  const [centersRaw, setCentersRaw] = useState<CenterInfo[]>([])
+
+  const [needsUpdate, setNeedsUpdate] = useState<boolean>(false)
 
   const {
     register: postRegister,
@@ -231,7 +242,11 @@ export default function UsersSistemList ({ user }: { user: User }) {
       await axios
         .get<any[]>(`${FRONT_BASE_URL}/users-list`)
         .then(async (res: any) => {
-          setUserRaw(res.data)
+          setUserRaw(
+            res.data
+              .sort((uA: UserInfo, uB: UserInfo) => (uB.rol > uA.rol ? 1 : -1))
+              .sort((uA: UserInfo, uB: UserInfo) => (uB.borrado ? -1 : 1))
+          )
         })
         .catch((err: any) => {
           setUserRaw([])
@@ -243,14 +258,20 @@ export default function UsersSistemList ({ user }: { user: User }) {
       await axios
         .get<any[]>(`${FRONT_BASE_URL}/centers/get`)
         .then(async (res: any) => {
-          setCenters(res.data)
+          setCentersRaw(res.data as CenterInfo[])
+          setCenters(
+            (res.data as CenterInfo[]).filter(
+              (center: CenterInfo) =>
+                !center.tiene_voluntario && !center.borrado
+            ) as unknown as never[]
+          )
         })
         .catch((err: any) => {
           setCenters([])
         })
     }
     getCenterList()
-  }, [])
+  }, [needsUpdate])
 
   useEffect(() => {
     // Simula una carga de datos
@@ -264,52 +285,138 @@ export default function UsersSistemList ({ user }: { user: User }) {
 
   const onPostSubmit = (formData: UserInfo) => {
     setSubmiting(true)
-    // VALIDACIONES ...
-    setTimeout(() => {
-      alert('Usuario creado correctamente')
+    const newForm: any = formData
+
+    // SI EL EMAIL EXISTE EN CREACION DE USUARIO
+    if (userRaw.some((user: UserInfo) => user.mail === newForm.mail)) {
+      alert('Email en uso. No puede repetirse')
+      return
+    }
+
+    // SI EL DNI EXISTE EN CREACION DE USUARIO
+    if (userRaw.some((user: UserInfo) => user.dni === newForm.dni)) {
+      alert('DNI en uso. No puede repetirse')
+      return
+    }
+
+    const reader = new FileReader()
+    reader.readAsDataURL((newForm.foto as unknown as FileList)[0])
+    reader.onload = () => {
+      newForm.foto = reader.result as string
+      newForm['email'] = newForm.mail
+      delete newForm.mail
+
+      console.log('FORM DATA EN POST SUBMIT', newForm)
+      // return
+
+      axios
+        .post(`${FRONT_BASE_URL}registrarUsuarioInterno`, newForm)
+        .then(() => {
+          alert('Usuario agregado correctamente')
+          setNeedsUpdate(prev => !prev)
+          setSubmiting(false)
+          postReset()
+        })
+        .catch(() => {
+          alert('Ha ocurrido un error al agregar al usuario')
+          setSubmiting(false)
+        })
+    }
+    reader.onerror = () => {
+      alert('Error al cargar la imagen')
       setSubmiting(false)
-      patchReset()
-    }, 1000)
-    return
-    axios
-      .post(`${FRONT_BASE_URL}users/post`, formData)
-      .then(() => {
-        alert('Usuario agregado correctamente')
-        // ACTUALIZAR LA LISTA DE USUARIOS CON LA LISTA DE USUARIOS DEVUELTA POR EL ENDPOINT DEL BACK PARA QUE SE RENDERICE EL NUEVO USUARIO
-        setSubmiting(false)
-        postReset()
-      })
-      .catch(() => {
-        alert('Ha ocurrido un error al agregar al usuario')
-        setSubmiting(false)
-      })
+    }
   }
 
   const onPatchSubmit = (formData: UserInfo) => {
     setSubmiting(true)
-    // VALIDACIONES...
-    setTimeout(() => {
-      alert('Usuario modificado correctamente')
-      setSubmiting(false)
-      patchReset()
-    }, 1000)
-    return
-    axios
-      .patch(`${FRONT_BASE_URL}centers/patch`, formData)
-      .then(() => {
-        alert('Centro agregado correctamente')
-        // ACTUALIZAR LA LISTA DE CENTROS CON LA LISTA DE CENTROS DEVUELTA POR EL ENDPOINT DEL BACK PARA QUE SE RENDERICE EL CENTROVICK MODIFICADO
+    const newForm: any = formData
+
+    // SI EL DNI ES REPETIDO Y DIFERENTE AL DEL MISMO USUARIO EN MODIFICACION
+    const userDNI: any = userRaw.find(
+      (user: UserInfo) => user.mail === newForm.mail
+    )
+    if (
+      userDNI &&
+      userDNI.mail !== newForm.mail &&
+      userDNI.dni === newForm.dni
+    ) {
+      alert('DNI en uso. No puede repetirse')
+      return
+    }
+
+    // SI EL EMAIL EXISTE EN MODIFICACION DE USUARIO
+    const userEmail: any = userRaw.find(
+      (userEmail: UserInfo) => userEmail.mail === newForm.mail
+    )
+    if (
+      userEmail &&
+      userEmail.dni !== newForm.dni &&
+      userEmail.mail === newForm.mail
+    ) {
+      alert('Email en uso. No puede repetirse')
+      return
+    }
+
+    // AGREGAR LA FOTO QUE TENÍA SETEADA SI NO SE MODIFICA
+    if (!newForm.foto || newForm.foto === '') {
+      const user: any = userRaw.find(
+        (user: UserInfo) => user.mail === newForm.mail
+      )
+      newForm.foto = user.foto
+    }
+
+    newForm['email'] = newForm.mail
+    delete newForm.mail
+
+    if (typeof newForm.foto !== 'string') {
+      const reader = new FileReader()
+      reader.readAsDataURL((newForm.foto as FileList)[0])
+      reader.onload = () => {
+        newForm.foto = reader.result as string
+
+        console.log('FORM DATA EN PATCH SUBMIT', newForm)
+
+        axios
+          .patch(`${FRONT_BASE_URL}cambiarDatosPersonalesVoluntario`, newForm)
+          .then(() => {
+            alert('Usuario modificado correctamente')
+            setNeedsUpdate(prev => !prev)
+            setSubmiting(false)
+            patchReset()
+          })
+          .catch(() => {
+            alert('Ha ocurrido un error al agregar el usuario')
+            setSubmiting(false)
+          })
+
+        setModifying(-1)
         setSubmiting(false)
         patchReset()
-      })
-      .catch(() => {
-        alert('Ha ocurrido un error al agregar el centro')
-        setSubmiting(false)
-      })
+      }
+      reader.onerror = () => {
+        alert('Error al cargar la imagen')
+      }
+    } else {
+      console.log('FORM DATA EN PATCH SUBMIT', newForm)
 
-    setModifying(-1)
-    setSubmiting(false)
-    patchReset()
+      axios
+        .patch(`${FRONT_BASE_URL}cambiarDatosPersonalesVoluntario`, newForm)
+        .then(() => {
+          alert('Usuario modificado correctamente')
+          setNeedsUpdate(prev => !prev)
+          setSubmiting(false)
+          patchReset()
+        })
+        .catch(() => {
+          alert('Ha ocurrido un error al agregar el usuario')
+          setSubmiting(false)
+        })
+
+      setModifying(-1)
+      setSubmiting(false)
+      patchReset()
+    }
   }
 
   const handleSetPatchModify = (id: number, days?: string[]) => {
@@ -324,10 +431,10 @@ export default function UsersSistemList ({ user }: { user: User }) {
     setValue: UseFormSetValue<UserInfo>
   ) => {
     if (event.value === undefined) {
-      setValue('center', '')
+      setValue('centro', '')
       return
     }
-    setValue('center', String(event.value))
+    setValue('centro', String(event.value))
   }
 
   useEffect(() => {
@@ -339,234 +446,308 @@ export default function UsersSistemList ({ user }: { user: User }) {
   }, [patchErrors])
 
   const handleBorrarVoluntario = async (e: number) => {
-    console.log('Voluntario a borrar: ' + e);
-    const formData={
-      idVolunteer:e
+    console.log('Voluntario a borrar: ' + e)
+    const formData = {
+      idVolunteer: e
     }
     await axios
-        .post<any[]>(`${FRONT_BASE_URL}/volunteer/delete`,formData)
-        .then(async (res: any) => {
-          await router.push('/')
-          await router.push('/users-list')
-          alert(`Voluntario ${e} eliminado correctamente`)
-        })
-        .catch((err: any) => {
-          setUserRaw([])
-        })
+      .post<any[]>(`${FRONT_BASE_URL}/volunteer/delete`, formData)
+      .then(async (res: any) => {
+        await router.push('/')
+        await router.push('/users-list')
+        alert(`Voluntario ${e} eliminado correctamente`)
+      })
+      .catch((err: any) => {
+        setUserRaw([])
+      })
+  }
+
+  const hideUsers = () => {
+    setHiddeList(prev => !prev)
   }
 
   const UserList = (rolUser: string) => {
     if (userRaw) {
-      return userRaw!
-        .filter(
-          (user: UserInfo) => rolChecked === 'Todos' || user.rol === rolChecked
-        )
-        .map((e: any) => {
-          return (
-            <tr key={e.mail} className='border border-gra-300'>
-              {e.rol === 'voluntario' && e.mail === modifying ? (
-                <Fragment>
-                  <InputFile
-                    id='foto'
-                    register={patchRegister}
-                    registerOptions={{ required: false }}
-                    watch={patchWatch}
-                    setValue={setPatchValue}
-                    alter={modifying}
-                    props={{
-                      type: 'file',
-                      placeholder: e.foto
-                        ? e.foto === defaultPhoto
-                          ? undefined
-                          : e.foto
-                        : undefined
-                    }}
-                  />
-                  <Input
-                    id='nombre'
-                    register={patchRegister}
-                    registerOptions={{ required: false }}
-                    watch={patchWatch}
-                    setValue={setPatchValue}
-                    alter={modifying}
-                    props={{ placeholder: e.nombre }}
-                  />
-                  <Input
-                    id='apellido'
-                    register={patchRegister}
-                    registerOptions={{ required: false }}
-                    watch={patchWatch}
-                    setValue={setPatchValue}
-                    alter={modifying}
-                    props={{ placeholder: e.apellido }}
-                  />
-                  <Input
-                    id='dni'
-                    register={patchRegister}
-                    registerOptions={{ required: false }}
-                    watch={patchWatch}
-                    setValue={setPatchValue}
-                    alter={modifying}
-                    props={{ placeholder: e.dni }}
-                  />
-                  <Input
-                    id='mail'
-                    register={patchRegister}
-                    registerOptions={{ required: false }}
-                    watch={patchWatch}
-                    setValue={setPatchValue}
-                    alter={modifying}
-                    props={{ placeholder: e.mail }}
-                  />
-                  <td className='border border-gray-300'>
-                    <div className='size-full p-1 flex justify-center items-center'>
-                      <InputBday
-                        id='fechaNacimiento'
-                        type='date'
-                        register={patchRegister}
-                        registerOptions={{
-                          required: 'Campo requerido',
-                          validate: value => {
-                            return (
-                              new Date(value) <= subYears(new Date(), 18) ||
-                              'Requerido ser mayor de edad.'
-                            )
-                          }
-                        }}
-                        error={patchErrors.fechaNacimiento}
-                      />
-                    </div>
-                  </td>
-                  <td className='border border-gray-300' />
-                  <td className='p-2 border-e border-gray-300'>
-                    <div className='relative size-full'>
-                      <span className='absolute z-50 top-3 right-6 text-red-500 text-sm'>
-                        *
-                      </span>
-                      <Select
-                        options={(centers as CenterInfo[]).map(center => ({
-                          value: center.id_centro,
-                          label: `${center.ubicacion} - ${center.direccion} - ${center.nombre_centro}`
-                        }))}
-                        placeholder='...'
-                        onChange={(e: any) => {
-                          handleMultiSelectChange(e, setPatchValue)
-                        }}
-                        className='w-full'
-                        isDisabled={modifying > -1 || submiting}
-                      />
-                    </div>
-                  </td>
-                  <td className='p-2 border-e border-gray-300'></td>
-                </Fragment>
-              ) : (
-                <Fragment>
-                  <td className='border border-gray-300'>
-                    <div
-                      className={cn(
-                        'size-full p-1 bg-gray-300 flex justify-center',
-                        {
-                          'bg-rose-700': e.rol === 'admin_centro',
-                          'bg-blue-900': e.rol === 'voluntario'
-                        }
-                      )}
-                    >
-                      <Image
-                        src={
-                          String(e.foto).includes('data:image/png;base64,') ||
-                          String(e.foto).includes('https://')
-                            ? e.foto
-                            : defaultPhoto
-                        }
-                        alt='Foto'
-                        width={0}
-                        height={0}
-                        className='min-w-11 min-h-11 object-cover rounded-full'
-                      />
-                    </div>
-                  </td>
-                  <td className='p-2 border-x border-gray-300'>
-                    {e.nombre}
-                    <span className='font-semibold text-black'>
-                      {user.email === e.mail ? '(Tú)' : ''}
-                    </span>
-                  </td>
-                  <td className='p-2 border-x border-gray-300'>{e.apellido}</td>
-                  <td className='p-2 border-x border-gray-300'>{e.dni}</td>
-                  <td className='p-2 border-x border-gray-300'>{e.mail}</td>
-                  <td className='p-2 border-x border-gray-300'>
-                    {e.fecha_nacimiento}
-                  </td>
-                  <td className='p-2 border-x border-gray-300'>
-                    {e.fecha_registro}
-                  </td>
-                  <td className='p-2 border-x border-gray-300'>
-                    {e.centro === -1
-                      ? 'Sin asignar'
-                      : getCenterDescription(
-                          (centers as CenterInfo[]).find(
-                            center => center.id_centro === e.centro
-                          )
-                        )}
-                  </td>
-                  <td className='p-2 border-x border-gray-300'>
-                    {e.rol === 'usuario_basico'
-                      ? 'Básico'
-                      : e.rol === 'admin_centro'
-                      ? 'Administrador'
-                      : 'Voluntario'}
-                  </td>
-                </Fragment>
-              )}
-              <td className='p-2 text-center border-e border-gray-300'>
-                {e.rol === 'voluntario' ? (
-                  modifying === e.mail ? (
-                    <div className='size-full flex justify-center items-center gap-2'>
-                      <Button
-                        type='submit'
-                        disabled={submiting}
-                        className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-green-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-green-700 hover:outline-green-700 active:text-white active:bg-green-700 duration-200'
-                      >
-                        <FileCheck />
-                      </Button>
-                      <Button
-                        type='button'
-                        onClick={() => {
-                          handleSetPatchModify(-1)
-                        }}
-                        disabled={submiting}
-                        className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
-                      >
-                        <X />
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className='size-full flex justify-center items-center gap-2'>
-                      <Button
-                        type='button'
-                        disabled={submiting || modifying > -1}
-                        onClick={() => handleBorrarVoluntario(e.id)}
-                        className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
-                      >
-                        <FileMinus />
-                      </Button>
-                      <Button
-                        type='button'
-                        disabled={submiting || modifying > -1}
-                        onClick={() => {
-                          handleSetPatchModify(e.mail)
-                        }}
-                        className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-orange-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-orange-700 hover:outline-orange-700 active:text-white active:bg-orange-700 duration-200'
-                      >
-                        <FilePenLine />
-                      </Button>
-                    </div>
-                  )
-                ) : null}
-              </td>
-            </tr>
+      return (
+        !hiddeList &&
+        userRaw!
+          .filter(
+            (user: UserInfo) =>
+              rolChecked === 'Todos' || user.rol === rolChecked
           )
-        })
+          .map((e: any) => {
+            return (
+              <tr
+                key={e.mail}
+                className={cn('border border-gra-300', {
+                  'bg-gray-200 bg-opacity-70':
+                    e.rol === 'voluntario' && e.borrado
+                })}
+              >
+                {e.rol === 'voluntario' &&
+                !e.borrado &&
+                e.mail === modifying ? (
+                  <Fragment>
+                    <InputFile
+                      id='foto'
+                      register={patchRegister}
+                      registerOptions={{ required: false }}
+                      watch={patchWatch}
+                      setValue={setPatchValue}
+                      alter={modifying}
+                      error={patchErrors.foto?.message}
+                      props={{
+                        type: 'file',
+                        placeholder: e.foto
+                      }}
+                    />
+                    <Input
+                      id='nombre'
+                      register={patchRegister}
+                      registerOptions={{ required: true }}
+                      watch={patchWatch}
+                      setValue={setPatchValue}
+                      alter={modifying}
+                      props={{ placeholder: e.nombre }}
+                    />
+                    <Input
+                      id='apellido'
+                      register={patchRegister}
+                      registerOptions={{ required: true }}
+                      watch={patchWatch}
+                      setValue={setPatchValue}
+                      alter={modifying}
+                      props={{ placeholder: e.apellido }}
+                    />
+                    <Input
+                      id='dni'
+                      register={patchRegister}
+                      registerOptions={{ required: true }}
+                      watch={patchWatch}
+                      setValue={setPatchValue}
+                      alter={modifying}
+                      props={{ placeholder: e.dni }}
+                    />
+                    <Input
+                      id='mail'
+                      register={patchRegister}
+                      registerOptions={{ required: true }}
+                      watch={patchWatch}
+                      setValue={setPatchValue}
+                      alter={modifying}
+                      props={{ placeholder: e.mail }}
+                    />
+                    <td className='border border-gray-300'>
+                      <div className='relative size-full p-1 flex flex-col justify-center items-center'>
+                        <span className='absolute -bottom-1 left-1 text-xs text-gray-300 opacity-70'>
+                          {e.fecha_nacimiento}
+                        </span>
+                        <InputBday
+                          id='nacimiento'
+                          type='date'
+                          register={patchRegister}
+                          registerOptions={{
+                            required: 'Campo requerido',
+                            validate: value => {
+                              return (
+                                new Date(value) <= subYears(new Date(), 18) ||
+                                'Requerido ser mayor de edad.'
+                              )
+                            }
+                          }}
+                          error={patchErrors.nacimiento}
+                        />
+                      </div>
+                    </td>
+                    <td className='border border-gray-300'>
+                      {e.fecha_registro}
+                    </td>
+                    <td className='p-2 border-e border-gray-300'>
+                      <div className='relative size-full'>
+                        <span className='absolute z-50 top-3 right-6 text-red-500 text-sm'>
+                          *
+                        </span>
+                        <Select
+                          options={(centers as CenterInfo[]).map(center => ({
+                            value: center.id_centro,
+                            label: `${center.ubicacion} - ${center.direccion} - ${center.nombre_centro}`
+                          }))}
+                          defaultValue={{
+                            value: String(e.centro),
+                            label: `${
+                              centersRaw.find(
+                                center =>
+                                  String(center.id_centro) === String(e.centro)
+                              )?.ubicacion
+                            } - ${
+                              centersRaw.find(
+                                center =>
+                                  String(center.id_centro) === String(e.centro)
+                              )?.direccion
+                            } - ${
+                              centersRaw.find(
+                                center =>
+                                  String(center.id_centro) === String(e.centro)
+                              )?.nombre_centro
+                            }`
+                          }}
+                          placeholder='...'
+                          onChange={(e: any) => {
+                            handleMultiSelectChange(e, setPatchValue)
+                          }}
+                          className='w-full'
+                          isDisabled={modifying > -1 || submiting}
+                        />
+                      </div>
+                    </td>
+                    <td className='border border-gray-300'>
+                      <p className='size-full flex justify-center items-center'>
+                        Voluntario
+                      </p>
+                    </td>
+                  </Fragment>
+                ) : (
+                  <Fragment>
+                    <td className='border border-gray-300'>
+                      <div
+                        className={cn(
+                          'size-full p-1 bg-gray-300 flex justify-center',
+                          {
+                            'bg-rose-700': e.rol === 'admin_centro',
+                            'bg-blue-900': e.rol === 'voluntario'
+                          }
+                        )}
+                      >
+                        <Image
+                          src={
+                            String(e.foto).includes('data:image/png;base64,') ||
+                            String(e.foto).includes('https://')
+                              ? e.foto
+                              : defaultPhoto
+                          }
+                          alt='Foto'
+                          width={0}
+                          height={0}
+                          className='min-w-11 min-h-11 object-cover rounded-full'
+                        />
+                      </div>
+                    </td>
+                    <td className='p-2 border-x border-gray-300'>
+                      {e.nombre}
+                      <span className='font-semibold text-black'>
+                        {user.email === e.mail ? '(Tú)' : ''}
+                      </span>
+                    </td>
+                    <td className='p-2 border-x border-gray-300'>
+                      {e.apellido}
+                    </td>
+                    <td className='p-2 border-x border-gray-300'>{e.dni}</td>
+                    <td className='p-2 border-x border-gray-300'>{e.mail}</td>
+                    <td className='p-2 border-x border-gray-300'>
+                      {e.fecha_nacimiento}
+                    </td>
+                    <td className='p-2 border-x border-gray-300'>
+                      {e.fecha_registro}
+                    </td>
+                    <td className='p-2 border-x border-gray-300'>
+                      {e.centro === -1
+                        ? 'Sin asignar'
+                        : getCenterDescription(
+                            (centers as CenterInfo[]).find(
+                              center => center.id_centro === e.centro
+                            )
+                          ) !== 'Sin asignar'
+                        ? getCenterDescription(
+                            (centers as CenterInfo[]).find(
+                              center => center.id_centro === e.centro
+                            )
+                          )
+                        : centersRaw.find(
+                            center =>
+                              String(center.id_centro) === String(e.centro)
+                          ) !== undefined
+                        ? `${
+                            centersRaw.find(
+                              center =>
+                                String(center.id_centro) === String(e.centro)
+                            )?.ubicacion
+                          } - ${
+                            centersRaw.find(
+                              center =>
+                                String(center.id_centro) === String(e.centro)
+                            )?.direccion
+                          } - ${
+                            centersRaw.find(
+                              center =>
+                                String(center.id_centro) === String(e.centro)
+                            )?.nombre_centro
+                          }`
+                        : 'Sin asignar'}
+                    </td>
+                    <td className='p-2 border-x border-gray-300'>
+                      {e.rol === 'usuario_basico'
+                        ? 'Básico'
+                        : e.rol === 'admin_centro'
+                        ? 'Administrador'
+                        : 'Voluntario'}
+                    </td>
+                  </Fragment>
+                )}
+                <td className='p-2 text-center border-e border-gray-300'>
+                  {e.rol === 'voluntario' && e.borrado === false ? (
+                    modifying === e.mail ? (
+                      <div className='size-full flex justify-center items-center gap-2'>
+                        <Button
+                          type='submit'
+                          disabled={submiting}
+                          onClick={handlePatchSubmit(onPatchSubmit)}
+                          className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-green-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-green-700 hover:outline-green-700 active:text-white active:bg-green-700 duration-200'
+                        >
+                          <FileCheck />
+                        </Button>
+                        <Button
+                          type='button'
+                          onClick={() => {
+                            handleSetPatchModify(-1)
+                          }}
+                          disabled={submiting}
+                          className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
+                        >
+                          <X />
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className='size-full flex justify-center items-center gap-2'>
+                        <Button
+                          type='button'
+                          disabled={submiting || modifying > -1}
+                          onClick={() => handleBorrarVoluntario(e.id)}
+                          className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
+                        >
+                          <FileMinus />
+                        </Button>
+                        <Button
+                          type='button'
+                          disabled={submiting || modifying > -1}
+                          onClick={() => {
+                            handleSetPatchModify(e.mail)
+                          }}
+                          className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-orange-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-orange-700 hover:outline-orange-700 active:text-white active:bg-orange-700 duration-200'
+                        >
+                          <FilePenLine />
+                        </Button>
+                      </div>
+                    )
+                  ) : e.rol === 'voluntario' && e.borrado ? (
+                    <p className='font-semibold text-rose-700 text-sm'>
+                      USUARIO ELIMINADO
+                    </p>
+                  ) : null}
+                </td>
+              </tr>
+            )
+          })
+      )
 
       return 'No se encontraron usuarios con el rol de voluntario'
     }
@@ -587,7 +768,7 @@ export default function UsersSistemList ({ user }: { user: User }) {
       ) : (
         <div className='w-full p-4 flex flex-col justify-center items-center gap-4'>
           <div className='w-full flex m-auto'>
-            <div className='w-full flex justify-between'>
+            <div className='w-full flex items-center gap-6'>
               <select
                 id='role-select'
                 value={rolChecked}
@@ -599,6 +780,12 @@ export default function UsersSistemList ({ user }: { user: User }) {
                 <option value='voluntario'>Voluntario</option>
                 <option value='admin_centro'>Administrador</option>
               </select>
+              <button
+                className='text-white rounded-lg py-[10px] px-14 outline-transparentoutline bg-rose-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-rose-700 hover:outline-rose-700 active:text-white active:bg-rose-700 duration-200'
+                onClick={hideUsers}
+              >
+                {hiddeList ? 'Cargar usuarios' : 'Vaciar usuarios'}
+              </button>
             </div>
           </div>
           <div className='w-full flex justify-center items-center'>
@@ -629,6 +816,7 @@ export default function UsersSistemList ({ user }: { user: User }) {
                     registerOptions={{ required: true }}
                     watch={postWatch}
                     setValue={setPostValue}
+                    error={patchErrors.foto?.message}
                     props={{ disabled: modifying > -1, type: 'file' }}
                   />
                   <Input
@@ -646,19 +834,34 @@ export default function UsersSistemList ({ user }: { user: User }) {
                   <Input
                     id='dni'
                     register={postRegister}
-                    registerOptions={{ required: true }}
-                    props={{ disabled: modifying > -1 }}
+                    registerOptions={{
+                      required: true,
+                      pattern: {
+                        value: /^.{7,8}$/,
+                        message: 'DNI inválido.'
+                      }
+                    }}
+                    error={postErrors.dni?.message}
+                    props={{ disabled: modifying > -1, type: 'number' }}
                   />
                   <Input
                     id='mail'
                     register={postRegister}
-                    registerOptions={{ required: true }}
+                    registerOptions={{
+                      required: true,
+                      pattern: {
+                        value:
+                          /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/i,
+                        message: 'Email inválido.'
+                      }
+                    }}
+                    error={postErrors.mail?.message}
                     props={{ disabled: modifying > -1 }}
                   />
                   <td className='border border-gray-300'>
                     <div className='size-full p-1 flex justify-center items-center'>
                       <InputBday
-                        id='fechaNacimiento'
+                        id='nacimiento'
                         type='date'
                         register={postRegister}
                         registerOptions={{
@@ -670,11 +873,11 @@ export default function UsersSistemList ({ user }: { user: User }) {
                             )
                           }
                         }}
-                        error={postErrors.fechaNacimiento}
+                        error={postErrors.nacimiento}
                       />
                     </div>
                   </td>
-                  <td className='border border-gray-300'></td>
+                  <td className='border border-gray-300'>Hoy</td>
                   <td className='p-2 border-e border-gray-300'>
                     <div className='relative size-full'>
                       <span className='absolute z-50 top-3 right-6 text-red-500 text-sm'>
@@ -694,7 +897,7 @@ export default function UsersSistemList ({ user }: { user: User }) {
                       />
                     </div>
                   </td>
-                  <td className='p-2 border-e border-gray-300'></td>
+                  <td className='p-2 border-e border-gray-300'>Voluntario</td>
                   <td className='p-2 text-center'>
                     <Button
                       type='submit'

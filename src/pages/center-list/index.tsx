@@ -43,6 +43,8 @@ export interface CenterInfo {
   id_centro: string
   nombre_centro: string
   ubicacion: string
+  borrado: boolean
+  tiene_voluntario: boolean
 }
 
 const HourSelector = ({
