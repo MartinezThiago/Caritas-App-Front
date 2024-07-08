@@ -1,13 +1,14 @@
 import { Input as InputBday } from '@/components'
 import { Loading } from '@/components/loading'
 import { Button } from '@/components/ui/button'
-import { FRONT_BASE_URL, defaultPhoto } from '@/constants'
+import { BACK_BASE_URL, FRONT_BASE_URL, defaultPhoto } from '@/constants'
 import RootLayout from '@/layouts/root-layout'
 import { cn } from '@/lib/utils'
 import { GetSSPropsResult, User } from '@/types'
 import { getUser } from '@/utils'
 import { requireNothing } from '@/utils/permissions'
 import axios from 'axios'
+import { getCookie } from 'cookies-next'
 import { subYears } from 'date-fns'
 import { FileCheck, FileMinus, FilePenLine, FilePlus, X } from 'lucide-react'
 import { NextApiRequest, NextApiResponse } from 'next'
@@ -159,7 +160,6 @@ const InputFile = ({
       watch('foto').length > 0 &&
       typeof watch('foto') !== 'string'
     ) {
-      alert('entra')
       console.log('ESTO ENTONCES ES TRUE', watch('foto'))
       file2b64((watch('foto') as unknown as FileList)[0], setBase64)
     }
@@ -290,12 +290,14 @@ export default function UsersSistemList ({ user }: { user: User }) {
     // SI EL EMAIL EXISTE EN CREACION DE USUARIO
     if (userRaw.some((user: UserInfo) => user.mail === newForm.mail)) {
       alert('Email en uso. No puede repetirse')
+      setSubmiting(false)
       return
     }
 
     // SI EL DNI EXISTE EN CREACION DE USUARIO
     if (userRaw.some((user: UserInfo) => user.dni === newForm.dni)) {
       alert('DNI en uso. No puede repetirse')
+      setSubmiting(false)
       return
     }
 
@@ -304,20 +306,27 @@ export default function UsersSistemList ({ user }: { user: User }) {
     reader.onload = () => {
       newForm.foto = reader.result as string
       newForm['email'] = newForm.mail
+      newForm['centro'] = Number(newForm.centro)
+      newForm['nacimiento'] = new Date(newForm.nacimiento)
       delete newForm.mail
 
       console.log('FORM DATA EN POST SUBMIT', newForm)
       // return
 
       axios
-        .post(`${FRONT_BASE_URL}registrarUsuarioInterno`, newForm)
+        .post(
+          'http://localhost:5000/CaritasBack/registrarUsuarioInterno',
+          newForm,
+          { headers: { Authorization: `Bearer ${getCookie('access')}` } }
+        )
         .then(() => {
           alert('Usuario agregado correctamente')
           setNeedsUpdate(prev => !prev)
           setSubmiting(false)
           postReset()
         })
-        .catch(() => {
+        .catch((err: any) => {
+          console.log(err)
           alert('Ha ocurrido un error al agregar al usuario')
           setSubmiting(false)
         })
@@ -342,6 +351,7 @@ export default function UsersSistemList ({ user }: { user: User }) {
       userDNI.dni === newForm.dni
     ) {
       alert('DNI en uso. No puede repetirse')
+      setSubmiting(false)
       return
     }
 
@@ -355,6 +365,7 @@ export default function UsersSistemList ({ user }: { user: User }) {
       userEmail.mail === newForm.mail
     ) {
       alert('Email en uso. No puede repetirse')
+      setSubmiting(false)
       return
     }
 
@@ -366,7 +377,11 @@ export default function UsersSistemList ({ user }: { user: User }) {
       newForm.foto = user.foto
     }
 
+    newForm['id_usuario'] = (userRaw as any).find(
+      (user: UserInfo) => user.mail === newForm.mail
+    ).id
     newForm['email'] = newForm.mail
+    newForm['nacimiento'] = new Date(newForm.nacimiento)
     delete newForm.mail
 
     if (typeof newForm.foto !== 'string') {
@@ -375,10 +390,14 @@ export default function UsersSistemList ({ user }: { user: User }) {
       reader.onload = () => {
         newForm.foto = reader.result as string
 
-        console.log('FORM DATA EN PATCH SUBMIT', newForm)
+        console.log('FORM DATA EN PATCH SUBMIT 1', newForm)
 
         axios
-          .patch(`${FRONT_BASE_URL}cambiarDatosPersonalesVoluntario`, newForm)
+          .post(
+            'http://localhost:5000CaritasBack/cambiarDatosPersonalesVoluntario',
+            newForm,
+            { headers: { Authorization: `Bearer ${getCookie('access')}` } }
+          )
           .then(() => {
             alert('Usuario modificado correctamente')
             setNeedsUpdate(prev => !prev)
@@ -398,10 +417,14 @@ export default function UsersSistemList ({ user }: { user: User }) {
         alert('Error al cargar la imagen')
       }
     } else {
-      console.log('FORM DATA EN PATCH SUBMIT', newForm)
+      console.log('FORM DATA EN PATCH SUBMIT 2', newForm)
 
       axios
-        .patch(`${FRONT_BASE_URL}cambiarDatosPersonalesVoluntario`, newForm)
+        .post(
+          'http://localhost:5000/CaritasBack/cambiarDatosPersonalesVoluntario',
+          newForm,
+          { headers: { Authorization: `Bearer ${getCookie('access')}` } }
+        )
         .then(() => {
           alert('Usuario modificado correctamente')
           setNeedsUpdate(prev => !prev)
@@ -409,7 +432,7 @@ export default function UsersSistemList ({ user }: { user: User }) {
           patchReset()
         })
         .catch(() => {
-          alert('Ha ocurrido un error al agregar el usuario')
+          alert('Ha ocurrido un error al modificar el usuario')
           setSubmiting(false)
         })
 
