@@ -31,7 +31,7 @@ import {
 import Select from 'react-select'
 import { CenterInfo } from '../center-list'
 
-export async function getServerSideProps({
+export async function getServerSideProps ({
   req,
   res
 }: Readonly<{
@@ -207,7 +207,7 @@ const getCenterDescription = (center?: CenterInfo) => {
   return `${center.ubicacion} - ${center.direccion} - ${center.nombre_centro}`
 }
 
-export default function UsersSistemList({ user }: { user: User }) {
+export default function UsersSistemList ({ user }: { user: User }) {
   const router = useRouter()
   const [userRaw, setUserRaw] = useState([])
   const [centers, setCenters] = useState([])
@@ -301,6 +301,13 @@ export default function UsersSistemList({ user }: { user: User }) {
       return
     }
 
+    // SI NO ELIGIÓ CENTRO
+    if (newForm.centro && newForm.centro === '') {
+      alert('Eliga un centro')
+      setSubmiting(false)
+      return
+    }
+
     const reader = new FileReader()
     reader.readAsDataURL((newForm.foto as unknown as FileList)[0])
     reader.onload = () => {
@@ -387,9 +394,16 @@ export default function UsersSistemList({ user }: { user: User }) {
     console.log('NEWFORM CENTRO', newForm['centro'])
     // AGREGA CENTRO SI DEJÓ EL DEFAULT
     if (newForm['centro'] === undefined) {
-      newForm['centro'] =
-        (userRaw as any).find((user: any) => user.id === id_entrante)
-          .centro
+      newForm['centro'] = (userRaw as any).find(
+        (user: any) => user.id === id_entrante
+      ).centro
+    }
+
+    // SI NO ELIGIÓ CENTRO
+    if (newForm.centro && newForm.centro === '') {
+      alert('Eliga un centro')
+      setSubmiting(false)
+      return
     }
 
     if (typeof newForm.foto !== 'string') {
@@ -516,8 +530,8 @@ export default function UsersSistemList({ user }: { user: User }) {
                 })}
               >
                 {e.rol === 'voluntario' &&
-                  !e.borrado &&
-                  e.mail === modifying ? (
+                !e.borrado &&
+                e.mail === modifying ? (
                   <Fragment>
                     <InputFile
                       id='foto'
@@ -605,19 +619,22 @@ export default function UsersSistemList({ user }: { user: User }) {
                           }))}
                           defaultValue={{
                             value: String(e.centro),
-                            label: `${centersRaw.find(
-                              center =>
-                                String(center.id_centro) === String(e.centro)
-                            )?.ubicacion
-                              } - ${centersRaw.find(
+                            label: `${
+                              centersRaw.find(
+                                center =>
+                                  String(center.id_centro) === String(e.centro)
+                              )?.ubicacion
+                            } - ${
+                              centersRaw.find(
                                 center =>
                                   String(center.id_centro) === String(e.centro)
                               )?.direccion
-                              } - ${centersRaw.find(
+                            } - ${
+                              centersRaw.find(
                                 center =>
                                   String(center.id_centro) === String(e.centro)
                               )?.nombre_centro
-                              }`
+                            }`
                           }}
                           placeholder='...'
                           onChange={(e: any) => {
@@ -649,7 +666,7 @@ export default function UsersSistemList({ user }: { user: User }) {
                         <Image
                           src={
                             String(e.foto).includes('data:image/png;base64,') ||
-                              String(e.foto).includes('https://')
+                            String(e.foto).includes('https://')
                               ? e.foto
                               : defaultPhoto
                           }
@@ -681,40 +698,43 @@ export default function UsersSistemList({ user }: { user: User }) {
                       {e.centro === -1
                         ? 'Sin asignar'
                         : getCenterDescription(
-                          (centers as CenterInfo[]).find(
-                            center => center.id_centro === e.centro
-                          )
-                        ) !== 'Sin asignar'
-                          ? getCenterDescription(
+                            (centers as CenterInfo[]).find(
+                              center => center.id_centro === e.centro
+                            )
+                          ) !== 'Sin asignar'
+                        ? getCenterDescription(
                             (centers as CenterInfo[]).find(
                               center => center.id_centro === e.centro
                             )
                           )
-                          : centersRaw.find(
+                        : centersRaw.find(
                             center =>
                               String(center.id_centro) === String(e.centro)
                           ) !== undefined
-                            ? `${centersRaw.find(
+                        ? `${
+                            centersRaw.find(
                               center =>
                                 String(center.id_centro) === String(e.centro)
                             )?.ubicacion
-                            } - ${centersRaw.find(
+                          } - ${
+                            centersRaw.find(
                               center =>
                                 String(center.id_centro) === String(e.centro)
                             )?.direccion
-                            } - ${centersRaw.find(
+                          } - ${
+                            centersRaw.find(
                               center =>
                                 String(center.id_centro) === String(e.centro)
                             )?.nombre_centro
-                            }`
-                            : 'Sin asignar'}
+                          }`
+                        : 'Sin asignar'}
                     </td>
                     <td className='p-2 border-x border-gray-300'>
                       {e.rol === 'usuario_basico'
                         ? 'Básico'
                         : e.rol === 'admin_centro'
-                          ? 'Administrador'
-                          : 'Voluntario'}
+                        ? 'Administrador'
+                        : 'Voluntario'}
                     </td>
                   </Fragment>
                 )}
@@ -725,9 +745,8 @@ export default function UsersSistemList({ user }: { user: User }) {
                         <Button
                           type='submit'
                           disabled={submiting}
-                          onClick={handlePatchSubmit((formData) => {
+                          onClick={handlePatchSubmit(formData => {
                             onPatchSubmit(formData, e.id)
-
                           })}
                           className='w-max text-white rounded-lg py-[10px] outline-transparent	outline bg-green-700 font-semibold hover:bg-white hover:outline-[3px] hover:text-green-700 hover:outline-green-700 active:text-white active:bg-green-700 duration-200'
                         >
@@ -941,10 +960,10 @@ export default function UsersSistemList({ user }: { user: User }) {
                 {rolChecked == 'voluntario'
                   ? UserList('voluntario')
                   : rolChecked == 'admin_centro'
-                    ? UserList('administrador')
-                    : rolChecked == 'usuario_basico'
-                      ? UserList('basico')
-                      : UserList('Todos')}
+                  ? UserList('administrador')
+                  : rolChecked == 'usuario_basico'
+                  ? UserList('basico')
+                  : UserList('Todos')}
               </tbody>
             </table>
           </div>
