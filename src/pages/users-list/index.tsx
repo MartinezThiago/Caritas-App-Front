@@ -563,11 +563,18 @@ export default function UsersSistemList({ user }: { user: User }) {
                     <Input
                       id='dni'
                       register={patchRegister}
-                      registerOptions={{ required: true }}
+                      registerOptions={{
+                        required: true,
+                        pattern: {
+                          value: /^.{7,8}$/,
+                          message: 'DNI inválido.'
+                        }
+                      }}
                       watch={patchWatch}
                       setValue={setPatchValue}
                       alter={modifying}
-                      props={{ placeholder: e.dni }}
+                    error={patchErrors.dni?.message}
+                    props={{ placeholder: e.dni }}
                     />
                     <Input
                       id='mail'

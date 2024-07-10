@@ -264,7 +264,7 @@ export default function UsersSistemList({ user }: { user: User }) {
           </div> :
             (statistics?.cantidadIntercambiosConfirmados != 0 || statistics?.cantidadIntercambiosCancelados != 0 || statistics?.cantidadIntercambiosRechazados != 0) ? <>
               <div className="flex justify-center mt-[40px]">
-                <div className="w-[75vw] flex justify-between bg-blue-900 bg-opacity-10 p-[25px] rounded-[10px] items-center">
+                <div className="w-[85vw] flex justify-between bg-blue-900 bg-opacity-10 p-[25px] rounded-[10px] items-center">
                   <form
                     key="request-date-form"
                     noValidate
@@ -332,9 +332,9 @@ export default function UsersSistemList({ user }: { user: User }) {
                 </div>
               </div>
               <div className=" flex justify-center ">
-                <div className="h-[100vh] w-[75vw]">
+                <div className="h-[100vh] w-[85vw]">
                   <div className="flex mt-[40px] justify-between">
-                    <div className="w-[780px] h-auto bg-blue-900 bg-opacity-10 rounded-[10px] flex flex-col items-center">
+                    <div className="w-[680px] h-auto bg-blue-900 bg-opacity-10 rounded-[10px] flex flex-col items-center">
                       <h1 className="font-semibold text-black text-3xl pt-[20px]">
                         {dayFromAUX==''&&dayToAUX==''?'Todos los intercambios': `Intercambios desde ${formatDate(dayFromAUX)} hasta ${formatDate(dayToAUX)}`}
                       </h1>
@@ -348,7 +348,7 @@ export default function UsersSistemList({ user }: { user: User }) {
                         valueFormatter={valueFormatter}
                       />
                     </div>
-                    <div className="flex flex-col items-center bg-blue-900 bg-opacity-10 rounded-[10px] p-[25px]">
+                    <div className="flex flex-col items-center bg-blue-900 bg-opacity-10 rounded-[10px] p-[25px] w-[560px]">
                       <h1 className="font-semibold text-black text-3xl">
                         Intercambios en {statistics?.nombre}
                       </h1>
@@ -376,7 +376,7 @@ export default function UsersSistemList({ user }: { user: User }) {
                     </div>
                   </div>
                   <div className="flex justify-between">
-                    <div className="w-[700px] bg-blue-900 bg-opacity-10 rounded-[10px] mt-[40px] ">
+                    <div className="w-[650px] bg-blue-900 bg-opacity-10 rounded-[10px] mt-[40px] ">
                       <div className="w-[100%] h-[100%] p-[25px] text-black ">
                         <p className="text-lg flex justify-between">
                           <span className="font-semibold text-lg">
@@ -415,14 +415,14 @@ export default function UsersSistemList({ user }: { user: User }) {
                         </p>
                       </div>
                     </div>
-                    <div className="flex flex-col bg-blue-900 bg-opacity-10 rounded-[10px] w-[650px] p-[25px] mt-[40px]">
-                      <h1 className="font-semibold text-black text-2xl">
+                    <div className="flex flex-col bg-blue-900 bg-opacity-10  rounded-[10px] w-[600px] p-[25px] mt-[40px]">
+                      <h1 className="font-semibold text-black place-self-center text-2xl">
                         Cantidad de intercambios por categoria
                       </h1>
-                      <div className="mt-[20px]">
+                      <div className="mt-[20px] place-self-start">
                         <BarList
                           data={getCategoriesStatistics()}
-                          className="w-[500px]"
+                          className="w-[450px]"
                         />
                       </div>
                     </div>
